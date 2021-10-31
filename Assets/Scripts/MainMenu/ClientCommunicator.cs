@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Net;
-public class ClientCommunicator : MonoBehaviour {
+using Network.Utils;
+
+public class ClientCommunicator : MonoBehaviour, ICommunicator {
+    SynchronizedCollection<Network.Utils.TcpClient> _clients;
     Network.Utils.TcpClient _client;
 
     void Start() {
@@ -19,5 +22,9 @@ public class ClientCommunicator : MonoBehaviour {
 
     private void Ready() {
         // TODO: send ready message
+    }
+
+    SynchronizedCollection<TcpClient> ICommunicator.GetClientList() {
+        return _clients;
     }
 }

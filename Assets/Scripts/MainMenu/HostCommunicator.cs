@@ -5,7 +5,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HostCommunicator : MonoBehaviour {
+public class HostCommunicator : MonoBehaviour, ICommunicator {
     
     SynchronizedCollection<Network.Utils.TcpClient> _clients;
     Network.Utils.TcpServer _server;
@@ -83,5 +83,9 @@ public class HostCommunicator : MonoBehaviour {
             Socket.Select(checkReadSockets, null, null, SELECT_TIMEOUT_MS);
             HandleReadySockets(checkReadSockets);
         }
+    }
+
+    public SynchronizedCollection<Network.Utils.TcpClient> GetClientList() {
+        return _clients;
     }
 }
