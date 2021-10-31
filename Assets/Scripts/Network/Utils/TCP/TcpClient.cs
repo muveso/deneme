@@ -2,41 +2,55 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-public class TcpClient {
-    private Socket _sock;
+namespace Network.Utils {
+    public class TcpClient {
+        public Socket Sock { get; private set; }
 
-    public TcpClient(IPEndPoint endpoint) {
-        _sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        _sock.Connect(endpoint);
-    }
-
-    public TcpClient(Socket socket) {
-        _sock = socket;
-    }
-
-    public void Send(byte[] bytes) {
-        if (!_sock.Connected) {
-            throw new SocketNotConnectedException();
+        public TcpClient(IPEndPoint endpoint) {
+            Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Sock.Connect(endpoint);
         }
-        byte[] messageLength = BitConverter.GetBytes(bytes.Length);
-        _sock.Send(messageLength);
-        _sock.Send(bytes);
-    }
 
-    public byte[] Recieve(int bytesNum) {
-        if (!_sock.Connected) {
-            throw new SocketNotConnectedException();
+        public TcpClient(Socket socket) {
+            Sock = socket;
         }
-        byte[] bytes = new byte[sizeof(int)];
-        _sock.Receive(bytes, sizeof(int), SocketFlags.None);
-        int messageLength = BitConverter.ToInt32(bytes);
 
-        byte[] message = new byte[messageLength];
-        _sock.Receive(message, messageLength, SocketFlags.None);
-        return message;
-    }
+        public void Send(byte[] bytes) {
+            if (!Sock.Connected) {
+                throw new SocketNotConnectedException();
+            }
+            byte[] messageLength = BitConverter.GetBytes(bytes.Length);
+            Sock.Send(messageLength);
+            Sock.Send(bytes);
+        }
 
-    public void Close() {
-        _sock.Close();
+        private int GetMessageLength() {
+            byte[] bytes = new byte[sizeof(int)];
+            Sock.Receive(bytes, sizeof(int), SocketFlags.None);
+            int messageLength = BitConverter.ToInt32(bytes);
+            return messageLength;
+        }
+
+        private byte[] GetMessage(int messageLength) {
+            byte[] message = new byte[messageLength];
+            Sock.Receive(message, messageLength, SocketFlags.None);
+            return message;
+        }
+
+        public byte[] Recieve() {
+            if (!Sock.Connected) {
+                throw new SocketNotConnectedException();
+            }
+            int messageLength = GetMessageLength();
+            if (messageLength == 0) {
+                Sock.Close();
+                throw new SocketClosedException();
+            }
+            return GetMessage(messageLength);
+        }
+
+        public void Close() {
+            Sock.Close();
+        }
     }
 }
