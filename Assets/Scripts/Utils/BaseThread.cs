@@ -20,16 +20,15 @@ namespace Utils {
         public void Stop() {
             _stopEvent.Set();
             if (!_thread.Join(TIMEOUT_TO_WAIT_BEFORE_TERMINATE_THREAD_MS)) {
-                Debug.Log("Thread got timeout to stop so terminating :(");
+                Debug.LogError("Thread got timeout to stop so terminating :(");
                 _thread.Abort();
             } else {
                 Debug.Log("Thread stopped successfully :)");
             }
         }
 
-        protected bool ShouldRun() {
-            return !_stopEvent.WaitOne(0);
-        }
+        protected bool ThreadShouldRun => !_stopEvent.WaitOne(0);
+        
         protected abstract void RunThread();
     }
 }

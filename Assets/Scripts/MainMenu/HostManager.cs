@@ -4,14 +4,15 @@ using UnityEngine.UI;
 
 public class HostManager : MonoBehaviour {
     private HostCommunicatorThread _hostCommunicator;
-    public Text IpText;
-    public Text PortText;
+    public InputField IPInputField;
+    public InputField PortInputField;
     const int PLAYER_GAME_OBJECT_WIDTH = 600;
     const int PLAYER_GAME_OBJECT_HEIGHT = 90;
-    const int PLAYER_GAME_OBJECT_FONT_SIZE = 50;
+    const int PLAYER_GAME_OBJECT_FONT_SIZE = 30;
+    const string DEFAULT_SERVER_IP_ADDRESS = "0.0.0.0";
 
     private void Start() {
-        IpText.text = "0.0.0.0";
+        IPInputField.text = DEFAULT_SERVER_IP_ADDRESS;
     }
 
     void Update() {
@@ -20,7 +21,8 @@ public class HostManager : MonoBehaviour {
     }
 
     public void OnClickStartHostServer() {
-        _hostCommunicator = new HostCommunicatorThread(IpText.text, Int32.Parse(PortText.text));
+        Debug.Log("Starting HostCommunicator Thread");
+        _hostCommunicator = new HostCommunicatorThread(IPInputField.text, Int32.Parse(PortInputField.text));
         _hostCommunicator.Start();
     }
 
@@ -38,10 +40,10 @@ public class HostManager : MonoBehaviour {
         }
     }
 
-    private void AddNewClientToList(Utils.Network.TcpClient client, int index) {
+    private void AddNewClientToList(Client client, int index) {
         GameObject newGameObject = new GameObject();
         Text myText = newGameObject.AddComponent<Text>();
-        myText.text = $"{index}. {client}";
+        myText.text = $"{index}. {client.TcpClient} | Ready: {client.IsReady}";
         myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
         myText.fontSize = PLAYER_GAME_OBJECT_FONT_SIZE;
         myText.color = Color.black;
@@ -53,7 +55,7 @@ public class HostManager : MonoBehaviour {
     void FillScrollViewWithClients() {
         if (_hostCommunicator != null) {
             int index = 1;
-            foreach (var client in _hostCommunicator.Clients) {
+            foreach (Client client in _hostCommunicator.Clients) {
                 AddNewClientToList(client, index);
                 index++;
             }

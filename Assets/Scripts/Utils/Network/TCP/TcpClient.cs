@@ -15,6 +15,8 @@ namespace Utils.Network {
             Sock = socket;
         }
 
+        public bool IsConnected => Sock.Connected;
+        
         public void Send(byte[] bytes) {
             if (!Sock.Connected) {
                 throw new SocketNotConnectedException();

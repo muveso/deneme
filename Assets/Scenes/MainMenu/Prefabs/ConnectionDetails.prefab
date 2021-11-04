@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: 1119270171861914913}
   - component: {fileID: 1119270171861914912}
   m_Layer: 5
-  m_Name: Text
+  m_Name: PortText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -666,7 +666,7 @@ GameObject:
   - component: {fileID: 1119270173425138178}
   - component: {fileID: 1119270173425138181}
   m_Layer: 5
-  m_Name: Text
+  m_Name: IPText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
