@@ -1,4 +1,4 @@
-namespace Network.Utils {
+namespace Utils.Network {
     [System.Serializable]
     public class SocketNotConnectedException : System.Exception {
         public SocketNotConnectedException() { }

@@ -5,30 +5,22 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HostCommunicator : MonoBehaviour, ICommunicator {
+public class HostCommunicatorThread : Utils.BaseThread {
     
-    SynchronizedCollection<Network.Utils.TcpClient> _clients;
-    Network.Utils.TcpServer _server;
-    Thread _tcpServerThread;
+    public SynchronizedCollection<Utils.Network.TcpClient> Clients { get; private set; }
+    private Utils.Network.TcpServer _server;
     const int PORT = 12345;
     const int SELECT_TIMEOUT_MS = 1000;
 
-    void Start() {
-        _clients = new SynchronizedCollection<Network.Utils.TcpClient>();
-        _server = new Network.Utils.TcpServer(PORT);
-        _tcpServerThread = new Thread(TcpServerLoop);
-        _tcpServerThread.Start();
-    }
 
-    private void OnDestroy() {
-        if (_tcpServerThread != null) {
-            _tcpServerThread.Abort();
-        }
+    public HostCommunicatorThread(string ipAddress, int listeningPort) {
+        Clients = new SynchronizedCollection<Utils.Network.TcpClient>();
+        _server = new Utils.Network.TcpServer(ipAddress, listeningPort);
     }
 
     private List<Socket> GetSocketListFromTcpClients() {
         List<Socket> clientSocketList = new List<Socket>();
-        foreach (Network.Utils.TcpClient client in _clients) {
+        foreach (Utils.Network.TcpClient client in Clients) {
             clientSocketList.Add(client.Sock);
         }
         return clientSocketList;
@@ -36,11 +28,11 @@ public class HostCommunicator : MonoBehaviour, ICommunicator {
 
     private void HandleNewClient() {
         Debug.Log("New client connected");
-        _clients.Add(_server.Accept());
+        Clients.Add(_server.Accept());
     }
 
-    private Network.Utils.TcpClient FindClientBySocket(Socket sock) {
-        foreach (Network.Utils.TcpClient tcpClient in _clients) {
+    private Utils.Network.TcpClient FindClientBySocket(Socket sock) {
+        foreach (Utils.Network.TcpClient tcpClient in Clients) {
             if (tcpClient.Sock == sock) {
                 return tcpClient;
             }
@@ -48,8 +40,8 @@ public class HostCommunicator : MonoBehaviour, ICommunicator {
         throw new SocketException();
     }
 
-    private Network.Utils.TcpClient DeleteClientBySocket(Socket sock) {
-        foreach (Network.Utils.TcpClient tcpClient in _clients) {
+    private Utils.Network.TcpClient DeleteClientBySocket(Socket sock) {
+        foreach (Utils.Network.TcpClient tcpClient in Clients) {
             if (tcpClient.Sock == sock) {
                 return tcpClient;
             }
@@ -58,11 +50,11 @@ public class HostCommunicator : MonoBehaviour, ICommunicator {
     }
 
     private void HandleClientMessage(Socket sock) {
-        Network.Utils.TcpClient tcpClient = FindClientBySocket(sock);
+        Utils.Network.TcpClient tcpClient = FindClientBySocket(sock);
         try {
             byte[] messageByes = tcpClient.Recieve();
-        } catch (Network.Utils.SocketClosedException) {
-            _clients.Remove(tcpClient);
+        } catch (Utils.Network.SocketClosedException) {
+            Clients.Remove(tcpClient);
         }
     }
 
@@ -76,16 +68,12 @@ public class HostCommunicator : MonoBehaviour, ICommunicator {
         }
     }
 
-    private void TcpServerLoop() {
-        while (true) {
+    protected override void RunThread() {
+        while (ShouldRun()) {
             List<Socket> checkReadSockets = GetSocketListFromTcpClients();
             checkReadSockets.Add(_server.Sock);
             Socket.Select(checkReadSockets, null, null, SELECT_TIMEOUT_MS);
             HandleReadySockets(checkReadSockets);
         }
-    }
-
-    public SynchronizedCollection<Network.Utils.TcpClient> GetClientList() {
-        return _clients;
     }
 }

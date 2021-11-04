@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Network.Utils {
+namespace Utils.Network {
     public class TcpClient {
         public Socket Sock { get; private set; }
 
@@ -51,6 +51,11 @@ namespace Network.Utils {
 
         public void Close() {
             Sock.Close();
+        }
+
+        public override string ToString() {
+            IPEndPoint remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
+            return $"IP: {remoteIpEndPoint.Address.ToString()} | Port: {remoteIpEndPoint.Port.ToString()}";
         }
     }
 }

@@ -2,13 +2,13 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Network.Utils {
+namespace Utils.Network{
     public class TcpServer {
         public Socket Sock { get; private set; }
 
-        public TcpServer(int listeningPort) {
+        public TcpServer(string ipAddress, int listeningPort) {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, listeningPort);
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), listeningPort);
             Sock.Bind(localEndPoint);
             Sock.Listen(10);
         }
