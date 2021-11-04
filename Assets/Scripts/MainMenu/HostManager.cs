@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +9,7 @@ public class HostManager : MonoBehaviour {
     const int PLAYER_GAME_OBJECT_WIDTH = 600;
     const int PLAYER_GAME_OBJECT_HEIGHT = 90;
     const int PLAYER_GAME_OBJECT_FONT_SIZE = 50;
-    
+
     private void Start() {
         IpText.text = "0.0.0.0";
     }

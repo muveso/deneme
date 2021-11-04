@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
+using Utils;
 
 public class ClientCommunicator : MonoBehaviour {
     SynchronizedCollection<Utils.Network.TcpClient> _clients;
@@ -22,6 +22,7 @@ public class ClientCommunicator : MonoBehaviour {
     }
 
     private void Ready() {
-        // TODO: send ready message
+        ClientReadyMessage clientReadyMessage = new ClientReadyMessage();
+        _client.Send(MessagesHelpers.WrapMessage(clientReadyMessage));
     }
 }

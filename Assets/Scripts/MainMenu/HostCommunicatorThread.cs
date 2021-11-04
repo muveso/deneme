@@ -1,21 +1,19 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
+using Utils.Network;
 
 public class HostCommunicatorThread : Utils.BaseThread {
     
     public SynchronizedCollection<Utils.Network.TcpClient> Clients { get; private set; }
-    private Utils.Network.TcpServer _server;
+    private TcpServer _server;
     const int PORT = 12345;
     const int SELECT_TIMEOUT_MS = 1000;
 
 
     public HostCommunicatorThread(string ipAddress, int listeningPort) {
         Clients = new SynchronizedCollection<Utils.Network.TcpClient>();
-        _server = new Utils.Network.TcpServer(ipAddress, listeningPort);
+        _server = new TcpServer(ipAddress, listeningPort);
     }
 
     private List<Socket> GetSocketListFromTcpClients() {
