@@ -1,5 +1,9 @@
 syntax = "proto3";
 import "Base.proto";
 
+message ClientDetailsMessage {
+    optional string nickname = 1;
+    optional bool isReady = 2;
+}
 
 message ClientReadyMessage {}

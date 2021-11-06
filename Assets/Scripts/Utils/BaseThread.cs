@@ -6,7 +6,7 @@ namespace Utils {
         private Thread _thread;
         private AutoResetEvent _stopEvent;
 
-        const int TIMEOUT_TO_WAIT_BEFORE_TERMINATE_THREAD_MS = 5000;
+        const int TIMEOUT_TO_WAIT_BEFORE_FORCE_TERMINATE_THREAD_MS = 5000;
 
         public BaseThread() {
             _thread = new Thread(RunThread);
@@ -19,7 +19,7 @@ namespace Utils {
         public bool IsAlive => _thread.IsAlive;
         public void Stop() {
             _stopEvent.Set();
-            if (!_thread.Join(TIMEOUT_TO_WAIT_BEFORE_TERMINATE_THREAD_MS)) {
+            if (!_thread.Join(TIMEOUT_TO_WAIT_BEFORE_FORCE_TERMINATE_THREAD_MS)) {
                 Debug.LogError("Thread got timeout to stop so terminating :(");
                 _thread.Abort();
             } else {

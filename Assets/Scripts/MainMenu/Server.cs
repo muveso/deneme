@@ -3,19 +3,23 @@ using System.Net.Sockets;
 using UnityEngine;
 using Utils.Network;
 using Utils;
-using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 
 public class Client {
+    public ClientDetails Details { get; private set; }
     public Utils.Network.TcpClient TcpClient { get; private set; }
-    private bool _isReady = false;
+
     public Client(Utils.Network.TcpClient tcpClient) {
         TcpClient = tcpClient;
+        Details = new ClientDetails();
     }
-    public bool IsReady => _isReady;
-    public void ToggleReady() => _isReady = !_isReady;
+
+    public override string ToString() {
+        return $"IP: {TcpClient} | {Details}";
+    }
 }
 
-public class HostCommunicatorThread : Utils.BaseThread {
+public class Server : Utils.BaseThread {
     
     public SynchronizedCollection<Client> Clients { get; private set; }
     private TcpServer _server;
@@ -23,7 +27,7 @@ public class HostCommunicatorThread : Utils.BaseThread {
     const int SELECT_TIMEOUT_MS = 1000;
 
 
-    public HostCommunicatorThread(string ipAddress, int listeningPort) {
+    public Server(string ipAddress, int listeningPort) {
         Clients = new SynchronizedCollection<Client>();
         _server = new TcpServer(ipAddress, listeningPort);
     }
@@ -35,6 +39,14 @@ public class HostCommunicatorThread : Utils.BaseThread {
         }
         return clientSocketList;
     }
+
+    public void SendToAllClients(Google.Protobuf.IMessage message) {
+        byte[] messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
+        foreach (Client client in Clients) {
+            client.TcpClient.Send(messageBytes);
+        }
+    }
+
 
     private void HandleNewClient() {
         Debug.Log("New client connected");
@@ -54,15 +66,27 @@ public class HostCommunicatorThread : Utils.BaseThread {
         Client client = FindClientBySocket(sock);
         try {
             byte[] messageByes = client.TcpClient.Recieve();
-            BaseMessage baseMessage = MessagesHelpers.GetBaseMessage(messageByes);
-            if (MessagesHelpers.IsMessageTypeOf(baseMessage, ClientReadyMessage.Descriptor)) {
-                client.ToggleReady();
+            Any message = MessagesHelpers.ConvertBytesToMessage(messageByes);
+            if (message.Is(ClientReadyMessage.Descriptor)) {
+                client.Details.ToggleReady();
+                UpdateAllClients(client);
+            } else if (message.Is(ClientDetailsMessage.Descriptor)) {
+                ClientDetailsMessage details = message.Unpack<ClientDetailsMessage>();
+                client.Details.Nickname = details.Nickname;
+                UpdateAllClients(client);
             } else {
                 Debug.Log("Unknown message type");
             }
         } catch (Utils.Network.SocketClosedException) {
             Clients.Remove(client);
         }
+    }
+
+    private void UpdateAllClients(Client client) {
+        ClientDetailsMessage detailsMessage = new ClientDetailsMessage();
+        detailsMessage.Nickname = client.Details.Nickname;
+        detailsMessage.IsReady = client.Details.IsReady;
+        SendToAllClients(detailsMessage);
     }
 
     private void HandleReadySockets(List<Socket> readySocket) {

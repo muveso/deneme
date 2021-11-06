@@ -3,12 +3,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class HostManager : MonoBehaviour {
-    private HostCommunicatorThread _hostCommunicator;
+    private Server _server;
+    private ClientCommunicator _hostCommunicator;
     public InputField IPInputField;
     public InputField PortInputField;
-    const int PLAYER_GAME_OBJECT_WIDTH = 600;
-    const int PLAYER_GAME_OBJECT_HEIGHT = 90;
-    const int PLAYER_GAME_OBJECT_FONT_SIZE = 30;
     const string DEFAULT_SERVER_IP_ADDRESS = "0.0.0.0";
 
     private void Start() {
@@ -16,48 +14,52 @@ public class HostManager : MonoBehaviour {
     }
 
     void Update() {
-        DestroyAllChildren();
+        Utils.UI.General.DestroyAllChildren(transform);
         FillScrollViewWithClients();
     }
 
     public void OnClickStartHostServer() {
-        Debug.Log("Starting HostCommunicator Thread");
-        _hostCommunicator = new HostCommunicatorThread(IPInputField.text, Int32.Parse(PortInputField.text));
+        Debug.Log("Starting Server");
+        _server = new Server(IPInputField.text, Int32.Parse(PortInputField.text));
+        _server.Start();
+
+        Debug.Log("Host connect");
+        _hostCommunicator = new ClientCommunicator("127.0.0.1", Int32.Parse(PortInputField.text));
         _hostCommunicator.Start();
+        SendClientDetails();
+    }
+
+    public void SendClientDetails() {
+        if (_hostCommunicator == null) {
+            Debug.LogError("ClientCommunicator is null");
+            return;
+        }
+        ClientDetailsMessage clientDetailsMessage = new ClientDetailsMessage();
+        clientDetailsMessage.Nickname = "AAA";
+        _hostCommunicator.Send(clientDetailsMessage);
     }
 
     private void OnDestroy() {
         Debug.Log("HostManager destroyed");
-        if (_hostCommunicator != null && _hostCommunicator.IsAlive) {
+        if (_server != null && _server.IsAlive) {
             Debug.Log("Destrotying HostCommunicator Thread");
-            _hostCommunicator.Stop();
-        }
-    }
-
-    private void DestroyAllChildren() {
-        foreach (Transform child in transform) {
-            GameObject.Destroy(child.gameObject);
+            _server.Stop();
         }
     }
 
     private void AddNewClientToList(Client client, int index) {
-        GameObject newGameObject = new GameObject();
-        Text myText = newGameObject.AddComponent<Text>();
-        myText.text = $"{index}. {client.TcpClient} | Ready: {client.IsReady}";
-        myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-        myText.fontSize = PLAYER_GAME_OBJECT_FONT_SIZE;
-        myText.color = Color.black;
+        GameObject newGameObject = Utils.UI.ScrollView.CreateNewTextItemForScrollView(client, index);
         newGameObject.transform.SetParent(transform);
-        newGameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(PLAYER_GAME_OBJECT_WIDTH,
-                                                                            PLAYER_GAME_OBJECT_HEIGHT);
     }
 
     void FillScrollViewWithClients() {
-        if (_hostCommunicator != null) {
+        if (_server != null) {
             int index = 1;
-            foreach (Client client in _hostCommunicator.Clients) {
-                AddNewClientToList(client, index);
-                index++;
+            foreach (Client client in _server.Clients) {
+                if (client.Details.Nickname != null) {
+                    AddNewClientToList(client, index);
+                    index++;
+                }
             }
         }
     }
