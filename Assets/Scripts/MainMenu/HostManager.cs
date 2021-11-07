@@ -4,6 +4,7 @@ using UnityEngine;
 public class HostManager : ClientManager {
     private Server _server;
     const string DEFAULT_SERVER_IP_ADDRESS = "0.0.0.0";
+    const string LOCAL_HOST_IP_ADDRESS = "127.0.0.1";
 
     private void Start() {
         IPInputField.text = DEFAULT_SERVER_IP_ADDRESS;
@@ -11,7 +12,7 @@ public class HostManager : ClientManager {
     }
 
     protected override void InitializeCommunicator() {
-        _clientCommunicator = new ClientCommunicator("127.0.0.1", int.Parse(PortInputField.text));
+        _clientCommunicator = new ClientCommunicator(LOCAL_HOST_IP_ADDRESS, int.Parse(PortInputField.text));
         _clientCommunicator.Start();
     }
 
