@@ -33,31 +33,19 @@ public class ClientCommunicator : Utils.BaseThread {
     private void HandleMessage() {
         byte[] messageBytes = _client.Recieve();
         Any message = MessagesHelpers.ConvertBytesToMessage(messageBytes);
-        if (message.Is(ClientDetailsMessage.Descriptor)) {
-            ClientDetailsMessage clientDetailsMessage = message.Unpack<ClientDetailsMessage>();
-            UpdateClient(clientDetailsMessage);
+        if (message.Is(MainMenuStateMessage.Descriptor)) {
+            MainMenuStateMessage mainMenuStateMessage = message.Unpack<MainMenuStateMessage>();
+            UpdateClients(mainMenuStateMessage);
         } else {
             Debug.LogError("Unknown message type");
         }
     }
 
-    private void UpdateClient(ClientDetailsMessage clientDetailsMessage) {
-        ClientDetails client = GetClient(clientDetailsMessage);
-        if (client != null) {
-            Debug.Log($"Got client update for: {clientDetailsMessage.Nickname}");
-            client.IsReady = clientDetailsMessage.IsReady;
-        } else {
-            Debug.Log($"New client with nickname: {clientDetailsMessage.Nickname}");
-            Clients.Add(new ClientDetails(clientDetailsMessage.Nickname, clientDetailsMessage.IsReady));
-        }        
-    }
-
-    private ClientDetails GetClient(ClientDetailsMessage clientDetailsMessage) {
-        foreach (ClientDetails client in Clients) {
-            if (client.Nickname == clientDetailsMessage.Nickname) {
-                return client;
-            }
+    private void UpdateClients(MainMenuStateMessage mainMenuStateMessage) {
+        SynchronizedCollection<ClientDetails> newClientsList = new SynchronizedCollection<ClientDetails>();
+        foreach (ClientDetailsMessage clientDetailsMessage in mainMenuStateMessage.ClientsDetails) {
+            newClientsList.Add(new ClientDetails(clientDetailsMessage.Nickname, clientDetailsMessage.IsReady));
         }
-        return null;
+        Clients = newClientsList;
     }
 }

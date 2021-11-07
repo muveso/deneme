@@ -7,16 +7,22 @@ using UnityEngine.UI;
 using Utils;
 
 public class ClientManager : MonoBehaviour {
-    private ClientCommunicator _clientCommunicator;
     public InputField IPInputField;
     public InputField PortInputField;
-    private string _nickname = "PanCHocK";
+    protected ClientCommunicator _clientCommunicator;
+    protected string _nickname = "PanCHocK";
     
-    private void Update() {
+    protected virtual void Update() {
         Utils.UI.General.DestroyAllChildren(transform);
         FillScrollViewWithClients();    
     }
 
+    protected virtual void OnDestroy() {
+        if (_clientCommunicator != null) {
+            _clientCommunicator.Stop();
+        }
+    }
+    
     private void FillScrollViewWithClients() {
         if (_clientCommunicator != null) {
             int index = 1;
@@ -32,23 +38,6 @@ public class ClientManager : MonoBehaviour {
         newGameObject.transform.SetParent(transform);
     }
 
-    private void OnDestroy() {
-        if (_clientCommunicator != null) {
-            _clientCommunicator.Stop();
-        }
-    }
-
-    public void OnClickConnect() {
-        try {
-            _clientCommunicator = new ClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
-            _clientCommunicator.Start();
-            SendClientDetails();
-            EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
-        } catch (Exception e) {
-            Debug.LogError(e.Message);
-        }
-    }
-    
     public void SendClientDetails() {
         if (_clientCommunicator == null) {
             Debug.LogError("ClientCommunicator is null");
@@ -57,6 +46,21 @@ public class ClientManager : MonoBehaviour {
         ClientDetailsMessage clientDetailsMessage = new ClientDetailsMessage();
         clientDetailsMessage.Nickname = _nickname;
         _clientCommunicator.Send(clientDetailsMessage);
+    }
+
+    protected virtual void InitializeCommunicator() {
+        _clientCommunicator = new ClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
+        _clientCommunicator.Start();
+    }
+
+    public virtual void OnClickConnect() {
+        try {
+            InitializeCommunicator();
+            SendClientDetails();
+            EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
+        } catch (Exception e) {
+            Debug.LogError(e.Message);
+        }
     }
 
     public void OnClickReady() {

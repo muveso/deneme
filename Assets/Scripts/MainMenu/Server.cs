@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
-using UnityEngine;
-using Utils.Network;
-using Utils;
 using Google.Protobuf.WellKnownTypes;
+using UnityEngine;
+using Utils;
+using Utils.Network;
 
 public class Client {
     public ClientDetails Details { get; private set; }
@@ -20,7 +20,7 @@ public class Client {
 }
 
 public class Server : Utils.BaseThread {
-    
+
     public SynchronizedCollection<Client> Clients { get; private set; }
     private TcpServer _server;
     const int PORT = 12345;
@@ -68,25 +68,31 @@ public class Server : Utils.BaseThread {
             byte[] messageByes = client.TcpClient.Recieve();
             Any message = MessagesHelpers.ConvertBytesToMessage(messageByes);
             if (message.Is(ClientReadyMessage.Descriptor)) {
+                Debug.Log($"Client {client.Details.Nickname} sent Ready message");
                 client.Details.ToggleReady();
-                UpdateAllClients(client);
             } else if (message.Is(ClientDetailsMessage.Descriptor)) {
+                Debug.Log($"Client {client.Details.Nickname} sent initilize details message");
                 ClientDetailsMessage details = message.Unpack<ClientDetailsMessage>();
                 client.Details.Nickname = details.Nickname;
-                UpdateAllClients(client);
             } else {
                 Debug.Log("Unknown message type");
+                return;
             }
         } catch (Utils.Network.SocketClosedException) {
             Clients.Remove(client);
         }
+        StateUpdateToAllClients();
     }
 
-    private void UpdateAllClients(Client client) {
-        ClientDetailsMessage detailsMessage = new ClientDetailsMessage();
-        detailsMessage.Nickname = client.Details.Nickname;
-        detailsMessage.IsReady = client.Details.IsReady;
-        SendToAllClients(detailsMessage);
+    private void StateUpdateToAllClients() {
+        MainMenuStateMessage mainMenuMessage = new MainMenuStateMessage();
+        foreach (Client client in Clients) {
+            ClientDetailsMessage detailsMessage = new ClientDetailsMessage();
+            detailsMessage.Nickname = client.Details.Nickname;
+            detailsMessage.IsReady = client.Details.IsReady;
+            mainMenuMessage.ClientsDetails.Add(detailsMessage);
+        }
+        SendToAllClients(mainMenuMessage);
     }
 
     private void HandleReadySockets(List<Socket> readySocket) {

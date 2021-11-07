@@ -1,66 +1,55 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class HostManager : MonoBehaviour {
+public class HostManager : ClientManager {
     private Server _server;
-    private ClientCommunicator _hostCommunicator;
-    public InputField IPInputField;
-    public InputField PortInputField;
     const string DEFAULT_SERVER_IP_ADDRESS = "0.0.0.0";
 
     private void Start() {
         IPInputField.text = DEFAULT_SERVER_IP_ADDRESS;
+        _nickname = "PanCHocK2";
     }
 
-    void Update() {
-        Utils.UI.General.DestroyAllChildren(transform);
-        FillScrollViewWithClients();
+    protected override void InitializeCommunicator() {
+        _clientCommunicator = new ClientCommunicator("127.0.0.1", int.Parse(PortInputField.text));
+        _clientCommunicator.Start();
     }
 
-    public void OnClickStartHostServer() {
-        Debug.Log("Starting Server");
-        _server = new Server(IPInputField.text, Int32.Parse(PortInputField.text));
-        _server.Start();
+    public override void OnClickConnect() {
+        try {
+            Debug.Log("Starting Server");
+            _server = new Server(IPInputField.text, Int32.Parse(PortInputField.text));
+            _server.Start();
 
-        Debug.Log("Host connect");
-        _hostCommunicator = new ClientCommunicator("127.0.0.1", Int32.Parse(PortInputField.text));
-        _hostCommunicator.Start();
-        SendClientDetails();
-    }
-
-    public void SendClientDetails() {
-        if (_hostCommunicator == null) {
-            Debug.LogError("ClientCommunicator is null");
-            return;
+            base.OnClickConnect();
+        } catch (Exception e) {
+            Debug.LogError(e.Message);
         }
-        ClientDetailsMessage clientDetailsMessage = new ClientDetailsMessage();
-        clientDetailsMessage.Nickname = "AAA";
-        _hostCommunicator.Send(clientDetailsMessage);
     }
 
-    private void OnDestroy() {
+    protected override void OnDestroy() {
         Debug.Log("HostManager destroyed");
         if (_server != null && _server.IsAlive) {
             Debug.Log("Destrotying HostCommunicator Thread");
             _server.Stop();
         }
+        base.OnDestroy();
     }
 
-    private void AddNewClientToList(Client client, int index) {
-        GameObject newGameObject = Utils.UI.ScrollView.CreateNewTextItemForScrollView(client, index);
-        newGameObject.transform.SetParent(transform);
+    public void OnClickStartGame() {
+        if (AreAllClientsReady()) {
+            Debug.Log("Starting Game");
+        } else {
+            Debug.Log("Not all clients ready");
+        }
     }
 
-    void FillScrollViewWithClients() {
-        if (_server != null) {
-            int index = 1;
-            foreach (Client client in _server.Clients) {
-                if (client.Details.Nickname != null) {
-                    AddNewClientToList(client, index);
-                    index++;
-                }
+    private bool AreAllClientsReady() {
+        foreach (ClientDetails clientDetails in _clientCommunicator.Clients) {
+            if (!clientDetails.IsReady) {
+                return false;
             }
         }
+        return true;
     }
 }

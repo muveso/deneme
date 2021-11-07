@@ -5,6 +5,7 @@ public class ClientDetails {
     public ClientDetails() {}
     public ClientDetails(string nickname, bool isReady) {
         Nickname = nickname;
+        IsReady = isReady;
     }
     public void ToggleReady() => IsReady = !IsReady;
 
