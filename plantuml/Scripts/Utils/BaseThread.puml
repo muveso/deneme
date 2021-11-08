@@ -1,0 +1,11 @@
+@startuml
+abstract class BaseThread {
+    <<const>> TIMEOUT_TO_WAIT_BEFORE_FORCE_TERMINATE_THREAD_MS : int = 5000
+    + BaseThread()
+    + Start() : void
+    + Abort() : void
+    + Join() : void
+    + IsAlive : bool <<get>>
+    + Stop() : void
+}
+@enduml

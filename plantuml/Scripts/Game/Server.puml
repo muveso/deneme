@@ -1,0 +1,12 @@
+@startuml
+class Server {
+    <<const>> PORT : int = 12345
+    <<const>> SELECT_TIMEOUT_MS : int = 1000
+    + Server(ipAddress:string, listeningPort:int)
+    + SendToAllClients(message:Google.Protobuf.IMessage) : void
+}
+class "ConcurrentQueue`1"<T> {
+}
+BaseThread <|-- Server
+Server --> "MessagesQueue<Any>" "ConcurrentQueue`1"
+@enduml

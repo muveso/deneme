@@ -1,0 +1,21 @@
+@startuml
+!include .\\Scripts\Game\AbstractUdpCommunicator.puml
+!include .\\Scripts\Game\Server.puml
+!include .\\Scripts\MainMenu\ClientCommuincator.puml
+!include .\\Scripts\MainMenu\ClientDetails.puml
+!include .\\Scripts\MainMenu\ClientManager.puml
+!include .\\Scripts\MainMenu\Exceptions.puml
+!include .\\Scripts\MainMenu\HostManager.puml
+!include .\\Scripts\MainMenu\MainMenuController.puml
+!include .\\Scripts\MainMenu\ServerCommunicator.puml
+!include .\\Scripts\Messages\Base.puml
+!include .\\Scripts\Messages\MainMenu.puml
+!include .\\Scripts\Utils\BaseThread.puml
+!include .\\Scripts\Utils\Messages.puml
+!include .\\Scripts\Utils\Network\Exceptions.puml
+!include .\\Scripts\Utils\UI\General.puml
+!include .\\Scripts\Utils\UI\ScrollView.puml
+!include .\\Scripts\Utils\Network\TCP\TcpClient.puml
+!include .\\Scripts\Utils\Network\TCP\TcpServer.puml
+!include .\\Scripts\Utils\Network\UDP\UdpClient.puml
+@enduml

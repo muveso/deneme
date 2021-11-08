@@ -1,0 +1,7 @@
+@startuml
+class ClientNotConnectedException {
+    + ClientNotConnectedException()
+    + ClientNotConnectedException(message:string)
+    + ClientNotConnectedException(message:string, inner:System.Exception)
+}
+@enduml

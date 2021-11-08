@@ -1,8 +1,10 @@
+using System;
+using System.IO;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
 
-namespace Utils {
+namespace Evade.Utils {
     public static class MessagesHelpers {
         public static byte[] ConvertMessageToBytes(Google.Protobuf.IMessage message) {
             BaseMessage baseMessage = new BaseMessage();

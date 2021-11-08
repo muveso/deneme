@@ -1,0 +1,8 @@
+@startuml
+class MainMenuController {
+    + OnClickClient() : void
+    + OnClickHost() : void
+    + OnClickGoBackToMainMenu() : void
+}
+MonoBehaviour <|-- MainMenuController
+@enduml

@@ -51,11 +51,18 @@
         "Obj/":true,
         "ProjectSettings/":true,
         "temp/":true,
-        "Temp/":true
+        "Temp/":true,
+        "**/Scenes": true,
+        "**/Plugins": true,
+        "**/Externals": true,
+        "**/Packages": true,
+        "**/Logs": true,
+        "**/UserSettings": true,
     },
     "protoc": {
         "options": [
             "--proto_path=${workspaceRoot}/Assets/Scripts/Messages/proto",
         ]
-    }
+    },
+    "csharp2plantuml.inputPath": "Assets"
 }

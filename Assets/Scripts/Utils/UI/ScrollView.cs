@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Utils.UI {
+namespace Evade.Utils.UI {
     public static class ScrollView {
         const int NEW_ITEM_GAME_OBJECT_WIDTH = 800;
         const int NEW_ITEM_GAME_OBJECT_HEIGHT = 90;

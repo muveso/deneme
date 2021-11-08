@@ -1,0 +1,9 @@
+@startuml
+class HostManager {
+    <<const>> DEFAULT_SERVER_IP_ADDRESS : string = "0.0.0.0"
+    <<const>> LOCAL_HOST_IP_ADDRESS : string = "127.0.0.1"
+    + <<override>> OnClickConnect() : void
+    + OnClickStartGame() : void
+}
+ClientManager <|-- HostManager
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class TcpServer {
+    + TcpServer(ipAddress:string, listeningPort:int)
+    + Accept() : TcpClient
+}
+TcpServer --> "Sock" Socket
+@enduml

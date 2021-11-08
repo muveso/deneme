@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-namespace Utils {
+namespace Evade.Utils {
     public abstract class BaseThread {
         private Thread _thread;
         private AutoResetEvent _stopEvent;

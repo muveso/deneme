@@ -1,0 +1,14 @@
+@startuml
+class UdpClient {
+    <<const>> UDP_BUFFER_SIZE : int = 0x10000
+    + UdpClient(endpointToConnectTo:IPEndPoint)
+    + UdpClient(listenPort:int)
+    + IsConnected : bool <<get>>
+    + Send(bytes:byte[]) : void
+    + SendTo(bytes:byte[], endpoint:IPEndPoint) : void
+    + Recieve() : byte[]
+    + Close() : void
+    + <<override>> ToString() : string
+}
+UdpClient --> "Sock" Socket
+@enduml

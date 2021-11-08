@@ -1,0 +1,5 @@
+@startuml
+class General <<static>> {
+    + {static} DestroyAllChildren(transform:Transform) : void
+}
+@enduml

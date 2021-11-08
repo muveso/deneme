@@ -1,4 +1,4 @@
-namespace Utils.Network {
+namespace Evade.Utils.Network {
     [System.Serializable]
     public class SocketNotConnectedException : System.Exception {
         public SocketNotConnectedException() { }

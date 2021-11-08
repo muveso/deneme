@@ -1,0 +1,10 @@
+@startuml
+class ClientManager {
+    + SendClientDetails() : void
+    + <<virtual>> OnClickConnect() : void
+    + OnClickReady() : void
+}
+MonoBehaviour <|-- ClientManager
+ClientManager --> "IPInputField" InputField
+ClientManager --> "PortInputField" InputField
+@enduml

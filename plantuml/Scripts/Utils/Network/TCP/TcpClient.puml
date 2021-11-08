@@ -1,0 +1,12 @@
+@startuml
+class TcpClient {
+    + TcpClient(endpoint:IPEndPoint)
+    + TcpClient(socket:Socket)
+    + IsConnected : bool <<get>>
+    + Send(bytes:byte[]) : void
+    + Recieve() : byte[]
+    + Close() : void
+    + <<override>> ToString() : string
+}
+TcpClient --> "Sock" Socket
+@enduml

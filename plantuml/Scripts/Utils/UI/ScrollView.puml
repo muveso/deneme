@@ -1,0 +1,8 @@
+@startuml
+class ScrollView <<static>> {
+    <<const>> NEW_ITEM_GAME_OBJECT_WIDTH : int = 800
+    <<const>> NEW_ITEM_GAME_OBJECT_HEIGHT : int = 90
+    <<const>> NEW_ITEM_GAME_OBJECT_FONT_SIZE : int = 30
+    + {static} CreateNewTextItemForScrollView(item:object, index:int) : GameObject
+}
+@enduml

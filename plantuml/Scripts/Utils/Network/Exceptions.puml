@@ -1,0 +1,12 @@
+@startuml
+class SocketNotConnectedException {
+    + SocketNotConnectedException()
+    + SocketNotConnectedException(message:string)
+    + SocketNotConnectedException(message:string, inner:System.Exception)
+}
+class SocketClosedException {
+    + SocketClosedException()
+    + SocketClosedException(message:string)
+    + SocketClosedException(message:string, inner:System.Exception)
+}
+@enduml

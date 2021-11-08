@@ -1,0 +1,24 @@
+@startuml
+class BaseReflection <<static>> <<partial>> {
+    {static} BaseReflection()
+}
+class BaseMessage <<sealed>> <<partial>> {
+    + BaseMessage()
+    <<partial>> OnConstruction() : void
+    + BaseMessage(other:BaseMessage)
+    + Clone() : BaseMessage
+    + <<const>> MessageFieldNumber : int = 1
+    + <<override>> Equals(other:object) : bool
+    + Equals(other:BaseMessage) : bool
+    + <<override>> GetHashCode() : int
+    + <<override>> ToString() : string
+    + WriteTo(output:pb::CodedOutputStream) : void
+    InternalWriteTo(output:pb::WriteContext) : void
+    + CalculateSize() : int
+    + MergeFrom(other:BaseMessage) : void
+    + MergeFrom(input:pb::CodedInputStream) : void
+    InternalMergeFrom(input:pb::ParseContext) : void
+}
+class "IMessage`1"<T> {
+}
+@enduml

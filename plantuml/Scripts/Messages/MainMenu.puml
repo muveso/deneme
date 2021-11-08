@@ -1,0 +1,64 @@
+@startuml
+class MainMenuReflection <<static>> <<partial>> {
+    {static} MainMenuReflection()
+}
+class ClientDetailsMessage <<sealed>> <<partial>> {
+    + ClientDetailsMessage()
+    <<partial>> OnConstruction() : void
+    + ClientDetailsMessage(other:ClientDetailsMessage)
+    + Clone() : ClientDetailsMessage
+    + <<const>> NicknameFieldNumber : int = 1
+    + Nickname : string <<get>> <<set>>
+    + HasNickname : bool <<get>>
+    + ClearNickname() : void
+    + <<const>> IsReadyFieldNumber : int = 2
+    + IsReady : bool <<get>> <<set>>
+    + HasIsReady : bool <<get>>
+    + ClearIsReady() : void
+    + <<override>> Equals(other:object) : bool
+    + Equals(other:ClientDetailsMessage) : bool
+    + <<override>> GetHashCode() : int
+    + <<override>> ToString() : string
+    + WriteTo(output:pb::CodedOutputStream) : void
+    InternalWriteTo(output:pb::WriteContext) : void
+    + CalculateSize() : int
+    + MergeFrom(other:ClientDetailsMessage) : void
+    + MergeFrom(input:pb::CodedInputStream) : void
+    InternalMergeFrom(input:pb::ParseContext) : void
+}
+class MainMenuStateMessage <<sealed>> <<partial>> {
+    + MainMenuStateMessage()
+    <<partial>> OnConstruction() : void
+    + MainMenuStateMessage(other:MainMenuStateMessage)
+    + Clone() : MainMenuStateMessage
+    + <<const>> ClientsDetailsFieldNumber : int = 1
+    + <<override>> Equals(other:object) : bool
+    + Equals(other:MainMenuStateMessage) : bool
+    + <<override>> GetHashCode() : int
+    + <<override>> ToString() : string
+    + WriteTo(output:pb::CodedOutputStream) : void
+    InternalWriteTo(output:pb::WriteContext) : void
+    + CalculateSize() : int
+    + MergeFrom(other:MainMenuStateMessage) : void
+    + MergeFrom(input:pb::CodedInputStream) : void
+    InternalMergeFrom(input:pb::ParseContext) : void
+}
+class ClientReadyMessage <<sealed>> <<partial>> {
+    + ClientReadyMessage()
+    <<partial>> OnConstruction() : void
+    + ClientReadyMessage(other:ClientReadyMessage)
+    + Clone() : ClientReadyMessage
+    + <<override>> Equals(other:object) : bool
+    + Equals(other:ClientReadyMessage) : bool
+    + <<override>> GetHashCode() : int
+    + <<override>> ToString() : string
+    + WriteTo(output:pb::CodedOutputStream) : void
+    InternalWriteTo(output:pb::WriteContext) : void
+    + CalculateSize() : int
+    + MergeFrom(other:ClientReadyMessage) : void
+    + MergeFrom(input:pb::CodedInputStream) : void
+    InternalMergeFrom(input:pb::ParseContext) : void
+}
+class "IMessage`1"<T> {
+}
+@enduml

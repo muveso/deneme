@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Utils.Network{
+namespace Evade.Utils.Network{
     public class TcpServer {
         public Socket Sock { get; private set; }
 

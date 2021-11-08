@@ -1,0 +1,17 @@
+@startuml
+class Client {
+    + Client(tcpClient:Utils.Network.TcpClient)
+    + <<override>> ToString() : string
+}
+class ServerCommunicator {
+    <<const>> PORT : int = 12345
+    <<const>> SELECT_TIMEOUT_MS : int = 1000
+    + ServerCommunicator(ipAddress:string, listeningPort:int)
+    + SendToAllClients(message:Google.Protobuf.IMessage) : void
+}
+class "SynchronizedCollection`1"<T> {
+}
+Client --> "Details" ClientDetails
+BaseThread <|-- ServerCommunicator
+ServerCommunicator --> "Clients<Client>" "SynchronizedCollection`1"
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class MessagesHelpers <<static>> {
+    + {static} ConvertMessageToBytes(message:Google.Protobuf.IMessage) : byte[]
+    + {static} ConvertBytesToMessage(message:byte[]) : Any
+    + {static} IsMessageTypeOf(baseMessage:BaseMessage, descriptorToCheck:MessageDescriptor) : bool
+}
+@enduml
