@@ -5,13 +5,17 @@ using Google.Protobuf.WellKnownTypes;
 using System.Net;
 using Evade.Utils;
 
-namespace Evade.MainMenu {
+namespace Evade {
     public class TcpClientCommunicator : BaseThread {
 
         public SynchronizedCollection<ClientDetails> Clients { get; private set; }
         private Utils.Network.TcpClient _client;
         const int POLL_TIMEOUT_MS = 1000;
 
+        public IPEndPoint GetRemoteEndpoint() {
+            return _client.Sock.RemoteEndPoint as IPEndPoint;
+        }
+        
         public TcpClientCommunicator(string ipAddress, int port) {
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             Clients = new SynchronizedCollection<ClientDetails>();

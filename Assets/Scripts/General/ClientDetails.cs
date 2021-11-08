@@ -1,4 +1,4 @@
-namespace Evade.MainMenu {
+namespace Evade {
     public class ClientDetails {
         public string Nickname { get; set; }
         public bool IsReady { get; set; } = false;

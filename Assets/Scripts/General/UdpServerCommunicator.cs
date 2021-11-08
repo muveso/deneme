@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Net;
 using Evade.Utils;
 
-namespace Evade.Game {
+namespace Evade {
     public class UdpServerCommunicator : UdpCommunicator {
-        public SynchronizedCollection<IPEndPoint> Clients { get; private set; }
+        public List<IPEndPoint> Clients { get; private set; }
 
         public void SendToAllClients(Google.Protobuf.IMessage message) {
             byte[] messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
@@ -14,7 +14,7 @@ namespace Evade.Game {
         }
 
         public UdpServerCommunicator(int listeningPort,
-                                     SynchronizedCollection<IPEndPoint> clients) : base(listeningPort) {
+                                     List<IPEndPoint> clients) : base(listeningPort) {
 
             Clients = clients;
         }

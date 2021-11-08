@@ -34,12 +34,7 @@ namespace Evade.Utils.Network {
         public byte[] Recieve() {   
             byte[] message = new byte[UDP_BUFFER_SIZE];
             int received = Sock.Receive(message, UDP_BUFFER_SIZE, SocketFlags.None);
-
-            if (received < UDP_BUFFER_SIZE) {
-                byte[] newBuffer = new byte[received];
-                Buffer.BlockCopy(message, 0, newBuffer, 0, received);
-                return newBuffer;
-            }
+            Array.Resize(ref message, received);
             return message;
         }
 

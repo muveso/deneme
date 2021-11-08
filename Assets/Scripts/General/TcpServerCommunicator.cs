@@ -1,3 +1,4 @@
+using System.Net;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using Evade.Utils;
@@ -5,7 +6,7 @@ using Evade.Utils.Network;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
-namespace Evade.MainMenu {
+namespace Evade {
     public class TcpServerCommunicator : BaseThread {
 
         public SynchronizedCollection<Client> Clients { get; private set; }
@@ -17,6 +18,16 @@ namespace Evade.MainMenu {
         public TcpServerCommunicator(string ipAddress, int listeningPort) {
             Clients = new SynchronizedCollection<Client>();
             _server = new TcpServer(ipAddress, listeningPort);
+        }
+        ~TcpServerCommunicator() {
+            Debug.Log("~TcpServerCommunicator");
+        }
+        public List<IPEndPoint> GetEndpointListFromClients() {
+            List<IPEndPoint> endpointsList = new List<IPEndPoint>();
+            foreach (Client client in Clients) {
+                endpointsList.Add(client.TcpClient.Sock.RemoteEndPoint as IPEndPoint);
+            }
+            return endpointsList;
         }
 
         private List<Socket> GetSocketListFromClients() {

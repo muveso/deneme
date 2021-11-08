@@ -1,10 +1,11 @@
+using System.Net;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using Evade.Utils;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
-namespace Evade.Game {
+namespace Evade {
     public class UdpCommunicator : BaseThread {
 
         public ConcurrentQueue<Any> MessagesQueue { get; private set; }
@@ -23,6 +24,14 @@ namespace Evade.Game {
 
         public void Send(Google.Protobuf.IMessage message) {
             _client.Send(MessagesHelpers.ConvertMessageToBytes(message));
+        }
+
+        // public void SendToMultipleClients(Google.Protobuf.IMessage message, List<IPEndPoint>)
+
+        public Any TryGetMessageFromQueue() {
+            Any message;
+            MessagesQueue.TryDequeue(out message);
+            return message;
         }
 
         protected override void RunThread() {
