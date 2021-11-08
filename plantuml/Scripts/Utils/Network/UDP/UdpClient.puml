@@ -2,6 +2,7 @@
 class UdpClient {
     <<const>> UDP_BUFFER_SIZE : int = 0x10000
     + UdpClient(endpointToConnectTo:IPEndPoint)
+    + UdpClient(ipAddress:string, port:int)
     + UdpClient(listenPort:int)
     + IsConnected : bool <<get>>
     + Send(bytes:byte[]) : void

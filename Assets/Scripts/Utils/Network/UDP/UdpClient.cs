@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 
 namespace Evade.Utils.Network {
-    public class UdpClient {
+    public class UdpClient : IDisposable {
         public Socket Sock { get; private set; }
         const int UDP_BUFFER_SIZE = 0x10000;
 
@@ -31,7 +31,7 @@ namespace Evade.Utils.Network {
             Sock.SendTo(bytes, SocketFlags.None, endpoint);
         }
 
-        public byte[] Recieve() {   
+        public byte[] Recieve() {
             byte[] message = new byte[UDP_BUFFER_SIZE];
             int received = Sock.Receive(message, UDP_BUFFER_SIZE, SocketFlags.None);
             Array.Resize(ref message, received);
@@ -45,6 +45,10 @@ namespace Evade.Utils.Network {
         public override string ToString() {
             IPEndPoint remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
             return $"(UdpClient) IP: {remoteIpEndPoint.Address.ToString()} | Port: {remoteIpEndPoint.Port.ToString()}";
+        }
+
+        public void Dispose() {
+            Sock.Dispose();
         }
     }
 }

@@ -1,0 +1,10 @@
+@startuml
+class UdpServerCommunicator {
+    + SendToAllClients(message:Google.Protobuf.IMessage) : void
+    + UdpServerCommunicator(listeningPort:int, clients:List<IPEndPoint>)
+}
+class "List`1"<T> {
+}
+UdpCommunicator <|-- UdpServerCommunicator
+UdpServerCommunicator --> "Clients<IPEndPoint>" "List`1"
+@enduml

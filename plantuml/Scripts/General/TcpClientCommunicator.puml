@@ -1,0 +1,12 @@
+@startuml
+class TcpClientCommunicator {
+    <<const>> POLL_TIMEOUT_MS : int = 1000
+    + GetRemoteEndpoint() : IPEndPoint
+    + TcpClientCommunicator(ipAddress:string, port:int)
+    + Send(message:Google.Protobuf.IMessage) : void
+}
+class "SynchronizedCollection`1"<T> {
+}
+BaseThread <|-- TcpClientCommunicator
+TcpClientCommunicator --> "Clients<ClientDetails>" "SynchronizedCollection`1"
+@enduml

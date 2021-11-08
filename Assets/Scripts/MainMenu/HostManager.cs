@@ -13,16 +13,15 @@ namespace Evade.MainMenu {
         }
 
         protected override void InitializeCommunicator() {
-            GameManager.Instance.TcpClientCommunicator = new TcpClientCommunicator(LOCAL_HOST_IP_ADDRESS, int.Parse(PortInputField.text));
-            GameManager.Instance.TcpClientCommunicator.Start();
+            GameManager.Instance.Communicators.TcpClientCommunicator = new TcpClientCommunicator(LOCAL_HOST_IP_ADDRESS, int.Parse(PortInputField.text));
+            GameManager.Instance.Communicators.TcpClientCommunicator.Start();
         }
 
         public override void OnClickConnect() {
             try {
                 Debug.Log("Starting Server");
-                GameManager a = GameManager.Instance;
-                GameManager.Instance.TcpServerCommunicator = new TcpServerCommunicator(IPInputField.text, Int32.Parse(PortInputField.text));
-                GameManager.Instance.TcpServerCommunicator.Start();
+                GameManager.Instance.Communicators.TcpServerCommunicator = new TcpServerCommunicator(IPInputField.text, Int32.Parse(PortInputField.text));
+                GameManager.Instance.Communicators.TcpServerCommunicator.Start();
 
                 base.OnClickConnect();
             } catch (Exception e) {
@@ -41,7 +40,11 @@ namespace Evade.MainMenu {
         }
 
         private bool AreAllClientsReady() {
-            foreach (ClientDetails clientDetails in GameManager.Instance.TcpClientCommunicator.Clients) {
+            if (GameManager.Instance.Communicators.TcpClientCommunicator == null) {
+                Debug.LogError("ClientCommunicator is null");
+                return false;
+            }
+            foreach (ClientDetails clientDetails in GameManager.Instance.Communicators.TcpClientCommunicator.Clients) {
                 if (!clientDetails.IsReady) {
                     return false;
                 }

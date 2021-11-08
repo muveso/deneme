@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 
 namespace Evade.Utils.Network {
-    public class TcpClient {
+    public class TcpClient : IDisposable {
         public Socket Sock { get; private set; }
 
         public TcpClient(IPEndPoint endpoint) {
@@ -58,6 +58,10 @@ namespace Evade.Utils.Network {
         public override string ToString() {
             IPEndPoint remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
             return $"IP: {remoteIpEndPoint.Address.ToString()} | Port: {remoteIpEndPoint.Port.ToString()}";
+        }
+
+        public void Dispose() {
+            Sock.Dispose();
         }
     }
 }

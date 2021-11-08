@@ -1,58 +1,63 @@
-using UnityEngine;
+using System;
 
 namespace Evade {
-    public class GameManager : MonoBehaviour {
+    public class Communicators : IDisposable {
         public TcpClientCommunicator TcpClientCommunicator { get; set; }
         public TcpServerCommunicator TcpServerCommunicator { get; set; }
         public UdpCommunicator UdpClientCommunicator { get; set; }
         public UdpServerCommunicator UdpServerCommunicator { get; set; }
-        public bool IsHost { get; set; } = false;
-        // public static GameManager Instance { get; private set; }
 
-        private void Awake() {
-            DontDestroyOnLoad(gameObject);
-        }
-        
-        private void OnDestroy() {
+        public void Dispose() {
             if (TcpClientCommunicator != null) {
-                TcpClientCommunicator.Stop();
+                TcpClientCommunicator.Dispose();
             }
             if (TcpServerCommunicator != null) {
-                TcpServerCommunicator.Stop();
+                TcpServerCommunicator.Dispose();
             }
             if (UdpClientCommunicator != null) {
-                UdpClientCommunicator.Stop();
+                UdpClientCommunicator.Dispose();
             }
             if (UdpServerCommunicator != null) {
-                UdpServerCommunicator.Stop();
+                UdpServerCommunicator.Dispose();
             }
         }
+    }
 
-        /*
-        private void Awake() {
-            if (Instance == null) {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            } else if (Instance != this) {
-                // If we return to the Scene where this script is attached to (MainMenu), Awake will be called again
-                // so we need to destroy the new instance to avoid multiple GameManager instances.
-                Destroy(gameObject);
-            }
+    public class GameManager {
+        private static readonly object _padlock = new object();
+        private static GameManager instance = null;
+        public Communicators Communicators { get; set; }
+        public bool IsHost { get; set; } = false;
+
+        GameManager() {
+            Communicators = new Communicators();
         }
 
-        private void OnDestroy() {
-            if (Instance.TcpClientCommunicator != null) {
-                Instance.TcpClientCommunicator.Stop();
+        // Extra safety to make sure all singleton resources are disposed
+        ~GameManager() {
+            Reset();
+        }
+
+        // Manual reset for singleton
+        public void Reset() {
+            IsHost = false;
+            Communicators.Dispose();
+            Communicators = new Communicators();
+        }
+
+        public static GameManager Instance {
+            get {
+                // There is no reason to lock if the instance is already initialized
+                if (instance == null) {
+                    // Lock to make sure that only one thread will create instance
+                    lock (_padlock) {
+                        if (instance == null) {
+                            instance = new GameManager();
+                        }
+                    }
+                }
+                return instance;
             }
-            if (Instance.TcpServerCommunicator != null) {
-                Instance.TcpServerCommunicator.Stop();
-            }
-            if (Instance.UdpClientCommunicator != null) {
-                Instance.UdpClientCommunicator.Stop();
-            }
-            if (Instance.UdpServerCommunicator != null) {
-                Instance.UdpServerCommunicator.Stop();
-            }
-        }*/
+        }
     }
 }

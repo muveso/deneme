@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 
 namespace Evade.Utils.Network{
-    public class TcpServer {
+    public class TcpServer : IDisposable {
         public Socket Sock { get; private set; }
 
         public TcpServer(string ipAddress, int listeningPort) {
@@ -15,6 +15,14 @@ namespace Evade.Utils.Network{
 
         public TcpClient Accept() {
             return new TcpClient(Sock.Accept());
+        }
+
+        public void Close() {
+            Sock.Close();
+        }
+
+        public void Dispose() {
+            Sock.Dispose();
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Evade.MainMenu {
         }
 
         private void FillScrollViewWithClients() {
-            if (GameManager.Instance.TcpClientCommunicator != null) {
+            if (GameManager.Instance.Communicators.TcpClientCommunicator != null) {
                 int index = 1;
-                foreach (ClientDetails client in GameManager.Instance.TcpClientCommunicator.Clients) {
+                foreach (ClientDetails client in GameManager.Instance.Communicators.TcpClientCommunicator.Clients) {
                     AddNewClientToList(client, index);
                     index++;
                 }
@@ -31,18 +31,18 @@ namespace Evade.MainMenu {
         }
 
         public void SendClientDetails() {
-            if (GameManager.Instance.TcpClientCommunicator == null) {
+            if (GameManager.Instance.Communicators.TcpClientCommunicator == null) {
                 Debug.LogError("ClientCommunicator is null");
                 return;
             }
             ClientDetailsMessage clientDetailsMessage = new ClientDetailsMessage();
             clientDetailsMessage.Nickname = _nickname;
-            GameManager.Instance.TcpClientCommunicator.Send(clientDetailsMessage);
+            GameManager.Instance.Communicators.TcpClientCommunicator.Send(clientDetailsMessage);
         }
 
         protected virtual void InitializeCommunicator() {
-            GameManager.Instance.TcpClientCommunicator = new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
-            GameManager.Instance.TcpClientCommunicator.Start();
+            GameManager.Instance.Communicators.TcpClientCommunicator = new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
+            GameManager.Instance.Communicators.TcpClientCommunicator.Start();
         }
 
         public virtual void OnClickConnect() {
@@ -56,12 +56,12 @@ namespace Evade.MainMenu {
         }
 
         public void OnClickReady() {
-            if (GameManager.Instance.TcpClientCommunicator == null) {
+            if (GameManager.Instance.Communicators.TcpClientCommunicator == null) {
                 Debug.LogError("ClientCommunicator is null");
                 return;
             }
             ClientReadyMessage clientReadyMessage = new ClientReadyMessage();
-            GameManager.Instance.TcpClientCommunicator.Send(clientReadyMessage);
+            GameManager.Instance.Communicators.TcpClientCommunicator.Send(clientReadyMessage);
         }
     }
 }

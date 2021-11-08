@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -7,8 +8,7 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Evade {
-    public class TcpServerCommunicator : BaseThread {
-
+    public class TcpServerCommunicator : BaseThread, IDisposable {
         public SynchronizedCollection<Client> Clients { get; private set; }
         private TcpServer _server;
         const int PORT = 12345;
@@ -19,9 +19,7 @@ namespace Evade {
             Clients = new SynchronizedCollection<Client>();
             _server = new TcpServer(ipAddress, listeningPort);
         }
-        ~TcpServerCommunicator() {
-            Debug.Log("~TcpServerCommunicator");
-        }
+
         public List<IPEndPoint> GetEndpointListFromClients() {
             List<IPEndPoint> endpointsList = new List<IPEndPoint>();
             foreach (Client client in Clients) {
@@ -109,6 +107,11 @@ namespace Evade {
                 Socket.Select(checkReadSockets, null, null, SELECT_TIMEOUT_MS);
                 HandleReadySockets(checkReadSockets);
             }
+        }
+
+        public void Dispose() {
+            Stop();
+            _server.Dispose();
         }
     }
     

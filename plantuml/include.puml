@@ -1,13 +1,17 @@
 @startuml
-!include .\\Scripts\Game\AbstractUdpCommunicator.puml
-!include .\\Scripts\Game\Server.puml
-!include .\\Scripts\MainMenu\ClientCommuincator.puml
-!include .\\Scripts\MainMenu\ClientDetails.puml
+!include .\\Scripts\Game\ClientManager.puml
+!include .\\Scripts\Game\HostManager.puml
+!include .\\Scripts\Game\Initializer.puml
+!include .\\Scripts\General\ClientDetails.puml
+!include .\\Scripts\General\GameManager.puml
+!include .\\Scripts\General\TcpClientCommunicator.puml
+!include .\\Scripts\General\TcpServerCommunicator.puml
+!include .\\Scripts\General\UdpCommunicator.puml
+!include .\\Scripts\General\UdpServerCommunicator.puml
 !include .\\Scripts\MainMenu\ClientManager.puml
 !include .\\Scripts\MainMenu\Exceptions.puml
 !include .\\Scripts\MainMenu\HostManager.puml
 !include .\\Scripts\MainMenu\MainMenuController.puml
-!include .\\Scripts\MainMenu\ServerCommunicator.puml
 !include .\\Scripts\Messages\Base.puml
 !include .\\Scripts\Messages\MainMenu.puml
 !include .\\Scripts\Utils\BaseThread.puml

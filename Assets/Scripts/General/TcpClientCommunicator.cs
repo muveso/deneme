@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
@@ -6,7 +7,7 @@ using System.Net;
 using Evade.Utils;
 
 namespace Evade {
-    public class TcpClientCommunicator : BaseThread {
+    public class TcpClientCommunicator : BaseThread, IDisposable {
 
         public SynchronizedCollection<ClientDetails> Clients { get; private set; }
         private Utils.Network.TcpClient _client;
@@ -51,6 +52,11 @@ namespace Evade {
                 newClientsList.Add(new ClientDetails(clientDetailsMessage.Nickname, clientDetailsMessage.IsReady));
             }
             Clients = newClientsList;
+        }
+
+        public void Dispose() {
+            Stop();
+            _client.Dispose();
         }
     }
 }

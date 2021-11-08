@@ -1,0 +1,12 @@
+@startuml
+class GameManager {
+    + IsHost : bool <<get>> <<set>> = false
+    GameManager()
+    + {static} Destroy() : void
+}
+GameManager --> "TcpClientCommunicator" TcpClientCommunicator
+GameManager --> "TcpServerCommunicator" TcpServerCommunicator
+GameManager --> "UdpClientCommunicator" UdpCommunicator
+GameManager --> "UdpServerCommunicator" UdpServerCommunicator
+GameManager --> "Instance" GameManager
+@enduml

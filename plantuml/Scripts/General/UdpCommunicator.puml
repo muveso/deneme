@@ -1,0 +1,13 @@
+@startuml
+class UdpCommunicator {
+    <<const>> POLL_TIMEOUT_MS : int = 1000
+    + UdpCommunicator(ipAddress:string, port:int)
+    + UdpCommunicator(listenPort:int)
+    + Send(message:Google.Protobuf.IMessage) : void
+    + TryGetMessageFromQueue() : Any
+}
+class "ConcurrentQueue`1"<T> {
+}
+BaseThread <|-- UdpCommunicator
+UdpCommunicator --> "MessagesQueue<Any>" "ConcurrentQueue`1"
+@enduml

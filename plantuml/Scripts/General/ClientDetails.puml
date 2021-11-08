@@ -1,0 +1,10 @@
+@startuml
+class ClientDetails {
+    + Nickname : string <<get>> <<set>>
+    + IsReady : bool <<get>> <<set>> = false
+    + ClientDetails()
+    + ClientDetails(nickname:string, isReady:bool)
+    + ToggleReady() : void
+    + <<override>> ToString() : string
+}
+@enduml
