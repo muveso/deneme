@@ -1,29 +1,35 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using UnityEngine;
-using Google.Protobuf.WellKnownTypes;
 using System.Net;
+using System.Net.Sockets;
 using Evade.Utils;
+using Google.Protobuf;
+using UnityEngine;
+using TcpClient = Evade.Utils.Network.TcpClient;
 
 namespace Evade {
     public class TcpClientCommunicator : BaseThread, IDisposable {
+        private const int POLL_TIMEOUT_MS = 1000;
+        private readonly TcpClient _client;
+
+        public TcpClientCommunicator(string ipAddress, int port) {
+            var serverEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+            Clients = new SynchronizedCollection<ClientDetails>();
+            _client = new TcpClient(serverEndPoint);
+        }
 
         public SynchronizedCollection<ClientDetails> Clients { get; private set; }
-        private Utils.Network.TcpClient _client;
-        const int POLL_TIMEOUT_MS = 1000;
+
+        public void Dispose() {
+            Stop();
+            _client.Dispose();
+        }
 
         public IPEndPoint GetRemoteEndpoint() {
             return _client.Sock.RemoteEndPoint as IPEndPoint;
         }
-        
-        public TcpClientCommunicator(string ipAddress, int port) {
-            IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
-            Clients = new SynchronizedCollection<ClientDetails>();
-            _client = new Utils.Network.TcpClient(serverEndPoint);
-        }
 
-        public void Send(Google.Protobuf.IMessage message) {
+        public void Send(IMessage message) {
             _client.Send(MessagesHelpers.ConvertMessageToBytes(message));
         }
 
@@ -36,10 +42,10 @@ namespace Evade {
         }
 
         private void HandleMessage() {
-            byte[] messageBytes = _client.Recieve();
-            Any message = MessagesHelpers.ConvertBytesToMessage(messageBytes);
+            var messageBytes = _client.Recieve();
+            var message = MessagesHelpers.ConvertBytesToMessage(messageBytes);
             if (message.Is(MainMenuStateMessage.Descriptor)) {
-                MainMenuStateMessage mainMenuStateMessage = message.Unpack<MainMenuStateMessage>();
+                var mainMenuStateMessage = message.Unpack<MainMenuStateMessage>();
                 UpdateClients(mainMenuStateMessage);
             } else {
                 Debug.LogError("Unknown message type");
@@ -47,16 +53,12 @@ namespace Evade {
         }
 
         private void UpdateClients(MainMenuStateMessage mainMenuStateMessage) {
-            SynchronizedCollection<ClientDetails> newClientsList = new SynchronizedCollection<ClientDetails>();
-            foreach (ClientDetailsMessage clientDetailsMessage in mainMenuStateMessage.ClientsDetails) {
+            var newClientsList = new SynchronizedCollection<ClientDetails>();
+            foreach (var clientDetailsMessage in mainMenuStateMessage.ClientsDetails) {
                 newClientsList.Add(new ClientDetails(clientDetailsMessage.Nickname, clientDetailsMessage.IsReady));
             }
-            Clients = newClientsList;
-        }
 
-        public void Dispose() {
-            Stop();
-            _client.Dispose();
+            Clients = newClientsList;
         }
     }
 }

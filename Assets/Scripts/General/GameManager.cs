@@ -11,12 +11,15 @@ namespace Evade {
             if (TcpClientCommunicator != null) {
                 TcpClientCommunicator.Dispose();
             }
+
             if (TcpServerCommunicator != null) {
                 TcpServerCommunicator.Dispose();
             }
+
             if (UdpClientCommunicator != null) {
                 UdpClientCommunicator.Dispose();
             }
+
             if (UdpServerCommunicator != null) {
                 UdpServerCommunicator.Dispose();
             }
@@ -24,26 +27,15 @@ namespace Evade {
     }
 
     public class GameManager {
-        private static readonly object _padlock = new object();
-        private static GameManager instance = null;
+        private static readonly object _padlock = new();
+        private static GameManager instance;
+
+        private GameManager() {
+            Communicators = new Communicators();
+        }
+
         public Communicators Communicators { get; set; }
-        public bool IsHost { get; set; } = false;
-
-        GameManager() {
-            Communicators = new Communicators();
-        }
-
-        // Extra safety to make sure all singleton resources are disposed
-        ~GameManager() {
-            Reset();
-        }
-
-        // Manual reset for singleton
-        public void Reset() {
-            IsHost = false;
-            Communicators.Dispose();
-            Communicators = new Communicators();
-        }
+        public bool IsHost { get; set; }
 
         public static GameManager Instance {
             get {
@@ -56,8 +48,21 @@ namespace Evade {
                         }
                     }
                 }
+
                 return instance;
             }
+        }
+
+        // Extra safety to make sure all singleton resources are disposed
+        ~GameManager() {
+            Reset();
+        }
+
+        // Manual reset for singleton
+        public void Reset() {
+            IsHost = false;
+            Communicators.Dispose();
+            Communicators = new Communicators();
         }
     }
 }

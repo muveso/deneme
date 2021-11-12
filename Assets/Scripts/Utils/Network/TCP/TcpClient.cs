@@ -4,8 +4,6 @@ using System.Net.Sockets;
 
 namespace Evade.Utils.Network {
     public class TcpClient : IDisposable {
-        public Socket Sock { get; private set; }
-
         public TcpClient(IPEndPoint endpoint) {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Sock.Connect(endpoint);
@@ -15,26 +13,33 @@ namespace Evade.Utils.Network {
             Sock = socket;
         }
 
+        public Socket Sock { get; }
+
         public bool IsConnected => Sock.Connected;
-        
+
+        public void Dispose() {
+            Sock.Dispose();
+        }
+
         public void Send(byte[] bytes) {
             if (!Sock.Connected) {
                 throw new SocketNotConnectedException();
             }
-            byte[] messageLength = BitConverter.GetBytes(bytes.Length);
+
+            var messageLength = BitConverter.GetBytes(bytes.Length);
             Sock.Send(messageLength);
             Sock.Send(bytes);
         }
 
         private int GetMessageLength() {
-            byte[] bytes = new byte[sizeof(int)];
+            var bytes = new byte[sizeof(int)];
             Sock.Receive(bytes, sizeof(int), SocketFlags.None);
-            int messageLength = BitConverter.ToInt32(bytes);
+            var messageLength = BitConverter.ToInt32(bytes);
             return messageLength;
         }
 
         private byte[] GetMessage(int messageLength) {
-            byte[] message = new byte[messageLength];
+            var message = new byte[messageLength];
             Sock.Receive(message, messageLength, SocketFlags.None);
             return message;
         }
@@ -43,11 +48,13 @@ namespace Evade.Utils.Network {
             if (!Sock.Connected) {
                 throw new SocketNotConnectedException();
             }
-            int messageLength = GetMessageLength();
+
+            var messageLength = GetMessageLength();
             if (messageLength == 0) {
                 Sock.Close();
                 throw new SocketClosedException();
             }
+
             return GetMessage(messageLength);
         }
 
@@ -56,12 +63,8 @@ namespace Evade.Utils.Network {
         }
 
         public override string ToString() {
-            IPEndPoint remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
-            return $"IP: {remoteIpEndPoint.Address.ToString()} | Port: {remoteIpEndPoint.Port.ToString()}";
-        }
-
-        public void Dispose() {
-            Sock.Dispose();
+            var remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
+            return $"IP: {remoteIpEndPoint.Address} | Port: {remoteIpEndPoint.Port.ToString()}";
         }
     }
 }

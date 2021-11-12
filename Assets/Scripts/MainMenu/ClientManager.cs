@@ -1,23 +1,24 @@
 using System;
+using Evade.Utils.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Evade.MainMenu {
     public class ClientManager : MonoBehaviour {
+        protected string _nickname = "PanCHocK";
         public InputField IPInputField;
         public InputField PortInputField;
-        protected string _nickname = "PanCHocK";
 
         protected virtual void Update() {
-            Evade.Utils.UI.General.DestroyAllChildren(transform);
+            General.DestroyAllChildren(transform);
             FillScrollViewWithClients();
         }
 
         private void FillScrollViewWithClients() {
             if (GameManager.Instance.Communicators.TcpClientCommunicator != null) {
-                int index = 1;
-                foreach (ClientDetails client in GameManager.Instance.Communicators.TcpClientCommunicator.Clients) {
+                var index = 1;
+                foreach (var client in GameManager.Instance.Communicators.TcpClientCommunicator.Clients) {
                     AddNewClientToList(client, index);
                     index++;
                 }
@@ -25,7 +26,7 @@ namespace Evade.MainMenu {
         }
 
         private void AddNewClientToList(ClientDetails client, int index) {
-            GameObject newGameObject = Utils.UI.ScrollView.CreateNewTextItemForScrollView(client,
+            var newGameObject = ScrollView.CreateNewTextItemForScrollView(client,
                 index);
             newGameObject.transform.SetParent(transform);
         }
@@ -35,13 +36,15 @@ namespace Evade.MainMenu {
                 Debug.LogError("ClientCommunicator is null");
                 return;
             }
-            ClientDetailsMessage clientDetailsMessage = new ClientDetailsMessage();
+
+            var clientDetailsMessage = new ClientDetailsMessage();
             clientDetailsMessage.Nickname = _nickname;
             GameManager.Instance.Communicators.TcpClientCommunicator.Send(clientDetailsMessage);
         }
 
         protected virtual void InitializeCommunicator() {
-            GameManager.Instance.Communicators.TcpClientCommunicator = new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
+            GameManager.Instance.Communicators.TcpClientCommunicator =
+                new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
             GameManager.Instance.Communicators.TcpClientCommunicator.Start();
         }
 
@@ -60,7 +63,8 @@ namespace Evade.MainMenu {
                 Debug.LogError("ClientCommunicator is null");
                 return;
             }
-            ClientReadyMessage clientReadyMessage = new ClientReadyMessage();
+
+            var clientReadyMessage = new ClientReadyMessage();
             GameManager.Instance.Communicators.TcpClientCommunicator.Send(clientReadyMessage);
         }
     }

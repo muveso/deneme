@@ -1,11 +1,15 @@
+using System;
+using System.Runtime.Serialization;
+
 namespace Evade.MainMenu {
-    [System.Serializable]
-    public class ClientNotConnectedException : System.Exception {
+    [Serializable]
+    public class ClientNotConnectedException : Exception {
         public ClientNotConnectedException() { }
         public ClientNotConnectedException(string message) : base(message) { }
-        public ClientNotConnectedException(string message, System.Exception inner) : base(message, inner) { }
+        public ClientNotConnectedException(string message, Exception inner) : base(message, inner) { }
+
         protected ClientNotConnectedException(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+            SerializationInfo info,
+            StreamingContext context) : base(info, context) { }
     }
 }

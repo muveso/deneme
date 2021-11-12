@@ -4,8 +4,7 @@ using System.Net.Sockets;
 
 namespace Evade.Utils.Network {
     public class UdpClient : IDisposable {
-        public Socket Sock { get; private set; }
-        const int UDP_BUFFER_SIZE = 0x10000;
+        private const int UDP_BUFFER_SIZE = 0x10000;
 
         public UdpClient(IPEndPoint endpointToConnectTo) {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -21,7 +20,13 @@ namespace Evade.Utils.Network {
             Sock.Bind(new IPEndPoint(IPAddress.Any, listenPort));
         }
 
+        public Socket Sock { get; }
+
         public bool IsConnected => Sock.Connected;
+
+        public void Dispose() {
+            Sock.Dispose();
+        }
 
         public void Send(byte[] bytes) {
             Sock.Send(bytes, SocketFlags.None);
@@ -32,8 +37,8 @@ namespace Evade.Utils.Network {
         }
 
         public byte[] Recieve() {
-            byte[] message = new byte[UDP_BUFFER_SIZE];
-            int received = Sock.Receive(message, UDP_BUFFER_SIZE, SocketFlags.None);
+            var message = new byte[UDP_BUFFER_SIZE];
+            var received = Sock.Receive(message, UDP_BUFFER_SIZE, SocketFlags.None);
             Array.Resize(ref message, received);
             return message;
         }
@@ -43,12 +48,8 @@ namespace Evade.Utils.Network {
         }
 
         public override string ToString() {
-            IPEndPoint remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
-            return $"(UdpClient) IP: {remoteIpEndPoint.Address.ToString()} | Port: {remoteIpEndPoint.Port.ToString()}";
-        }
-
-        public void Dispose() {
-            Sock.Dispose();
+            var remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
+            return $"(UdpClient) IP: {remoteIpEndPoint.Address} | Port: {remoteIpEndPoint.Port.ToString()}";
         }
     }
 }

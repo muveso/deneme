@@ -1,21 +1,26 @@
+using System;
+using System.Runtime.Serialization;
+
 namespace Evade.Utils.Network {
-    [System.Serializable]
-    public class SocketNotConnectedException : System.Exception {
+    [Serializable]
+    public class SocketNotConnectedException : Exception {
         public SocketNotConnectedException() { }
         public SocketNotConnectedException(string message) : base(message) { }
-        public SocketNotConnectedException(string message, System.Exception inner) : base(message, inner) { }
+        public SocketNotConnectedException(string message, Exception inner) : base(message, inner) { }
+
         protected SocketNotConnectedException(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+            SerializationInfo info,
+            StreamingContext context) : base(info, context) { }
     }
 
-    [System.Serializable]
-    public class SocketClosedException : System.Exception {
+    [Serializable]
+    public class SocketClosedException : Exception {
         public SocketClosedException() { }
         public SocketClosedException(string message) : base(message) { }
-        public SocketClosedException(string message, System.Exception inner) : base(message, inner) { }
+        public SocketClosedException(string message, Exception inner) : base(message, inner) { }
+
         protected SocketClosedException(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+            SerializationInfo info,
+            StreamingContext context) : base(info, context) { }
     }
 }

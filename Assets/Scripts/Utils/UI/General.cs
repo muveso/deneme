@@ -1,12 +1,10 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Evade.Utils.UI {
     public static class General {
         public static void DestroyAllChildren(Transform transform) {
             foreach (Transform child in transform) {
-                GameObject.Destroy(child.gameObject);
+                Object.Destroy(child.gameObject);
             }
         }
     }

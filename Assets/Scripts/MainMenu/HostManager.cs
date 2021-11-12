@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 
 namespace Evade.MainMenu {
     public class HostManager : ClientManager {
-        const string DEFAULT_SERVER_IP_ADDRESS = "0.0.0.0";
-        const string LOCAL_HOST_IP_ADDRESS = "127.0.0.1";
+        private const string DEFAULT_SERVER_IP_ADDRESS = "0.0.0.0";
+        private const string LOCAL_HOST_IP_ADDRESS = "127.0.0.1";
 
         private void Start() {
             IPInputField.text = DEFAULT_SERVER_IP_ADDRESS;
@@ -13,14 +13,16 @@ namespace Evade.MainMenu {
         }
 
         protected override void InitializeCommunicator() {
-            GameManager.Instance.Communicators.TcpClientCommunicator = new TcpClientCommunicator(LOCAL_HOST_IP_ADDRESS, int.Parse(PortInputField.text));
+            GameManager.Instance.Communicators.TcpClientCommunicator =
+                new TcpClientCommunicator(LOCAL_HOST_IP_ADDRESS, int.Parse(PortInputField.text));
             GameManager.Instance.Communicators.TcpClientCommunicator.Start();
         }
 
         public override void OnClickConnect() {
             try {
                 Debug.Log("Starting Server");
-                GameManager.Instance.Communicators.TcpServerCommunicator = new TcpServerCommunicator(IPInputField.text, Int32.Parse(PortInputField.text));
+                GameManager.Instance.Communicators.TcpServerCommunicator =
+                    new TcpServerCommunicator(IPInputField.text, int.Parse(PortInputField.text));
                 GameManager.Instance.Communicators.TcpServerCommunicator.Start();
 
                 base.OnClickConnect();
@@ -44,11 +46,13 @@ namespace Evade.MainMenu {
                 Debug.LogError("ClientCommunicator is null");
                 return false;
             }
-            foreach (ClientDetails clientDetails in GameManager.Instance.Communicators.TcpClientCommunicator.Clients) {
+
+            foreach (var clientDetails in GameManager.Instance.Communicators.TcpClientCommunicator.Clients) {
                 if (!clientDetails.IsReady) {
                     return false;
                 }
             }
+
             return true;
         }
     }

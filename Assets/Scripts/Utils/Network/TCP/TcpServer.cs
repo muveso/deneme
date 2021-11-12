@@ -2,15 +2,19 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Evade.Utils.Network{
+namespace Evade.Utils.Network {
     public class TcpServer : IDisposable {
-        public Socket Sock { get; private set; }
-
         public TcpServer(string ipAddress, int listeningPort) {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), listeningPort);
+            var localEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), listeningPort);
             Sock.Bind(localEndPoint);
             Sock.Listen(10);
+        }
+
+        public Socket Sock { get; }
+
+        public void Dispose() {
+            Sock.Dispose();
         }
 
         public TcpClient Accept() {
@@ -19,10 +23,6 @@ namespace Evade.Utils.Network{
 
         public void Close() {
             Sock.Close();
-        }
-
-        public void Dispose() {
-            Sock.Dispose();
         }
     }
 }
