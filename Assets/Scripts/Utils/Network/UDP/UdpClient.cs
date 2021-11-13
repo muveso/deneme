@@ -36,9 +36,12 @@ namespace Evade.Utils.Network {
             Sock.SendTo(bytes, SocketFlags.None, endpoint);
         }
 
-        public byte[] Recieve() {
+        public byte[] Receive(ref IPEndPoint remoteEp) {
+            EndPoint tempRemoteEp = new IPEndPoint(IPAddress.Any, 0);
+
             var message = new byte[UDP_BUFFER_SIZE];
-            var received = Sock.Receive(message, UDP_BUFFER_SIZE, SocketFlags.None);
+            var received = Sock.ReceiveFrom(message, UDP_BUFFER_SIZE, SocketFlags.None, ref tempRemoteEp);
+            remoteEp = (IPEndPoint) tempRemoteEp;
             Array.Resize(ref message, received);
             return message;
         }

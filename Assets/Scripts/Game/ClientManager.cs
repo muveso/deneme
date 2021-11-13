@@ -1,22 +1,23 @@
+using Evade.Communicators;
 using UnityEngine;
 
 namespace Evade.Game {
     public class ClientManager : MonoBehaviour {
+        protected UdpCommunicator UdpCommunicator;
+
         protected virtual void Start() {
-            var remoteAddress = GameManager.Instance.Communicators.TcpClientCommunicator.GetRemoteEndpoint().Address
-                .ToString();
-            GameManager.Instance.Communicators.UdpClientCommunicator = new UdpCommunicator(remoteAddress, 5555);
-            GameManager.Instance.Communicators.UdpClientCommunicator.Start();
+            UdpCommunicator = new UdpCommunicator(ClientGlobals.ServerEndpoint.Address.ToString(), 5555);
+            UdpCommunicator.Start();
         }
 
         private void Update() {
-            if (GameManager.Instance.Communicators.UdpClientCommunicator == null) {
+            if (UdpCommunicator == null) {
                 Debug.Log("UdpClientCommunicator is null");
                 return;
             }
 
             // Messages from server
-            var message = GameManager.Instance.Communicators.UdpClientCommunicator.TryGetMessageFromQueue();
+            var message = UdpCommunicator.TryGetMessageFromQueue();
             if (message != null) { }
         }
     }

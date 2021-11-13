@@ -1,26 +1,30 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Evade.Utils;
 using Evade.Utils.Network;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using TcpClient = Evade.Utils.Network.TcpClient;
 
-namespace Evade {
+namespace Evade.Communicators {
     public class TcpServerCommunicator : BaseThread, IDisposable {
-        private const int PORT = 12345;
-        private const int SELECT_TIMEOUT_MS = 1000;
+        private const int SelectTimeoutMs = 1000;
         private readonly TcpServer _server;
 
 
         public TcpServerCommunicator(string ipAddress, int listeningPort) {
+            MessagesQueue = new ConcurrentQueue<Any>();
             Clients = new SynchronizedCollection<Client>();
             _server = new TcpServer(ipAddress, listeningPort);
         }
 
         public SynchronizedCollection<Client> Clients { get; }
+
+        public ConcurrentQueue<Any> MessagesQueue { get; }
 
         public void Dispose() {
             Stop();
@@ -80,7 +84,7 @@ namespace Evade {
                     var details = message.Unpack<ClientDetailsMessage>();
                     client.Details.Nickname = details.Nickname;
                 } else {
-                    Debug.Log("Unknown message type");
+                    MessagesQueue.Enqueue(message);
                     return;
                 }
             } catch (SocketClosedException) {
@@ -93,9 +97,10 @@ namespace Evade {
         private void StateUpdateToAllClients() {
             var mainMenuMessage = new MainMenuStateMessage();
             foreach (var client in Clients) {
-                var detailsMessage = new ClientDetailsMessage();
-                detailsMessage.Nickname = client.Details.Nickname;
-                detailsMessage.IsReady = client.Details.IsReady;
+                var detailsMessage = new ClientDetailsMessage {
+                    Nickname = client.Details.Nickname,
+                    IsReady = client.Details.IsReady
+                };
                 mainMenuMessage.ClientsDetails.Add(detailsMessage);
             }
 
@@ -116,7 +121,7 @@ namespace Evade {
             while (ThreadShouldRun) {
                 var checkReadSockets = GetSocketListFromClients();
                 checkReadSockets.Add(_server.Sock);
-                Socket.Select(checkReadSockets, null, null, SELECT_TIMEOUT_MS);
+                Socket.Select(checkReadSockets, null, null, SelectTimeoutMs);
                 HandleReadySockets(checkReadSockets);
             }
         }

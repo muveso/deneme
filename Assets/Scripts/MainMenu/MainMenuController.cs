@@ -18,7 +18,7 @@ namespace Evade.MainMenu {
         }
 
         public void OnClickGoBackToMainMenu() {
-            GameManager.Instance.Reset();
+            GameGlobals.Reset();
             SceneManager.LoadScene("MainMenu");
         }
     }

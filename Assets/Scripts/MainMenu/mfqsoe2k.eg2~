@@ -1,5 +1,4 @@
 using System;
-using Evade.Communicators;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,9 +14,8 @@ namespace Evade.MainMenu {
             base.Start();
         }
 
-        public override void OnDestroy() {
-            base.OnDestroy();
-            _tcpServerCommunicator?.Dispose();
+        public void OnDestroy() {
+            TcpClientCommunicator?.Dispose();
         }
 
         protected override void InitializeCommunicator() {
