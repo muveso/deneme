@@ -44,7 +44,7 @@ namespace Evade.Utils.Network {
             return message;
         }
 
-        public byte[] Recieve() {
+        public byte[] Receive() {
             if (!Sock.Connected) {
                 throw new SocketNotConnectedException();
             }

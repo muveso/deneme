@@ -8,6 +8,7 @@ namespace Evade.MainMenu {
         private const string DefaultServerIpAddress = "0.0.0.0";
         private const string LocalHostIpAddress = "127.0.0.1";
         private TcpServerCommunicator _tcpServerCommunicator;
+        private TcpServerMainMenuProcessingThread _tcpServerMainMenuProcessingThread;
 
         protected override void Start() {
             IPInputField.text = DefaultServerIpAddress;
@@ -17,20 +18,20 @@ namespace Evade.MainMenu {
 
         public override void OnDestroy() {
             base.OnDestroy();
+            _tcpServerMainMenuProcessingThread?.Stop();
             _tcpServerCommunicator?.Dispose();
         }
 
         protected override void InitializeCommunicator() {
             TcpClientCommunicator = new TcpClientCommunicator(LocalHostIpAddress, int.Parse(PortInputField.text));
-            TcpClientCommunicator.Start();
         }
 
         public override void OnClickConnect() {
             try {
                 Debug.Log("Starting Server");
                 _tcpServerCommunicator = new TcpServerCommunicator(IPInputField.text, int.Parse(PortInputField.text));
-                _tcpServerCommunicator.Start();
-
+                _tcpServerMainMenuProcessingThread = new TcpServerMainMenuProcessingThread(_tcpServerCommunicator);
+                _tcpServerMainMenuProcessingThread.Start();
                 base.OnClickConnect();
             } catch (Exception e) {
                 Debug.LogError(e.Message);

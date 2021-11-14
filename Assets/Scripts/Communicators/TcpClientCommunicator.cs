@@ -1,47 +1,34 @@
 using System;
 using System.Collections.Concurrent;
 using System.Net;
-using System.Net.Sockets;
 using Evade.Utils;
+using Evade.Utils.Network;
 using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
-using TcpClient = Evade.Utils.Network.TcpClient;
 
 namespace Evade.Communicators {
-    public class TcpClientCommunicator : BaseThread, IDisposable {
-        private const int PollTimeoutMs = 1000;
-        private readonly TcpClient _client;
+    public class TcpClientCommunicator : IDisposable {
+        private readonly TcpClientReceiverThread _tcpClientReceiverThread;
 
         public TcpClientCommunicator(string ipAddress, int port) {
             var serverEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             ClientGlobals.ServerEndpoint = serverEndPoint;
-            MessagesQueue = new ConcurrentQueue<Any>();
-            _client = new TcpClient(serverEndPoint);
+            MessagesQueue = new ConcurrentQueue<Message>();
+            Client = new TcpClient(serverEndPoint);
+            _tcpClientReceiverThread = new TcpClientReceiverThread(this);
+            _tcpClientReceiverThread.Start();
         }
 
-        public ConcurrentQueue<Any> MessagesQueue { get; }
+        public TcpClient Client { get; }
+
+        public ConcurrentQueue<Message> MessagesQueue { get; }
 
         public void Dispose() {
-            Stop();
-            _client.Dispose();
+            _tcpClientReceiverThread?.Stop();
+            Client?.Dispose();
         }
 
         public void Send(IMessage message) {
-            _client.Send(MessagesHelpers.ConvertMessageToBytes(message));
-        }
-
-        protected override void RunThread() {
-            while (ThreadShouldRun) {
-                if (_client.Sock.Poll(PollTimeoutMs, SelectMode.SelectRead)) {
-                    HandleMessage();
-                }
-            }
-        }
-
-        private void HandleMessage() {
-            var messageBytes = _client.Recieve();
-            var message = MessagesHelpers.ConvertBytesToMessage(messageBytes);
-            MessagesQueue.Enqueue(message);
+            Client.Send(MessagesHelpers.ConvertMessageToBytes(message));
         }
     }
 }

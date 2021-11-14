@@ -3,21 +3,26 @@ using UnityEngine;
 
 namespace Evade.Game {
     public class ClientManager : MonoBehaviour {
-        protected UdpCommunicator UdpCommunicator;
+        protected UdpClientCommunicator UdpClientCommunicator;
 
         protected virtual void Start() {
-            UdpCommunicator = new UdpCommunicator(ClientGlobals.ServerEndpoint.Address.ToString(), 5555);
-            UdpCommunicator.Start();
+            UdpClientCommunicator = new UdpClientCommunicator(ClientGlobals.ServerEndpoint.Address.ToString(), 5555);
         }
 
-        private void Update() {
-            if (UdpCommunicator == null) {
+        protected virtual void OnDestroy() {
+            UdpClientCommunicator?.Dispose();
+        }
+
+        protected virtual void Update() {
+            if (UdpClientCommunicator == null) {
                 Debug.Log("UdpClientCommunicator is null");
                 return;
             }
 
+            var clientReadyMessage = new ClientReadyMessage();
+            UdpClientCommunicator.Send(clientReadyMessage);
             // Messages from server
-            var message = UdpCommunicator.TryGetMessageFromQueue();
+            var message = UdpClientCommunicator.TryGetMessageFromQueue();
             if (message != null) { }
         }
     }

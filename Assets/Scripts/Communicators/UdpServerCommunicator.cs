@@ -2,20 +2,22 @@ using System.Collections.Generic;
 using System.Net;
 using Evade.Utils;
 using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 
 namespace Evade.Communicators {
-    public class UdpServerCommunicator : UdpCommunicator {
+    public class UdpServerCommunicator : AbstractUdpClientCommunicator {
+        private readonly UdpServerReceiverThread _udpServerReceiverThread;
+
         public UdpServerCommunicator(int listeningPort) : base(listeningPort) {
             Clients = new SynchronizedCollection<IPEndPoint>();
+            _udpServerReceiverThread = new UdpServerReceiverThread(this);
+            _udpServerReceiverThread.Start();
         }
 
         public SynchronizedCollection<IPEndPoint> Clients { get; }
 
-        protected override void PreHandleMessage(IPEndPoint endPoint, Any message) {
-            if (!Clients.Contains(endPoint)) {
-                Clients.Add(endPoint);
-            }
+        public override void Dispose() {
+            _udpServerReceiverThread?.Stop();
+            base.Dispose();
         }
 
         public void SendToAllClients(IMessage message) {

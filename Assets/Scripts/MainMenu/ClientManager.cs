@@ -23,20 +23,27 @@ namespace Evade.MainMenu {
         }
 
         protected virtual void Update() {
-            HandleCommunicatorMessage();
-            General.DestroyAllChildren(transform);
-            FillScrollViewWithClients();
+            if (HandleCommunicatorMessage()) {
+                General.DestroyAllChildren(transform);
+                FillScrollViewWithClients();
+            }
         }
 
-        private void HandleCommunicatorMessage() {
-            if (!TcpClientCommunicator.MessagesQueue.TryDequeue(out var message)) {
-                return;
+        private bool HandleCommunicatorMessage() {
+            if (TcpClientCommunicator == null) {
+                return false;
             }
 
-            if (message.Is(MainMenuStateMessage.Descriptor)) {
-                var mainMenuStateMessage = message.Unpack<MainMenuStateMessage>();
+            if (!TcpClientCommunicator.MessagesQueue.TryDequeue(out var message)) {
+                return false;
+            }
+
+            if (message.ProtobufMessage.Is(MainMenuStateMessage.Descriptor)) {
+                var mainMenuStateMessage = message.ProtobufMessage.Unpack<MainMenuStateMessage>();
                 UpdateClients(mainMenuStateMessage);
             }
+
+            return true;
         }
 
         private void UpdateClients(MainMenuStateMessage mainMenuStateMessage) {
@@ -76,9 +83,7 @@ namespace Evade.MainMenu {
         }
 
         protected virtual void InitializeCommunicator() {
-            TcpClientCommunicator =
-                new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
-            TcpClientCommunicator.Start();
+            TcpClientCommunicator = new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
         }
 
         public virtual void OnClickConnect() {
