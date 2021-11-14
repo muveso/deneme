@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 using Evade.Utils;
 using Evade.Utils.Network;
@@ -14,7 +13,6 @@ namespace Evade.Communicators {
     public class TcpServerCommunicator : BaseThread, IDisposable {
         private const int SelectTimeoutMs = 1000;
         private readonly TcpServer _server;
-
 
         public TcpServerCommunicator(string ipAddress, int listeningPort) {
             MessagesQueue = new ConcurrentQueue<Any>();
@@ -31,13 +29,12 @@ namespace Evade.Communicators {
             _server.Dispose();
         }
 
-        public List<IPEndPoint> GetEndpointListFromClients() {
-            var endpointsList = new List<IPEndPoint>();
-            foreach (var client in Clients) {
-                endpointsList.Add(client.TcpClient.Sock.RemoteEndPoint as IPEndPoint);
-            }
 
-            return endpointsList;
+        public void SendToAllClients(IMessage message) {
+            var messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
+            foreach (var client in Clients) {
+                client.TcpClient.Send(messageBytes);
+            }
         }
 
         private List<Socket> GetSocketListFromClients() {
@@ -49,17 +46,11 @@ namespace Evade.Communicators {
             return clientSocketList;
         }
 
-        public void SendToAllClients(IMessage message) {
-            var messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
-            foreach (var client in Clients) {
-                client.TcpClient.Send(messageBytes);
-            }
-        }
-
         private void HandleNewClient() {
             Debug.Log("New client connected");
             Clients.Add(new Client(_server.Accept()));
         }
+
 
         private Client FindClientBySocket(Socket sock) {
             foreach (var client in Clients) {

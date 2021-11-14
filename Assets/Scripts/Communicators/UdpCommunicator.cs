@@ -45,14 +45,14 @@ namespace Evade.Communicators {
                 if (Client.Sock.Poll(PollTimeoutMs, SelectMode.SelectRead)) {
                     var endPoint = new IPEndPoint(IPAddress.Any, 0);
                     var messageBytes = Client.Receive(ref endPoint);
-                    PreHandleMessage(endPoint, messageBytes);
                     var message = MessagesHelpers.ConvertBytesToMessage(messageBytes);
+                    PreHandleMessage(endPoint, message);
                     Debug.Log("Got message, inserting to queue");
                     MessagesQueue.Enqueue(message);
                 }
             }
         }
 
-        protected virtual void PreHandleMessage(IPEndPoint endPoint, byte[] messageBytes) { }
+        protected virtual void PreHandleMessage(IPEndPoint endPoint, Any message) { }
     }
 }

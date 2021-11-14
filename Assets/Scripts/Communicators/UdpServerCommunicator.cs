@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net;
 using Evade.Utils;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Evade.Communicators {
     public class UdpServerCommunicator : UdpCommunicator {
@@ -11,7 +12,7 @@ namespace Evade.Communicators {
 
         public SynchronizedCollection<IPEndPoint> Clients { get; }
 
-        protected override void PreHandleMessage(IPEndPoint endPoint, byte[] messageBytes) {
+        protected override void PreHandleMessage(IPEndPoint endPoint, Any message) {
             if (!Clients.Contains(endPoint)) {
                 Clients.Add(endPoint);
             }
