@@ -2,7 +2,7 @@ namespace Evade {
     public class ClientDetails {
         public ClientDetails() { }
 
-        public ClientDetails(string nickname, bool isReady) {
+        public ClientDetails(string nickname, bool isReady = false) {
             Nickname = nickname;
             IsReady = isReady;
         }

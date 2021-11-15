@@ -1,35 +1,26 @@
-using System;
 using System.Collections.Generic;
+using System.Net;
 using Evade.Communicators;
-using Evade.Utils.UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Evade.MainMenu {
-    public class ClientManager : MonoBehaviour {
-        protected List<ClientDetails> Clients;
-        public InputField IPInputField;
-        public InputField PortInputField;
+    public class ClientManager : AbstractClientManager {
         protected TcpClientCommunicator TcpClientCommunicator;
 
-        protected virtual void Awake() {
-            Clients = new List<ClientDetails>();
+        protected override void Awake() {
+            base.Awake();
             ClientGlobals.Nickname = "PanCHocK";
         }
 
-        public virtual void OnDestroy() {
+        protected override void Update() {
+            base.Update();
+        }
+
+        public void OnDestroy() {
             TcpClientCommunicator?.Dispose();
         }
 
-        protected virtual void Update() {
-            if (HandleCommunicatorMessage()) {
-                General.DestroyAllChildren(transform);
-                FillScrollViewWithClients();
-            }
-        }
-
-        private bool HandleCommunicatorMessage() {
+        protected override bool HandleCommunicatorMessage() {
             if (TcpClientCommunicator == null) {
                 return false;
             }
@@ -55,23 +46,7 @@ namespace Evade.MainMenu {
             Clients = newClientsList;
         }
 
-        private void FillScrollViewWithClients() {
-            if (TcpClientCommunicator != null) {
-                var index = 1;
-                foreach (var client in Clients) {
-                    AddNewClientToList(client, index);
-                    index++;
-                }
-            }
-        }
-
-        private void AddNewClientToList(ClientDetails client, int index) {
-            var newGameObject = ScrollView.CreateNewTextItemForScrollView(client,
-                index);
-            newGameObject.transform.SetParent(transform);
-        }
-
-        public void SendClientDetails() {
+        private void SendClientDetails() {
             if (TcpClientCommunicator == null) {
                 Debug.LogError("ClientCommunicator is null");
                 return;
@@ -83,21 +58,18 @@ namespace Evade.MainMenu {
             TcpClientCommunicator.Send(clientDetailsMessage);
         }
 
-        protected virtual void InitializeCommunicator() {
+        private void InitializeCommunicator() {
             TcpClientCommunicator = new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
+            ClientGlobals.ServerEndpoint =
+                new IPEndPoint(IPAddress.Parse(IPInputField.text), int.Parse(PortInputField.text));
         }
 
-        public virtual void OnClickConnect() {
-            try {
-                InitializeCommunicator();
-                SendClientDetails();
-                EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
-            } catch (Exception e) {
-                Debug.LogError(e.Message);
-            }
+        protected override void ConnectLogic() {
+            InitializeCommunicator();
+            SendClientDetails();
         }
 
-        public void OnClickReady() {
+        public override void OnClickReady() {
             if (TcpClientCommunicator == null) {
                 Debug.LogError("ClientCommunicator is null");
                 return;

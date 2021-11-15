@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 using Evade.Utils;
 using UnityEngine;
@@ -28,10 +27,10 @@ namespace Evade.Communicators {
                     HandleNewClient();
                 } else {
                     var client = FindClientBySocket(sock);
-                    var messageByes = client.TcpClient.Receive();
+                    var messageByes = client.Receive();
                     var message = MessagesHelpers.ConvertBytesToMessage(messageByes);
                     _tcpServerCommunicator.MessagesQueue.Enqueue(
-                        new Message((IPEndPoint) client.TcpClient.Sock.RemoteEndPoint, message));
+                        new Message(client.GetEndpoint(), message));
                 }
             }
         }
@@ -39,7 +38,7 @@ namespace Evade.Communicators {
         private List<Socket> GetSocketListFromClients() {
             var clientSocketList = new List<Socket>();
             foreach (var client in _tcpServerCommunicator.Clients) {
-                clientSocketList.Add(client.TcpClient.Sock);
+                clientSocketList.Add(client.GetSock());
             }
 
             return clientSocketList;
@@ -47,13 +46,13 @@ namespace Evade.Communicators {
 
         private void HandleNewClient() {
             Debug.Log("New client connected");
-            _tcpServerCommunicator.Clients.Add(new Client(_tcpServerCommunicator.Server.Accept()));
+            _tcpServerCommunicator.Clients.Add(new NetworkTcpClient(_tcpServerCommunicator.Server.Accept()));
         }
 
 
         private Client FindClientBySocket(Socket sock) {
             foreach (var client in _tcpServerCommunicator.Clients) {
-                if (client.TcpClient.Sock == sock) {
+                if (client.GetSock() == sock) {
                     return client;
                 }
             }

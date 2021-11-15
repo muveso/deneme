@@ -40,7 +40,7 @@ namespace Evade.Communicators {
 
         private Client FindClientByIPEndpoint(IPEndPoint messageIpEndpoint) {
             foreach (var client in _tcpServerCommunicator.Clients) {
-                if (Equals(client.TcpClient.Sock.RemoteEndPoint, messageIpEndpoint)) {
+                if (Equals(client.GetEndpoint(), messageIpEndpoint)) {
                     return client;
                 }
             }

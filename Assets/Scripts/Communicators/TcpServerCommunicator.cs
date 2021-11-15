@@ -31,7 +31,7 @@ namespace Evade.Communicators {
         public void SendToAllClients(IMessage message) {
             var messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
             foreach (var client in Clients) {
-                client.TcpClient.Send(messageBytes);
+                client.Send(messageBytes);
             }
         }
     }
