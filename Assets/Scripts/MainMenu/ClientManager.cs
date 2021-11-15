@@ -77,8 +77,9 @@ namespace Evade.MainMenu {
                 return;
             }
 
-            var clientDetailsMessage = new ClientDetailsMessage();
-            clientDetailsMessage.Nickname = Nickname;
+            var clientDetailsMessage = new ClientDetailsMessage {
+                Nickname = ClientGlobals.Nickname
+            };
             TcpClientCommunicator.Send(clientDetailsMessage);
         }
 
