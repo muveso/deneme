@@ -6,7 +6,7 @@ namespace Evade.Game {
         private UdpServerCommunicator _udpServerCommunicator;
 
         protected override void Awake() {
-            _udpServerCommunicator = new UdpServerCommunicator(5555);
+            _udpServerCommunicator = new UdpServerCommunicator(ClientGlobals.ServerEndpoint.Port);
             base.Awake();
         }
 
@@ -16,7 +16,6 @@ namespace Evade.Game {
         }
 
         protected override void Update() {
-            base.Update();
             // All the game logic is here
             // Host does not need to get messages from server because he is the server
 

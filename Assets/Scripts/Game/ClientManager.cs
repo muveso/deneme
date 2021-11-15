@@ -6,8 +6,8 @@ namespace Evade.Game {
         protected UdpClientCommunicator UdpClientCommunicator;
 
         protected virtual void Awake() {
-            UdpClientCommunicator = new UdpClientCommunicator(ClientGlobals.ServerEndpoint.Address.ToString(), 5555);
-            Debug.Log("Ok");
+            UdpClientCommunicator = new UdpClientCommunicator(ClientGlobals.ServerEndpoint.Address.ToString(),
+                ClientGlobals.ServerEndpoint.Port);
         }
 
         protected virtual void OnDestroy() {
