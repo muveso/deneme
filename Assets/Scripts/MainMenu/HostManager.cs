@@ -5,15 +5,13 @@ using UnityEngine.SceneManagement;
 
 namespace Evade.MainMenu {
     public class HostManager : ClientManager {
-        private const string DefaultServerIpAddress = "0.0.0.0";
-        private const string LocalHostIpAddress = "127.0.0.1";
         private TcpServerCommunicator _tcpServerCommunicator;
         private TcpServerMainMenuProcessingThread _tcpServerMainMenuProcessingThread;
 
         protected override void Awake() {
-            IPInputField.text = DefaultServerIpAddress;
-            Nickname = "PanCHocK2";
             base.Awake();
+            IPInputField.text = GameConsts.DefaultServerIpAddress;
+            ClientGlobals.Nickname = "PanCHocKHost";
         }
 
         public override void OnDestroy() {
@@ -23,7 +21,8 @@ namespace Evade.MainMenu {
         }
 
         protected override void InitializeCommunicator() {
-            TcpClientCommunicator = new TcpClientCommunicator(LocalHostIpAddress, int.Parse(PortInputField.text));
+            TcpClientCommunicator =
+                new TcpClientCommunicator(GameConsts.LocalHostIpAddress, int.Parse(PortInputField.text));
         }
 
         public override void OnClickConnect() {

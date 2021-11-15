@@ -10,16 +10,16 @@ namespace Evade.MainMenu {
     public class ClientManager : MonoBehaviour {
         protected List<ClientDetails> Clients;
         public InputField IPInputField;
-        protected string Nickname = "PanCHocK";
         public InputField PortInputField;
         protected TcpClientCommunicator TcpClientCommunicator;
 
-        public virtual void OnDestroy() {
-            TcpClientCommunicator?.Dispose();
-        }
-
         protected virtual void Awake() {
             Clients = new List<ClientDetails>();
+            ClientGlobals.Nickname = "PanCHocK";
+        }
+
+        public virtual void OnDestroy() {
+            TcpClientCommunicator?.Dispose();
         }
 
         protected virtual void Update() {
