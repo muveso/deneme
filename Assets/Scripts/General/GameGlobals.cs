@@ -10,6 +10,6 @@ namespace Evade {
     }
 
     public class ClientGlobals {
-        public static IPEndPoint ServerEndpoint;
+        public static IPEndPoint ServerEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5555);
     }
 }

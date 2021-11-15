@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Evade.Game {
     public class Initializer : MonoBehaviour {
-        private void Start() {
+        private void Awake() {
             if (GameGlobals.IsHost) {
                 gameObject.AddComponent<HostManager>();
             } else {

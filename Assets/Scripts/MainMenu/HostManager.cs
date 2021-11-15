@@ -10,10 +10,10 @@ namespace Evade.MainMenu {
         private TcpServerCommunicator _tcpServerCommunicator;
         private TcpServerMainMenuProcessingThread _tcpServerMainMenuProcessingThread;
 
-        protected override void Start() {
+        protected override void Awake() {
             IPInputField.text = DefaultServerIpAddress;
             Nickname = "PanCHocK2";
-            base.Start();
+            base.Awake();
         }
 
         public override void OnDestroy() {

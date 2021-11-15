@@ -5,9 +5,9 @@ namespace Evade.Game {
     public class HostManager : ClientManager {
         private UdpServerCommunicator _udpServerCommunicator;
 
-        protected override void Start() {
+        protected override void Awake() {
             _udpServerCommunicator = new UdpServerCommunicator(5555);
-            base.Start();
+            base.Awake();
         }
 
         protected override void OnDestroy() {
@@ -16,17 +16,13 @@ namespace Evade.Game {
         }
 
         protected override void Update() {
+            base.Update();
             // All the game logic is here
             // Host does not need to get messages from server because he is the server
-            if (_udpServerCommunicator == null) {
-                Debug.Log("UdpServerCommunicator is null");
-                return;
-            }
 
-            base.Update();
             var message = _udpServerCommunicator.TryGetMessageFromQueue();
             if (message != null) {
-                Debug.Log("UdpServerCommunicator is null");
+                Debug.Log("HostManager got message");
             }
         }
     }

@@ -18,7 +18,7 @@ namespace Evade.MainMenu {
             TcpClientCommunicator?.Dispose();
         }
 
-        protected virtual void Start() {
+        protected virtual void Awake() {
             Clients = new List<ClientDetails>();
         }
 
