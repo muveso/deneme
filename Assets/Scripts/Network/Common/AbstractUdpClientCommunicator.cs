@@ -1,14 +1,14 @@
-using System;
 using System.Collections.Concurrent;
+using System.Net;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Network.UDP;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Common {
-    public abstract class AbstractUdpClientCommunicator : IDisposable {
-        protected AbstractUdpClientCommunicator(string ipAddress, int port) {
+    public abstract class AbstractUdpClientCommunicator : IClientCommunicator {
+        protected AbstractUdpClientCommunicator(IPEndPoint endpoint) {
             MessagesQueue = new ConcurrentQueue<Message>();
-            Client = new UdpClient(ipAddress, port);
+            Client = new UdpClient(endpoint);
         }
 
         protected AbstractUdpClientCommunicator(int listenPort) {
@@ -24,14 +24,14 @@ namespace Assets.Scripts.Network.Common {
             Client.Dispose();
         }
 
-        public void Send(IMessage message) {
-            Client.Send(MessagesHelpers.ConvertMessageToBytes(message));
-        }
-
-        public Message TryGetMessageFromQueue() {
+        public Message GetMessage() {
             Message message;
             MessagesQueue.TryDequeue(out message);
             return message;
+        }
+
+        public void Send(IMessage message) {
+            Client.Send(MessagesHelpers.ConvertMessageToBytes(message));
         }
     }
 }

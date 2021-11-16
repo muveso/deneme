@@ -1,3 +1,4 @@
+using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Host;
@@ -48,13 +49,14 @@ namespace Assets.Scripts.MainMenu {
         private void InitializeCommunicatorAndServer() {
             // Initialize TCP server
             NetworkManager.Instance.Communicators.TcpServerCommunicator =
-                new TcpServerCommunicator(IPInputField.text, int.Parse(PortInputField.text));
+                new TcpServerCommunicator(new IPEndPoint(IPAddress.Parse(IPInputField.text),
+                    int.Parse(PortInputField.text)));
             // Initialize Processing Thread
             _tcpServerMainMenuProcessingThread =
                 new TcpServerMainMenuProcessingThread(NetworkManager.Instance.Communicators.TcpServerCommunicator);
             _tcpServerMainMenuProcessingThread.Start();
             // Initialize Host communicator
-            NetworkManager.Instance.Communicators.ClientCommunicator =
+            NetworkManager.Instance.Communicators.TcpClientCommunicator =
                 new HostClientCommunicator(NetworkManager.Instance.Communicators.TcpServerCommunicator,
                     ClientGlobals.Nickname);
         }
@@ -70,12 +72,12 @@ namespace Assets.Scripts.MainMenu {
 
         public void OnClickConnect() {
             InitializeCommunicatorAndServer();
-            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ClientCommunicator);
+            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.TcpClientCommunicator);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }
 
         public void OnClickReady() {
-            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ClientCommunicator);
+            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.TcpClientCommunicator);
         }
     }
 }

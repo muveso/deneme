@@ -4,10 +4,9 @@ using System.Net.Sockets;
 
 namespace Assets.Scripts.Utils.Network.TCP {
     public class TcpServer : IDisposable {
-        public TcpServer(string ipAddress, int listeningPort) {
+        public TcpServer(IPEndPoint localEndpoint) {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            var localEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), listeningPort);
-            Sock.Bind(localEndPoint);
+            Sock.Bind(localEndpoint);
             Sock.Listen(10);
         }
 

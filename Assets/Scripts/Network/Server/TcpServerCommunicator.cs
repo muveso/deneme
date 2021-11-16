@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Network.TCP;
 using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 
 namespace Assets.Scripts.Network.Server {
-    public class TcpServerCommunicator : IDisposable {
+    public class TcpServerCommunicator : IDisposable, IServerCommunicatorForHost {
         private readonly TcpServerReceiverThread _tcpServerReceiverThread;
 
-        public TcpServerCommunicator(string ipAddress, int listeningPort) {
+        public TcpServerCommunicator(IPEndPoint localEndPoint) {
             MessagesQueue = new ConcurrentQueue<Message>();
             Clients = new SynchronizedCollection<Common.Client>();
-            Server = new TcpServer(ipAddress, listeningPort);
+            Server = new TcpServer(localEndPoint);
             _tcpServerReceiverThread = new TcpServerReceiverThread(this);
             _tcpServerReceiverThread.Start();
         }
@@ -30,6 +30,14 @@ namespace Assets.Scripts.Network.Server {
             Server?.Dispose();
         }
 
+        public void InsertToQueue(Message message) {
+            MessagesQueue.Enqueue(message);
+        }
+
+        public void HostConnect(string nickname) {
+            Clients.Add(new HostClient(new ClientDetails(nickname)));
+        }
+
         public List<ClientDetails> GetClientDetailsList() {
             var clientDetailsList = new List<ClientDetails>();
             foreach (var client in Clients) {
@@ -37,14 +45,6 @@ namespace Assets.Scripts.Network.Server {
             }
 
             return clientDetailsList;
-        }
-
-        public void SendMessageFromHost(IMessage message) {
-            MessagesQueue.Enqueue(new Message(HostClient.GetHostClientEndpoint(), Any.Pack(message)));
-        }
-
-        public void HostConnect(string nickname) {
-            Clients.Add(new HostClient(new ClientDetails(nickname)));
         }
 
         public void SendToAllClients(IMessage message) {

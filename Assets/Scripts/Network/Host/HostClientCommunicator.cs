@@ -1,25 +1,30 @@
+using System;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Assets.Scripts.Network.Host {
     public class HostClientCommunicator : IClientCommunicator {
-        private readonly TcpServerCommunicator _tcpServerCommunicator;
+        private readonly IServerCommunicatorForHost _serverCommunicator;
 
-        public HostClientCommunicator(TcpServerCommunicator tcpServerCommunicator, string nickname) {
-            _tcpServerCommunicator = tcpServerCommunicator;
-            _tcpServerCommunicator.HostConnect(nickname);
+        public HostClientCommunicator(IServerCommunicatorForHost serverCommunicator, string nickname) {
+            _serverCommunicator = serverCommunicator;
+            _serverCommunicator.HostConnect(nickname);
         }
 
         public void Send(IMessage message) {
-            _tcpServerCommunicator.SendMessageFromHost(message);
+            var messageToInsert = new Message(HostClient.GetHostClientEndpoint(), Any.Pack(message));
+            _serverCommunicator.InsertToQueue(messageToInsert);
         }
 
         public Message GetMessage() {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public void Dispose() { }
+        public void Dispose() {
+            throw new NotImplementedException();
+        }
     }
 }

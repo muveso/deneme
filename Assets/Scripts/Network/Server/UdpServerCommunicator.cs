@@ -5,16 +5,27 @@ using Assets.Scripts.Utils;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
-    public class UdpServerCommunicator : AbstractUdpClientCommunicator {
+    public class UdpServerCommunicator : AbstractUdpClientCommunicator, IServerCommunicatorForHost {
+        private readonly SynchronizedCollection<IPEndPoint> _clients;
         private readonly UdpServerReceiverThread _udpServerReceiverThread;
 
         public UdpServerCommunicator(int listeningPort) : base(listeningPort) {
-            Clients = new SynchronizedCollection<IPEndPoint>();
+            _clients = new SynchronizedCollection<IPEndPoint>();
             _udpServerReceiverThread = new UdpServerReceiverThread(this);
             _udpServerReceiverThread.Start();
         }
 
-        public SynchronizedCollection<IPEndPoint> Clients { get; }
+        public void InsertToQueue(Message message) {
+            MessagesQueue.Enqueue(message);
+        }
+
+        public void HostConnect(string nickname) { }
+
+        public void AddClientIfNotExists(IPEndPoint endpoint) {
+            if (!_clients.Contains(endpoint)) {
+                _clients.Add(endpoint);
+            }
+        }
 
         public override void Dispose() {
             _udpServerReceiverThread?.Stop();
@@ -23,7 +34,7 @@ namespace Assets.Scripts.Network.Server {
 
         public void SendToAllClients(IMessage message) {
             var messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
-            foreach (var client in Clients) {
+            foreach (var client in _clients) {
                 Client.SendTo(messageBytes, client);
             }
         }

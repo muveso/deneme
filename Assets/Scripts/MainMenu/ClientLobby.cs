@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Client;
 using Assets.Scripts.Network.Common;
@@ -20,7 +21,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private void Update() {
-            if (NetworkManager.Instance.Communicators.ClientCommunicator == null) {
+            if (NetworkManager.Instance.Communicators.TcpClientCommunicator == null) {
                 return;
             }
 
@@ -31,7 +32,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private bool HandleCommunicatorMessage() {
-            var message = NetworkManager.Instance.Communicators.ClientCommunicator.GetMessage();
+            var message = NetworkManager.Instance.Communicators.TcpClientCommunicator.GetMessage();
             if (message == null) {
                 return false;
             }
@@ -54,14 +55,15 @@ namespace Assets.Scripts.MainMenu {
         }
 
         public void OnClickConnect() {
-            NetworkManager.Instance.Communicators.ClientCommunicator =
-                new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
-            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ClientCommunicator);
+            NetworkManager.Instance.Communicators.TcpClientCommunicator =
+                new TcpClientCommunicator(new IPEndPoint(IPAddress.Parse(IPInputField.text),
+                    int.Parse(PortInputField.text)));
+            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.TcpClientCommunicator);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }
 
         public void OnClickReady() {
-            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ClientCommunicator);
+            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.TcpClientCommunicator);
         }
     }
 }

@@ -11,10 +11,6 @@ namespace Assets.Scripts.Utils.Network.UDP {
             Sock.Connect(endpointToConnectTo);
         }
 
-        public UdpClient(string ipAddress, int port) : this(new IPEndPoint(IPAddress.Parse(ipAddress), port)) {
-            // Blank
-        }
-
         public UdpClient(int listenPort) {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             Sock.Bind(new IPEndPoint(IPAddress.Any, listenPort));

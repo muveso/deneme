@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-import "google/protobuf/any.proto";
-
-message BaseMessage {
-    google.protobuf.Any message = 1;
-}

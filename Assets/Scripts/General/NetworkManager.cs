@@ -1,18 +1,18 @@
 ﻿using System;
-using Assets.Scripts.Network.Client;
+using System.Net;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
 
 namespace Assets.Scripts.General {
     public class Communicators : IDisposable {
-        public IClientCommunicator ClientCommunicator { get; set; }
+        public IClientCommunicator TcpClientCommunicator { get; set; }
         public TcpServerCommunicator TcpServerCommunicator { get; set; }
-        public UdpClientCommunicator UdpClientCommunicator { get; set; }
+        public IClientCommunicator UdpClientCommunicator { get; set; }
         public UdpServerCommunicator UdpServerCommunicator { get; set; }
 
         public void Dispose() {
-            if (ClientCommunicator != null) {
-                ClientCommunicator.Dispose();
+            if (TcpClientCommunicator != null) {
+                TcpClientCommunicator.Dispose();
             }
 
             if (TcpServerCommunicator != null) {
@@ -36,6 +36,8 @@ namespace Assets.Scripts.General {
         private NetworkManager() {
             Communicators = new Communicators();
         }
+
+        public IPAddress ServerIpAddress { get; set; }
 
         public Communicators Communicators { get; set; }
         public bool IsHost { get; set; }

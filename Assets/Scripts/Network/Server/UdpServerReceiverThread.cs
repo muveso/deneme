@@ -18,10 +18,7 @@ namespace Assets.Scripts.Network.Server {
                     var endPoint = new IPEndPoint(IPAddress.Any, 0);
                     var messageBytes = _udpServerCommunicator.Client.Receive(ref endPoint);
                     var message = MessagesHelpers.ConvertBytesToMessage(messageBytes);
-                    if (!_udpServerCommunicator.Clients.Contains(endPoint)) {
-                        _udpServerCommunicator.Clients.Add(endPoint);
-                    }
-
+                    _udpServerCommunicator.AddClientIfNotExists(endPoint);
                     Debug.Log("Got message, inserting to queue");
                     _udpServerCommunicator.MessagesQueue.Enqueue(new Message(endPoint, message));
                 }

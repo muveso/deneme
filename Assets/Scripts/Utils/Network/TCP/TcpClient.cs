@@ -31,19 +31,6 @@ namespace Assets.Scripts.Utils.Network.TCP {
             Sock.Send(bytes);
         }
 
-        private int GetMessageLength() {
-            var bytes = new byte[sizeof(int)];
-            Sock.Receive(bytes, sizeof(int), SocketFlags.None);
-            var messageLength = BitConverter.ToInt32(bytes);
-            return messageLength;
-        }
-
-        private byte[] GetMessage(int messageLength) {
-            var message = new byte[messageLength];
-            Sock.Receive(message, messageLength, SocketFlags.None);
-            return message;
-        }
-
         public byte[] Receive() {
             if (!Sock.Connected) {
                 throw new SocketNotConnectedException();
@@ -56,6 +43,19 @@ namespace Assets.Scripts.Utils.Network.TCP {
             }
 
             return GetMessage(messageLength);
+        }
+
+        private int GetMessageLength() {
+            var bytes = new byte[sizeof(int)];
+            Sock.Receive(bytes, sizeof(int), SocketFlags.None);
+            var messageLength = BitConverter.ToInt32(bytes);
+            return messageLength;
+        }
+
+        private byte[] GetMessage(int messageLength) {
+            var message = new byte[messageLength];
+            Sock.Receive(message, messageLength, SocketFlags.None);
+            return message;
         }
 
         public void Close() {

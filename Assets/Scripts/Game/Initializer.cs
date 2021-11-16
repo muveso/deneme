@@ -5,9 +5,9 @@ namespace Assets.Scripts.Game {
     public class Initializer : MonoBehaviour {
         private void Awake() {
             if (NetworkManager.Instance.IsHost) {
-                gameObject.AddComponent<HostManager>();
+                gameObject.AddComponent<HostGame>();
             } else {
-                gameObject.AddComponent<ClientManager>();
+                gameObject.AddComponent<ClientGame>();
             }
         }
     }

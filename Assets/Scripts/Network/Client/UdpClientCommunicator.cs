@@ -1,10 +1,11 @@
+using System.Net;
 using Assets.Scripts.Network.Common;
 
 namespace Assets.Scripts.Network.Client {
     public class UdpClientCommunicator : AbstractUdpClientCommunicator {
         private readonly UdpClientReceiverThread _udpClientReceiverThread;
 
-        public UdpClientCommunicator(string ipAddress, int port) : base(ipAddress, port) {
+        public UdpClientCommunicator(IPEndPoint endpoint) : base(endpoint) {
             _udpClientReceiverThread = new UdpClientReceiverThread(this);
             _udpClientReceiverThread.Start();
         }

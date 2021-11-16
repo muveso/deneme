@@ -10,9 +10,8 @@ namespace Assets.Scripts.Network.Client {
     public class TcpClientCommunicator : IClientCommunicator {
         private readonly TcpClientReceiverThread _tcpClientReceiverThread;
 
-        public TcpClientCommunicator(string ipAddress, int port) {
-            var serverEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
-            ClientGlobals.ServerEndpoint = serverEndPoint;
+        public TcpClientCommunicator(IPEndPoint serverEndPoint) {
+            NetworkManager.Instance.ServerIpAddress = serverEndPoint.Address;
             MessagesQueue = new ConcurrentQueue<Message>();
             Client = new TcpClient(serverEndPoint);
             _tcpClientReceiverThread = new TcpClientReceiverThread(this);
