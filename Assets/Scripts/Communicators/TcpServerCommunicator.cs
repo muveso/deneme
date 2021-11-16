@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Evade.Utils;
 using Evade.Utils.Network;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Evade.Communicators {
     public class TcpServerCommunicator : IDisposable {
@@ -26,6 +27,23 @@ namespace Evade.Communicators {
         public void Dispose() {
             _tcpServerReceiverThread?.Stop();
             Server?.Dispose();
+        }
+
+        public List<ClientDetails> GetClientDetailsList() {
+            var clientDetailsList = new List<ClientDetails>();
+            foreach (var client in Clients) {
+                clientDetailsList.Add(client.Details);
+            }
+
+            return clientDetailsList;
+        }
+
+        public void SendMessageFromHost(IMessage message) {
+            MessagesQueue.Enqueue(new Message(HostClient.GetHostClientEndpoint(), Any.Pack(message)));
+        }
+
+        public void HostConnect(string nickname) {
+            Clients.Add(new HostClient(new ClientDetails(nickname)));
         }
 
         public void SendToAllClients(IMessage message) {

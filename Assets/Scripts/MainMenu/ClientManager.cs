@@ -8,71 +8,71 @@ using UnityEngine.UI;
 
 namespace Evade.MainMenu {
     public class ClientManager : MonoBehaviour {
-        protected List<ClientDetails> Clients;
+        protected IClientCommunicator ClientCommunicator;
         public InputField IPInputField;
+        protected List<ClientDetails> Players;
         public InputField PortInputField;
-        protected TcpClientCommunicator TcpClientCommunicator;
 
         protected virtual void Awake() {
-            Clients = new List<ClientDetails>();
+            Players = new List<ClientDetails>();
             ClientGlobals.Nickname = "PanCHocK";
         }
 
         public virtual void OnDestroy() {
-            TcpClientCommunicator?.Dispose();
+            ClientCommunicator?.Dispose();
         }
 
         protected virtual void Update() {
-            if (HandleCommunicatorMessage()) {
-                General.DestroyAllChildren(transform);
-                FillScrollViewWithClients();
+            if (ClientCommunicator == null) {
+                return;
             }
+
+            HandleCommunicatorMessage();
+            General.DestroyAllChildren(transform);
+            FillScrollViewWithClients();
         }
 
-        private bool HandleCommunicatorMessage() {
-            if (TcpClientCommunicator == null) {
-                return false;
-            }
+        protected virtual List<ClientDetails> GetPlayers() {
+            return Players;
+        }
 
-            if (!TcpClientCommunicator.MessagesQueue.TryDequeue(out var message)) {
-                return false;
+        private void HandleCommunicatorMessage() {
+            var message = ClientCommunicator.GetMessage();
+            if (message == null) {
+                return;
             }
 
             if (message.ProtobufMessage.Is(MainMenuStateMessage.Descriptor)) {
                 var mainMenuStateMessage = message.ProtobufMessage.Unpack<MainMenuStateMessage>();
                 UpdateClients(mainMenuStateMessage);
             }
-
-            return true;
         }
 
         private void UpdateClients(MainMenuStateMessage mainMenuStateMessage) {
-            var newClientsList = new List<ClientDetails>();
+            var newPlayersList = new List<ClientDetails>();
             foreach (var clientDetailsMessage in mainMenuStateMessage.ClientsDetails) {
-                newClientsList.Add(new ClientDetails(clientDetailsMessage.Nickname, clientDetailsMessage.IsReady));
+                newPlayersList.Add(new ClientDetails(clientDetailsMessage.Nickname, clientDetailsMessage.IsReady));
             }
 
-            Clients = newClientsList;
+            Players = newPlayersList;
         }
 
         private void FillScrollViewWithClients() {
-            if (TcpClientCommunicator != null) {
-                var index = 1;
-                foreach (var client in Clients) {
-                    AddNewClientToList(client, index);
-                    index++;
-                }
+            var index = 1;
+            foreach (var player in GetPlayers()) {
+                AddNewPlayerToList(player, index);
+                index++;
             }
         }
 
-        private void AddNewClientToList(ClientDetails client, int index) {
-            var newGameObject = ScrollView.CreateNewTextItemForScrollView(client,
+        private void AddNewPlayerToList(ClientDetails player, int index) {
+            var newGameObject = ScrollView.CreateNewTextItemForScrollView(player,
                 index);
             newGameObject.transform.SetParent(transform);
         }
 
         public void SendClientDetails() {
-            if (TcpClientCommunicator == null) {
+            if (ClientCommunicator == null) {
                 Debug.LogError("ClientCommunicator is null");
                 return;
             }
@@ -80,11 +80,11 @@ namespace Evade.MainMenu {
             var clientDetailsMessage = new ClientDetailsMessage {
                 Nickname = ClientGlobals.Nickname
             };
-            TcpClientCommunicator.Send(clientDetailsMessage);
+            ClientCommunicator.Send(clientDetailsMessage);
         }
 
         protected virtual void InitializeCommunicator() {
-            TcpClientCommunicator = new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
+            ClientCommunicator = new TcpClientCommunicator(IPInputField.text, int.Parse(PortInputField.text));
         }
 
         public virtual void OnClickConnect() {
@@ -98,13 +98,13 @@ namespace Evade.MainMenu {
         }
 
         public void OnClickReady() {
-            if (TcpClientCommunicator == null) {
+            if (ClientCommunicator == null) {
                 Debug.LogError("ClientCommunicator is null");
                 return;
             }
 
             var clientReadyMessage = new ClientReadyMessage();
-            TcpClientCommunicator.Send(clientReadyMessage);
+            ClientCommunicator.Send(clientReadyMessage);
         }
     }
 }

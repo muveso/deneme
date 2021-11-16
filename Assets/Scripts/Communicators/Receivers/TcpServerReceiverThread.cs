@@ -38,6 +38,10 @@ namespace Evade.Communicators {
         private List<Socket> GetSocketListFromClients() {
             var clientSocketList = new List<Socket>();
             foreach (var client in _tcpServerCommunicator.Clients) {
+                if (HostClient.IsHostClient(client)) {
+                    continue;
+                }
+
                 clientSocketList.Add(client.GetSock());
             }
 

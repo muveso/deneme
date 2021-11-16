@@ -18,6 +18,10 @@ namespace Evade.Communicators {
         public abstract byte[] Receive();
         public abstract IPEndPoint GetEndpoint();
         public abstract Socket GetSock();
+
+        public override string ToString() {
+            return $"Nickname: {Details.Nickname} | Ready: {Details.IsReady}";
+        }
     }
 
     public class NetworkTcpClient : Client {
@@ -53,6 +57,10 @@ namespace Evade.Communicators {
 
         public static IPEndPoint GetHostClientEndpoint() {
             return new IPEndPoint(IPAddress.Any, 0);
+        }
+
+        public static bool IsHostClient(Client other) {
+            return Equals(other.GetEndpoint(), GetHostClientEndpoint());
         }
 
         public override void Send(byte[] bytes) {

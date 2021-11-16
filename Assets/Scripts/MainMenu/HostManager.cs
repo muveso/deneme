@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Evade.Communicators;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,7 +10,6 @@ namespace Evade.MainMenu {
         private TcpServerMainMenuProcessingThread _tcpServerMainMenuProcessingThread;
 
         protected override void Awake() {
-            base.Awake();
             IPInputField.text = GameConsts.DefaultServerIpAddress;
             ClientGlobals.Nickname = "PanCHocKHost";
         }
@@ -21,8 +21,7 @@ namespace Evade.MainMenu {
         }
 
         protected override void InitializeCommunicator() {
-            TcpClientCommunicator =
-                new TcpClientCommunicator(GameConsts.LocalHostIpAddress, int.Parse(PortInputField.text));
+            ClientCommunicator = new HostClientCommunicator(_tcpServerCommunicator, ClientGlobals.Nickname);
         }
 
         public override void OnClickConnect() {
@@ -37,8 +36,12 @@ namespace Evade.MainMenu {
             }
         }
 
+        protected override List<ClientDetails> GetPlayers() {
+            return _tcpServerCommunicator.GetClientDetailsList();
+        }
+
         public void OnClickStartGame() {
-            if (AreAllClientsReady()) {
+            if (AreAllPlayersReady()) {
                 Debug.Log("Starting Game");
                 GameGlobals.IsHost = true;
                 SceneManager.LoadScene("Game");
@@ -47,14 +50,9 @@ namespace Evade.MainMenu {
             }
         }
 
-        private bool AreAllClientsReady() {
-            if (TcpClientCommunicator == null) {
-                Debug.LogError("ClientCommunicator is null");
-                return false;
-            }
-
-            foreach (var clientDetails in Clients) {
-                if (!clientDetails.IsReady) {
+        private bool AreAllPlayersReady() {
+            foreach (var players in GetPlayers()) {
+                if (!players.IsReady) {
                     return false;
                 }
             }
