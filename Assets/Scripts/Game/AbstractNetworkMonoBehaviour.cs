@@ -5,16 +5,20 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public abstract class AbstractNetworkMonoBehaviour : MonoBehaviour {
-        protected bool IsLocal { get; set; }
+        protected bool IsLocal { get; set; } = true;
 
         private void Update() {
             if (IsLocal) {
-                NetworkManager.Instance.Communicators.TcpClientCommunicator.Send(ClientUpdate());
+                var updateMessage = ClientUpdate();
+                if (updateMessage != null) {
+                    NetworkManager.Instance.Communicators.UdpClientCommunicator.Send(updateMessage);
+                }
             }
         }
 
-        protected abstract void ServerUpdate(Any message);
-        protected abstract void UpdateStateFromServer(Any message);
+        public abstract void ServerUpdate(Any message);
+        public abstract void DeserializeState(Any message);
+        public abstract IMessage SerializeState();
         protected abstract IMessage ClientUpdate();
     }
 }

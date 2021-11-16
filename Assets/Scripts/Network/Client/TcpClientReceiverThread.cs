@@ -5,25 +5,25 @@ using Assets.Scripts.Utils;
 namespace Assets.Scripts.Network.Client {
     public class TcpClientReceiverThread : BaseThread {
         private const int PollTimeoutMs = 1000;
-        private readonly TcpClientCommunicator _TcpClientCommunicator;
+        private readonly TcpClientCommunicator _tcpClientCommunicator;
 
         public TcpClientReceiverThread(TcpClientCommunicator TcpClientCommunicator) {
-            _TcpClientCommunicator = TcpClientCommunicator;
+            _tcpClientCommunicator = TcpClientCommunicator;
         }
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                if (_TcpClientCommunicator.Client.Sock.Poll(PollTimeoutMs, SelectMode.SelectRead)) {
+                if (_tcpClientCommunicator.Client.Sock.Poll(PollTimeoutMs, SelectMode.SelectRead)) {
                     HandleMessage();
                 }
             }
         }
 
         private void HandleMessage() {
-            var messageBytes = _TcpClientCommunicator.Client.Receive();
+            var messageBytes = _tcpClientCommunicator.Client.Receive();
             var message = MessagesHelpers.ConvertBytesToMessage(messageBytes);
-            _TcpClientCommunicator.MessagesQueue.Enqueue(
-                new Message((IPEndPoint) _TcpClientCommunicator.Client.Sock.RemoteEndPoint, message));
+            _tcpClientCommunicator.MessagesQueue.Enqueue(
+                new Message((IPEndPoint) _tcpClientCommunicator.Client.Sock.RemoteEndPoint, message));
         }
     }
 }

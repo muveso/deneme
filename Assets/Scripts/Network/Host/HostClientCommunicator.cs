@@ -23,8 +23,6 @@ namespace Assets.Scripts.Network.Host {
             throw new NotImplementedException();
         }
 
-        public void Dispose() {
-            throw new NotImplementedException();
-        }
+        public void Dispose() { }
     }
 }

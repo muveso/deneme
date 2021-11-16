@@ -38,7 +38,6 @@ namespace Assets.Scripts.General {
         }
 
         public IPAddress ServerIpAddress { get; set; }
-
         public Communicators Communicators { get; set; }
         public bool IsHost { get; set; }
 
@@ -61,6 +60,7 @@ namespace Assets.Scripts.General {
         // Manual reset for singleton
         public void Reset() {
             IsHost = false;
+            ServerIpAddress = null;
             Communicators.Dispose();
             Communicators = new Communicators();
         }

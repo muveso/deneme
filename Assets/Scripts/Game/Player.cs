@@ -1,3 +1,4 @@
+using Assets.Scripts.Utils;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
@@ -9,19 +10,30 @@ namespace Assets.Scripts.Game {
 
         protected override IMessage ClientUpdate() {
             var moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-            return new ClientReadyMessage();
+            if (moveDirection == Vector3.zero) {
+                return null;
+            }
+
+            return new PlayerInputMessage {
+                Input = MessagesHelpers.CreateVector3Message(moveDirection)
+            };
         }
 
-        protected override void ServerUpdate(Any message) {
-            // parse moveDirection from message
-            var moveDirection = new Vector3();
+        public override void ServerUpdate(Any message) {
+            var playerInput = message.Unpack<PlayerInputMessage>().Input;
+            var moveDirection = MessagesHelpers.CreateVector3FromMessage(playerInput);
             PlayerRigidbody.velocity = moveDirection * Speed;
         }
 
-        protected override void UpdateStateFromServer(Any message) {
-            // TODO: parse moveDirection from message
-            var moveDirection = new Vector3();
-            PlayerRigidbody.velocity = moveDirection * Speed;
+        public override void DeserializeState(Any message) {
+            var position = message.Unpack<PlayerStateMessage>().Position;
+            PlayerRigidbody.position = MessagesHelpers.CreateVector3FromMessage(position);
+        }
+
+        public override IMessage SerializeState() {
+            return new PlayerStateMessage {
+                Position = MessagesHelpers.CreateVector3Message(PlayerRigidbody.position)
+            };
         }
     }
 }

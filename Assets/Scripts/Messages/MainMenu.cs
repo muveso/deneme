@@ -22,15 +22,14 @@ public static partial class MainMenuReflection {
   static MainMenuReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "Cg5NYWluTWVudS5wcm90byJcChRDbGllbnREZXRhaWxzTWVzc2FnZRIVCghu",
-          "aWNrbmFtZRgBIAEoCUgAiAEBEhQKB2lzUmVhZHkYAiABKAhIAYgBAUILCglf",
-          "bmlja25hbWVCCgoIX2lzUmVhZHkiRQoUTWFpbk1lbnVTdGF0ZU1lc3NhZ2US",
-          "LQoOY2xpZW50c0RldGFpbHMYASADKAsyFS5DbGllbnREZXRhaWxzTWVzc2Fn",
-          "ZSIUChJDbGllbnRSZWFkeU1lc3NhZ2ViBnByb3RvMw=="));
+          "Cg5NYWluTWVudS5wcm90byI5ChRDbGllbnREZXRhaWxzTWVzc2FnZRIQCghu",
+          "aWNrbmFtZRgBIAEoCRIPCgdpc1JlYWR5GAIgASgIIkUKFE1haW5NZW51U3Rh",
+          "dGVNZXNzYWdlEi0KDmNsaWVudHNEZXRhaWxzGAEgAygLMhUuQ2xpZW50RGV0",
+          "YWlsc01lc3NhZ2UiFAoSQ2xpZW50UmVhZHlNZXNzYWdlYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::ClientDetailsMessage), global::ClientDetailsMessage.Parser, new[]{ "Nickname", "IsReady" }, new[]{ "Nickname", "IsReady" }, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::ClientDetailsMessage), global::ClientDetailsMessage.Parser, new[]{ "Nickname", "IsReady" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::MainMenuStateMessage), global::MainMenuStateMessage.Parser, new[]{ "ClientsDetails" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::ClientReadyMessage), global::ClientReadyMessage.Parser, null, null, null, null, null)
         }));
@@ -46,7 +45,6 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
 {
   private static readonly pb::MessageParser<ClientDetailsMessage> _parser = new pb::MessageParser<ClientDetailsMessage>(() => new ClientDetailsMessage());
   private pb::UnknownFieldSet _unknownFields;
-  private int _hasBits0;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pb::MessageParser<ClientDetailsMessage> Parser { get { return _parser; } }
@@ -74,7 +72,6 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public ClientDetailsMessage(ClientDetailsMessage other) : this() {
-    _hasBits0 = other._hasBits0;
     nickname_ = other.nickname_;
     isReady_ = other.isReady_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -88,26 +85,14 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
 
   /// <summary>Field number for the "nickname" field.</summary>
   public const int NicknameFieldNumber = 1;
-  private string nickname_;
+  private string nickname_ = "";
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public string Nickname {
-    get { return nickname_ ?? ""; }
+    get { return nickname_; }
     set {
       nickname_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
     }
-  }
-  /// <summary>Gets whether the "nickname" field is set</summary>
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public bool HasNickname {
-    get { return nickname_ != null; }
-  }
-  /// <summary>Clears the value of the "nickname" field</summary>
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public void ClearNickname() {
-    nickname_ = null;
   }
 
   /// <summary>Field number for the "isReady" field.</summary>
@@ -116,23 +101,10 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool IsReady {
-    get { if ((_hasBits0 & 1) != 0) { return isReady_; } else { return false; } }
+    get { return isReady_; }
     set {
-      _hasBits0 |= 1;
       isReady_ = value;
     }
-  }
-  /// <summary>Gets whether the "isReady" field is set</summary>
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public bool HasIsReady {
-    get { return (_hasBits0 & 1) != 0; }
-  }
-  /// <summary>Clears the value of the "isReady" field</summary>
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public void ClearIsReady() {
-    _hasBits0 &= ~1;
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -159,8 +131,8 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override int GetHashCode() {
     int hash = 1;
-    if (HasNickname) hash ^= Nickname.GetHashCode();
-    if (HasIsReady) hash ^= IsReady.GetHashCode();
+    if (Nickname.Length != 0) hash ^= Nickname.GetHashCode();
+    if (IsReady != false) hash ^= IsReady.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -179,11 +151,11 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     output.WriteRawMessage(this);
   #else
-    if (HasNickname) {
+    if (Nickname.Length != 0) {
       output.WriteRawTag(10);
       output.WriteString(Nickname);
     }
-    if (HasIsReady) {
+    if (IsReady != false) {
       output.WriteRawTag(16);
       output.WriteBool(IsReady);
     }
@@ -197,11 +169,11 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-    if (HasNickname) {
+    if (Nickname.Length != 0) {
       output.WriteRawTag(10);
       output.WriteString(Nickname);
     }
-    if (HasIsReady) {
+    if (IsReady != false) {
       output.WriteRawTag(16);
       output.WriteBool(IsReady);
     }
@@ -215,10 +187,10 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int CalculateSize() {
     int size = 0;
-    if (HasNickname) {
+    if (Nickname.Length != 0) {
       size += 1 + pb::CodedOutputStream.ComputeStringSize(Nickname);
     }
-    if (HasIsReady) {
+    if (IsReady != false) {
       size += 1 + 1;
     }
     if (_unknownFields != null) {
@@ -233,10 +205,10 @@ public sealed partial class ClientDetailsMessage : pb::IMessage<ClientDetailsMes
     if (other == null) {
       return;
     }
-    if (other.HasNickname) {
+    if (other.Nickname.Length != 0) {
       Nickname = other.Nickname;
     }
-    if (other.HasIsReady) {
+    if (other.IsReady != false) {
       IsReady = other.IsReady;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);

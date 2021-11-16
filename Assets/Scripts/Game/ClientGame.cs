@@ -16,5 +16,9 @@ namespace Assets.Scripts.Game {
             var message = NetworkManager.Instance.Communicators.UdpClientCommunicator.GetMessage();
             if (message != null) { }
         }
+
+        private void OnDestroy() {
+            NetworkManager.Instance.Reset();
+        }
     }
 }

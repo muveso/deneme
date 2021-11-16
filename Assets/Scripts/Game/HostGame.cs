@@ -1,8 +1,8 @@
-using System;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
@@ -22,7 +22,7 @@ namespace Assets.Scripts.Game {
 
             var message = NetworkManager.Instance.Communicators.UdpServerCommunicator.GetMessage();
             if (message != null) {
-                Debug.Log("HostLobby got message");
+                Debug.Log("HostGame got message");
                 HandleMessage(message);
                 SendGlobalStateToAllClients();
             }
@@ -33,12 +33,22 @@ namespace Assets.Scripts.Game {
             NetworkManager.Instance.Communicators.UdpServerCommunicator.SendToAllClients(globalState);
         }
 
-        private Any GetGlobalState() {
-            throw new NotImplementedException();
+        private IMessage GetGlobalState() {
+            var globalStateMessage = new GlobalStateMessage();
+            var messageToPack = GameObject.FindWithTag("Player").GetComponent<Player>().SerializeState();
+            globalStateMessage.ObjectsState.Add(Any.Pack(messageToPack));
+            return globalStateMessage;
         }
 
         private void HandleMessage(Message message) {
-            // ServerUpdate()
+            var anyMessage = message.ProtobufMessage;
+            if (anyMessage.Is(PlayerInputMessage.Descriptor)) {
+                GameObject.FindWithTag("Player").GetComponent<Player>().ServerUpdate(anyMessage);
+            }
+        }
+
+        private void OnDestroy() {
+            NetworkManager.Instance.Reset();
         }
     }
 }
