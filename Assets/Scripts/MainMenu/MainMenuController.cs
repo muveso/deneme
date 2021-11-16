@@ -1,7 +1,8 @@
+using Assets.Scripts.General;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Evade.MainMenu {
+namespace Assets.Scripts.MainMenu {
     public class MainMenuController : MonoBehaviour {
         private void Start() {
             Debug.Log("MainMenuController created");
@@ -18,7 +19,7 @@ namespace Evade.MainMenu {
         }
 
         public void OnClickGoBackToMainMenu() {
-            GameGlobals.Reset();
+            NetworkManager.Instance.Reset();
             SceneManager.LoadScene("MainMenu");
         }
     }

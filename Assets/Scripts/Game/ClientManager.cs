@@ -1,7 +1,8 @@
-using Evade.Communicators;
+using Assets.Scripts.General;
+using Assets.Scripts.Network.Client;
 using UnityEngine;
 
-namespace Evade.Game {
+namespace Assets.Scripts.Game {
     public class ClientManager : MonoBehaviour {
         protected UdpClientCommunicator UdpClientCommunicator;
 

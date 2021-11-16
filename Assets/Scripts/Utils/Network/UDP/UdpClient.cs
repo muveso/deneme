@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Evade.Utils.Network {
+namespace Assets.Scripts.Utils.Network.UDP {
     public class UdpClient : IDisposable {
         private const int UDP_BUFFER_SIZE = 0x10000;
 

@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Evade.Utils.Network {
+namespace Assets.Scripts.Utils.Network.TCP {
     public class TcpServer : IDisposable {
         public TcpServer(string ipAddress, int listeningPort) {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

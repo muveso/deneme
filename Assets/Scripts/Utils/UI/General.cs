@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Evade.Utils.UI {
+namespace Assets.Scripts.Utils.UI {
     public static class General {
         public static void DestroyAllChildren(Transform transform) {
             foreach (Transform child in transform) {

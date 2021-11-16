@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Evade.Utils.UI {
+namespace Assets.Scripts.Utils.UI {
     public static class ScrollView {
         private const int NEW_ITEM_GAME_OBJECT_WIDTH = 800;
         private const int NEW_ITEM_GAME_OBJECT_HEIGHT = 90;
@@ -17,6 +18,16 @@ namespace Evade.Utils.UI {
             newGameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(NEW_ITEM_GAME_OBJECT_WIDTH,
                 NEW_ITEM_GAME_OBJECT_HEIGHT);
             return newGameObject;
+        }
+
+        public static void FillScrollViewWithObjects(IEnumerable<object> objects, Transform transform) {
+            var index = 1;
+            foreach (var ob in objects) {
+                var newGameObject = CreateNewTextItemForScrollView(ob,
+                    index);
+                newGameObject.transform.SetParent(transform);
+                index++;
+            }
         }
     }
 }

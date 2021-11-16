@@ -1,9 +1,11 @@
 ﻿using System.Net;
-using Evade.Utils;
-using Evade.Utils.Network;
+using Assets.Scripts.Network.Common;
+using Assets.Scripts.Network.Server;
+using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Network;
 using UnityEngine;
 
-namespace Evade.Communicators {
+namespace Assets.Scripts.MainMenu {
     public class TcpServerMainMenuProcessingThread : BaseThread {
         private readonly TcpServerCommunicator _tcpServerCommunicator;
 

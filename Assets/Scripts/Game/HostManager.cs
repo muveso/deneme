@@ -1,10 +1,11 @@
 using System;
-using Evade.Communicators;
-using Evade.Utils;
+using Assets.Scripts.General;
+using Assets.Scripts.Network.Server;
+using Assets.Scripts.Utils;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
-namespace Evade.Game {
+namespace Assets.Scripts.Game {
     public class HostManager : ClientManager {
         private UdpServerCommunicator _udpServerCommunicator;
 
@@ -24,7 +25,7 @@ namespace Evade.Game {
 
             var message = _udpServerCommunicator.TryGetMessageFromQueue();
             if (message != null) {
-                Debug.Log("HostManager got message");
+                Debug.Log("HostLobby got message");
                 HandleMessage(message);
                 SendGlobalStateToAllClients();
             }

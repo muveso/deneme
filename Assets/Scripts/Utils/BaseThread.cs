@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-namespace Evade.Utils {
+namespace Assets.Scripts.Utils {
     public abstract class BaseThread {
         private const int TimeoutToWaitBeforeForceTerminateThreadMs = 5000;
         private readonly AutoResetEvent _stopEvent;

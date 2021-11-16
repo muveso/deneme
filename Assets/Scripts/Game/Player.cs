@@ -1,7 +1,7 @@
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
-namespace Evade.Game {
+namespace Assets.Scripts.Game {
     public class Player : MonoBehaviour {
         public Rigidbody PlayerRigidbody;
         public float Speed;

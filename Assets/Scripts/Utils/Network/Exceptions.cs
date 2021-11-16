@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Evade.Utils.Network {
+namespace Assets.Scripts.Utils.Network {
     [Serializable]
     public class SocketNotConnectedException : Exception {
         public SocketNotConnectedException() { }

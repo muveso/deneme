@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Evade.MainMenu {
+namespace Assets.Scripts.MainMenu {
     [Serializable]
     public class ClientNotConnectedException : Exception {
         public ClientNotConnectedException() { }

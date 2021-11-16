@@ -3,7 +3,7 @@ using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
 
-namespace Evade.Utils {
+namespace Assets.Scripts.Utils {
     public class Message {
         public Message(IPEndPoint ipEndpoint, Any protobuffMessage) {
             IPEndpoint = ipEndpoint;
