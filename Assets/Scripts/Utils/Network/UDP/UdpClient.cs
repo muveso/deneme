@@ -1,10 +1,11 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using JetBrains.Annotations;
 
 namespace Assets.Scripts.Utils.Network.UDP {
     public class UdpClient : IDisposable {
-        private const int UDP_BUFFER_SIZE = 0x10000;
+        private const int UdpBufferSize = 0x10000;
 
         public UdpClient(IPEndPoint endpointToConnectTo) {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -28,17 +29,25 @@ namespace Assets.Scripts.Utils.Network.UDP {
             Sock.Send(bytes, SocketFlags.None);
         }
 
+        public void SendAsync(byte[] bytes) {
+            Sock.SendAsync(bytes, SocketFlags.None);
+        }
+
         public void SendTo(byte[] bytes, IPEndPoint endpoint) {
             Sock.SendTo(bytes, SocketFlags.None, endpoint);
         }
 
-        public byte[] Receive(ref IPEndPoint remoteEp) {
+        public byte[] Receive([NotNull] ref IPEndPoint remoteEp) {
+            if (remoteEp == null) throw new ArgumentNullException(nameof(remoteEp));
             EndPoint tempRemoteEp = new IPEndPoint(IPAddress.Any, 0);
 
-            var message = new byte[UDP_BUFFER_SIZE];
-            var received = Sock.ReceiveFrom(message, UDP_BUFFER_SIZE, SocketFlags.None, ref tempRemoteEp);
+            var message = new byte[UdpBufferSize];
+            var received = Sock.ReceiveFrom(message, UdpBufferSize, SocketFlags.None, ref tempRemoteEp);
             remoteEp = (IPEndPoint) tempRemoteEp;
-            Array.Resize(ref message, received);
+            if (received < UdpBufferSize) {
+                Array.Resize(ref message, received);
+            }
+
             return message;
         }
 
@@ -48,7 +57,7 @@ namespace Assets.Scripts.Utils.Network.UDP {
 
         public override string ToString() {
             var remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
-            return $"(UdpClient) IP: {remoteIpEndPoint.Address} | Port: {remoteIpEndPoint.Port.ToString()}";
+            return $"(UdpClient) IP: {remoteIpEndPoint?.Address} | Port: {remoteIpEndPoint?.Port}";
         }
     }
 }

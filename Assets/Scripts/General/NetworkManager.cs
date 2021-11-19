@@ -2,25 +2,26 @@
 using System.Net;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
+using UnityEngine;
 
 namespace Assets.Scripts.General {
     public class Communicators : IDisposable {
-        public IClientCommunicator TcpClientCommunicator { get; set; }
+        public IClientCommunicator ReliableClientCommunicator { get; set; }
+        public IClientCommunicator UnreliableClientCommunicator { get; set; }
         public TcpServerCommunicator TcpServerCommunicator { get; set; }
-        public IClientCommunicator UdpClientCommunicator { get; set; }
         public UdpServerCommunicator UdpServerCommunicator { get; set; }
 
         public void Dispose() {
-            if (TcpClientCommunicator != null) {
-                TcpClientCommunicator.Dispose();
+            if (ReliableClientCommunicator != null) {
+                ReliableClientCommunicator.Dispose();
             }
 
             if (TcpServerCommunicator != null) {
                 TcpServerCommunicator.Dispose();
             }
 
-            if (UdpClientCommunicator != null) {
-                UdpClientCommunicator.Dispose();
+            if (UnreliableClientCommunicator != null) {
+                UnreliableClientCommunicator.Dispose();
             }
 
             if (UdpServerCommunicator != null) {
@@ -37,6 +38,7 @@ namespace Assets.Scripts.General {
             Communicators = new Communicators();
         }
 
+        public int PollTimeoutMs { get; set; }
         public IPAddress ServerIpAddress { get; set; }
         public Communicators Communicators { get; set; }
         public bool IsHost { get; set; }
@@ -63,6 +65,11 @@ namespace Assets.Scripts.General {
             ServerIpAddress = null;
             Communicators.Dispose();
             Communicators = new Communicators();
+        }
+
+        public void UpdatePollTimeoutToRefreshRate() {
+            Application.targetFrameRate = 300;
+            PollTimeoutMs = 1 / Application.targetFrameRate;
         }
     }
 }

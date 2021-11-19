@@ -6,6 +6,7 @@ using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.MainMenu {
@@ -15,13 +16,14 @@ namespace Assets.Scripts.MainMenu {
         public InputField PortInputField;
 
         private void Awake() {
+            NetworkManager.Instance.UpdatePollTimeoutToRefreshRate();
             Players = new List<ClientDetails>();
             ClientGlobals.Nickname = "PanCHocK";
-            NetworkManager.Instance.IsHost = true;
+            NetworkManager.Instance.IsHost = false;
         }
 
         private void Update() {
-            if (NetworkManager.Instance.Communicators.TcpClientCommunicator == null) {
+            if (NetworkManager.Instance.Communicators.ReliableClientCommunicator == null) {
                 return;
             }
 
@@ -32,7 +34,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private bool HandleCommunicatorMessage() {
-            var message = NetworkManager.Instance.Communicators.TcpClientCommunicator.GetMessage();
+            var message = NetworkManager.Instance.Communicators.ReliableClientCommunicator.GetMessage();
             if (message == null) {
                 return false;
             }
@@ -40,6 +42,8 @@ namespace Assets.Scripts.MainMenu {
             if (message.ProtobufMessage.Is(MainMenuStateMessage.Descriptor)) {
                 var mainMenuStateMessage = message.ProtobufMessage.Unpack<MainMenuStateMessage>();
                 UpdateClients(mainMenuStateMessage);
+            } else if (message.ProtobufMessage.Is(StartGameMessage.Descriptor)) {
+                SceneManager.LoadScene("Game");
             }
 
             return true;
@@ -55,15 +59,15 @@ namespace Assets.Scripts.MainMenu {
         }
 
         public void OnClickConnect() {
-            NetworkManager.Instance.Communicators.TcpClientCommunicator =
+            NetworkManager.Instance.Communicators.ReliableClientCommunicator =
                 new TcpClientCommunicator(new IPEndPoint(IPAddress.Parse(IPInputField.text),
                     int.Parse(PortInputField.text)));
-            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.TcpClientCommunicator);
+            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }
 
         public void OnClickReady() {
-            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.TcpClientCommunicator);
+            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
         }
     }
 }

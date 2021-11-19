@@ -5,8 +5,13 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public class Player : AbstractNetworkMonoBehaviour {
+        private int _index = 1;
         public Rigidbody PlayerRigidbody;
         public float Speed;
+
+        private void Awake() {
+            Debug.Log($"Game framerate: {Application.targetFrameRate}");
+        }
 
         protected override IMessage ClientUpdate() {
             var moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
@@ -14,13 +19,18 @@ namespace Assets.Scripts.Game {
                 return null;
             }
 
-            return new PlayerInputMessage {
-                Input = MessagesHelpers.CreateVector3Message(moveDirection)
+            var input = new PlayerInputMessage {
+                KeyboardInput = MessagesHelpers.CreateVector3Message(moveDirection),
+                Index = _index
             };
+            Debug.Log($"Send player input with index: {_index}");
+            _index++;
+            return input;
         }
 
         public override void ServerUpdate(Any message) {
-            var playerInput = message.Unpack<PlayerInputMessage>().Input;
+            var playerInput = message.Unpack<PlayerInputMessage>().KeyboardInput;
+            Debug.Log($"Got player input with index: {message.Unpack<PlayerInputMessage>().Index}");
             var moveDirection = MessagesHelpers.CreateVector3FromMessage(playerInput);
             PlayerRigidbody.velocity = moveDirection * Speed;
         }

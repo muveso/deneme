@@ -24,16 +24,16 @@ public static partial class GameReflection {
         string.Concat(
           "CgpHYW1lLnByb3RvGhlnb29nbGUvcHJvdG9idWYvYW55LnByb3RvIjEKDlZl",
           "Y3RvcjNNZXNzYWdlEgkKAXgYASABKAISCQoBeRgCIAEoAhIJCgF6GAMgASgC",
-          "IjQKElBsYXllcklucHV0TWVzc2FnZRIeCgVpbnB1dBgBIAEoCzIPLlZlY3Rv",
-          "cjNNZXNzYWdlIjcKElBsYXllclN0YXRlTWVzc2FnZRIhCghwb3NpdGlvbhgB",
-          "IAEoCzIPLlZlY3RvcjNNZXNzYWdlIkAKEkdsb2JhbFN0YXRlTWVzc2FnZRIq",
-          "CgxvYmplY3RzU3RhdGUYASADKAsyFC5nb29nbGUucHJvdG9idWYuQW55YgZw",
-          "cm90bzM="));
+          "IksKElBsYXllcklucHV0TWVzc2FnZRImCg1rZXlib2FyZElucHV0GAEgASgL",
+          "Mg8uVmVjdG9yM01lc3NhZ2USDQoFaW5kZXgYAiABKAUiNwoSUGxheWVyU3Rh",
+          "dGVNZXNzYWdlEiEKCHBvc2l0aW9uGAEgASgLMg8uVmVjdG9yM01lc3NhZ2Ui",
+          "QAoSR2xvYmFsU3RhdGVNZXNzYWdlEioKDG9iamVjdHNTdGF0ZRgBIAMoCzIU",
+          "Lmdvb2dsZS5wcm90b2J1Zi5BbnliBnByb3RvMw=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::Vector3Message), global::Vector3Message.Parser, new[]{ "X", "Y", "Z" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerInputMessage), global::PlayerInputMessage.Parser, new[]{ "Input" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerInputMessage), global::PlayerInputMessage.Parser, new[]{ "KeyboardInput", "Index" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::PlayerStateMessage), global::PlayerStateMessage.Parser, new[]{ "Position" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::GlobalStateMessage), global::GlobalStateMessage.Parser, new[]{ "ObjectsState" }, null, null, null, null)
         }));
@@ -339,7 +339,8 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public PlayerInputMessage(PlayerInputMessage other) : this() {
-    input_ = other.input_ != null ? other.input_.Clone() : null;
+    keyboardInput_ = other.keyboardInput_ != null ? other.keyboardInput_.Clone() : null;
+    index_ = other.index_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -349,15 +350,27 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
     return new PlayerInputMessage(this);
   }
 
-  /// <summary>Field number for the "input" field.</summary>
-  public const int InputFieldNumber = 1;
-  private global::Vector3Message input_;
+  /// <summary>Field number for the "keyboardInput" field.</summary>
+  public const int KeyboardInputFieldNumber = 1;
+  private global::Vector3Message keyboardInput_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public global::Vector3Message Input {
-    get { return input_; }
+  public global::Vector3Message KeyboardInput {
+    get { return keyboardInput_; }
     set {
-      input_ = value;
+      keyboardInput_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "index" field.</summary>
+  public const int IndexFieldNumber = 2;
+  private int index_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int Index {
+    get { return index_; }
+    set {
+      index_ = value;
     }
   }
 
@@ -376,7 +389,8 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
     if (ReferenceEquals(other, this)) {
       return true;
     }
-    if (!object.Equals(Input, other.Input)) return false;
+    if (!object.Equals(KeyboardInput, other.KeyboardInput)) return false;
+    if (Index != other.Index) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -384,7 +398,8 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override int GetHashCode() {
     int hash = 1;
-    if (input_ != null) hash ^= Input.GetHashCode();
+    if (keyboardInput_ != null) hash ^= KeyboardInput.GetHashCode();
+    if (Index != 0) hash ^= Index.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -403,9 +418,13 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     output.WriteRawMessage(this);
   #else
-    if (input_ != null) {
+    if (keyboardInput_ != null) {
       output.WriteRawTag(10);
-      output.WriteMessage(Input);
+      output.WriteMessage(KeyboardInput);
+    }
+    if (Index != 0) {
+      output.WriteRawTag(16);
+      output.WriteInt32(Index);
     }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
@@ -417,9 +436,13 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-    if (input_ != null) {
+    if (keyboardInput_ != null) {
       output.WriteRawTag(10);
-      output.WriteMessage(Input);
+      output.WriteMessage(KeyboardInput);
+    }
+    if (Index != 0) {
+      output.WriteRawTag(16);
+      output.WriteInt32(Index);
     }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
@@ -431,8 +454,11 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int CalculateSize() {
     int size = 0;
-    if (input_ != null) {
-      size += 1 + pb::CodedOutputStream.ComputeMessageSize(Input);
+    if (keyboardInput_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(KeyboardInput);
+    }
+    if (Index != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(Index);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -446,11 +472,14 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
     if (other == null) {
       return;
     }
-    if (other.input_ != null) {
-      if (input_ == null) {
-        Input = new global::Vector3Message();
+    if (other.keyboardInput_ != null) {
+      if (keyboardInput_ == null) {
+        KeyboardInput = new global::Vector3Message();
       }
-      Input.MergeFrom(other.Input);
+      KeyboardInput.MergeFrom(other.KeyboardInput);
+    }
+    if (other.Index != 0) {
+      Index = other.Index;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -468,10 +497,14 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
           _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
           break;
         case 10: {
-          if (input_ == null) {
-            Input = new global::Vector3Message();
+          if (keyboardInput_ == null) {
+            KeyboardInput = new global::Vector3Message();
           }
-          input.ReadMessage(Input);
+          input.ReadMessage(KeyboardInput);
+          break;
+        }
+        case 16: {
+          Index = input.ReadInt32();
           break;
         }
       }
@@ -490,10 +523,14 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
           _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
           break;
         case 10: {
-          if (input_ == null) {
-            Input = new global::Vector3Message();
+          if (keyboardInput_ == null) {
+            KeyboardInput = new global::Vector3Message();
           }
-          input.ReadMessage(Input);
+          input.ReadMessage(KeyboardInput);
+          break;
+        }
+        case 16: {
+          Index = input.ReadInt32();
           break;
         }
       }

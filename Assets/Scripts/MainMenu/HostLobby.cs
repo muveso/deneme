@@ -16,6 +16,7 @@ namespace Assets.Scripts.MainMenu {
         public InputField PortInputField;
 
         private void Awake() {
+            NetworkManager.Instance.UpdatePollTimeoutToRefreshRate();
             IPInputField.text = GameConsts.DefaultServerIpAddress;
             ClientGlobals.Nickname = "PanCHocKHost";
             NetworkManager.Instance.IsHost = true;
@@ -56,7 +57,7 @@ namespace Assets.Scripts.MainMenu {
                 new TcpServerMainMenuProcessingThread(NetworkManager.Instance.Communicators.TcpServerCommunicator);
             _tcpServerMainMenuProcessingThread.Start();
             // Initialize Host communicator
-            NetworkManager.Instance.Communicators.TcpClientCommunicator =
+            NetworkManager.Instance.Communicators.ReliableClientCommunicator =
                 new HostClientCommunicator(NetworkManager.Instance.Communicators.TcpServerCommunicator,
                     ClientGlobals.Nickname);
         }
@@ -64,6 +65,7 @@ namespace Assets.Scripts.MainMenu {
         public void OnClickStartGame() {
             if (AreAllPlayersReady()) {
                 Debug.Log("Starting Game");
+                NetworkManager.Instance.Communicators.TcpServerCommunicator.SendToAllClients(new StartGameMessage());
                 SceneManager.LoadScene("Game");
             } else {
                 Debug.Log("Not all clients ready");
@@ -72,12 +74,12 @@ namespace Assets.Scripts.MainMenu {
 
         public void OnClickConnect() {
             InitializeCommunicatorAndServer();
-            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.TcpClientCommunicator);
+            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }
 
         public void OnClickReady() {
-            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.TcpClientCommunicator);
+            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
         }
     }
 }

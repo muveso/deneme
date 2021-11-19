@@ -5,13 +5,13 @@ using Assets.Scripts.Utils.Network.UDP;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Common {
-    public abstract class AbstractUdpClientCommunicator : IClientCommunicator {
-        protected AbstractUdpClientCommunicator(IPEndPoint endpoint) {
+    public abstract class AbstractUdpCommunicator : IClientCommunicator {
+        protected AbstractUdpCommunicator(IPEndPoint endpoint) {
             MessagesQueue = new ConcurrentQueue<Message>();
             Client = new UdpClient(endpoint);
         }
 
-        protected AbstractUdpClientCommunicator(int listenPort) {
+        protected AbstractUdpCommunicator(int listenPort) {
             MessagesQueue = new ConcurrentQueue<Message>();
             Client = new UdpClient(listenPort);
         }
@@ -31,7 +31,7 @@ namespace Assets.Scripts.Network.Common {
         }
 
         public void Send(IMessage message) {
-            Client.Send(MessagesHelpers.ConvertMessageToBytes(message));
+            Client.SendAsync(MessagesHelpers.ConvertMessageToBytes(message));
         }
     }
 }

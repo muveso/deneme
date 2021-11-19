@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
+using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Network;
 using UnityEngine;
 
 namespace Assets.Scripts.Network.Server {
     public class TcpServerReceiverThread : BaseThread {
-        private const int SelectTimeoutMs = 1000;
         private readonly TcpServerCommunicator _tcpServerCommunicator;
 
         public TcpServerReceiverThread(TcpServerCommunicator tcpServerCommunicator) {
@@ -17,7 +18,7 @@ namespace Assets.Scripts.Network.Server {
             while (ThreadShouldRun) {
                 var checkReadSockets = GetSocketListFromClients();
                 checkReadSockets.Add(_tcpServerCommunicator.Server.Sock);
-                Socket.Select(checkReadSockets, null, null, SelectTimeoutMs);
+                Socket.Select(checkReadSockets, null, null, NetworkManager.Instance.PollTimeoutMs);
                 HandleReadySockets(checkReadSockets);
             }
         }
@@ -28,10 +29,14 @@ namespace Assets.Scripts.Network.Server {
                     HandleNewClient();
                 } else {
                     var client = FindClientBySocket(sock);
-                    var messageByes = client.Receive();
-                    var message = MessagesHelpers.ConvertBytesToMessage(messageByes);
-                    _tcpServerCommunicator.MessagesQueue.Enqueue(
-                        new Message(client.GetEndpoint(), message));
+                    try {
+                        var messageByes = client.Receive();
+                        var message = MessagesHelpers.ConvertBytesToMessage(messageByes);
+                        _tcpServerCommunicator.MessagesQueue.Enqueue(
+                            new Message(client.GetEndpoint(), message));
+                    } catch (SocketClosedException) {
+                        _tcpServerCommunicator.Clients.Remove(client);
+                    }
                 }
             }
         }

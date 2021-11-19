@@ -10,3 +10,5 @@ message MainMenuStateMessage {
 }
 
 message ClientReadyMessage {}
+
+message StartGameMessage {}

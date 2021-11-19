@@ -5,7 +5,7 @@ using Assets.Scripts.Utils;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
-    public class UdpServerCommunicator : AbstractUdpClientCommunicator, IServerCommunicatorForHost {
+    public class UdpServerCommunicator : AbstractUdpCommunicator, IServerCommunicatorForHost {
         private readonly SynchronizedCollection<IPEndPoint> _clients;
         private readonly UdpServerReceiverThread _udpServerReceiverThread;
 
