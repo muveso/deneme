@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
-using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Network;
@@ -18,7 +17,7 @@ namespace Assets.Scripts.Network.Server {
             while (ThreadShouldRun) {
                 var checkReadSockets = GetSocketListFromClients();
                 checkReadSockets.Add(_tcpServerCommunicator.Server.Sock);
-                Socket.Select(checkReadSockets, null, null, NetworkManager.Instance.PollTimeoutMs);
+                Socket.Select(checkReadSockets, null, null, 0);
                 HandleReadySockets(checkReadSockets);
             }
         }

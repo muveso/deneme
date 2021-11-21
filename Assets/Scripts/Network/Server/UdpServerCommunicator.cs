@@ -16,7 +16,7 @@ namespace Assets.Scripts.Network.Server {
         }
 
         public void InsertToQueue(Message message) {
-            MessagesQueue.Enqueue(message);
+            MessagesQueue.AddMessage(message);
         }
 
         public void HostConnect(string nickname) { }

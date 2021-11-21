@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using Assets.Scripts.Network.Common;
@@ -12,7 +11,7 @@ namespace Assets.Scripts.Network.Server {
         private readonly TcpServerReceiverThread _tcpServerReceiverThread;
 
         public TcpServerCommunicator(IPEndPoint localEndPoint) {
-            MessagesQueue = new ConcurrentQueue<Message>();
+            MessagesQueue = new MessagesQueue();
             Clients = new SynchronizedCollection<Common.Client>();
             Server = new TcpServer(localEndPoint);
             _tcpServerReceiverThread = new TcpServerReceiverThread(this);
@@ -23,7 +22,7 @@ namespace Assets.Scripts.Network.Server {
 
         public SynchronizedCollection<Common.Client> Clients { get; }
 
-        public ConcurrentQueue<Message> MessagesQueue { get; }
+        public MessagesQueue MessagesQueue { get; }
 
         public void Dispose() {
             _tcpServerReceiverThread?.Stop();
@@ -31,7 +30,7 @@ namespace Assets.Scripts.Network.Server {
         }
 
         public void InsertToQueue(Message message) {
-            MessagesQueue.Enqueue(message);
+            MessagesQueue.AddMessage(message);
         }
 
         public void HostConnect(string nickname) {

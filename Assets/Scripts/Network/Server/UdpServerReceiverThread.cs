@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Sockets;
-using Assets.Scripts.General;
 using Assets.Scripts.Utils;
 using UnityEngine;
 
@@ -14,14 +13,13 @@ namespace Assets.Scripts.Network.Server {
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                if (_udpServerCommunicator.Client.Sock.Poll(NetworkManager.Instance.PollTimeoutMs,
-                    SelectMode.SelectRead)) {
+                if (_udpServerCommunicator.Client.Sock.Poll(0, SelectMode.SelectRead)) {
                     var endPoint = new IPEndPoint(IPAddress.Any, 0);
                     var messageBytes = _udpServerCommunicator.Client.Receive(ref endPoint);
                     var message = MessagesHelpers.ConvertBytesToMessage(messageBytes);
                     _udpServerCommunicator.AddClientIfNotExists(endPoint);
                     Debug.Log("Got message, inserting to queue");
-                    _udpServerCommunicator.MessagesQueue.Enqueue(new Message(endPoint, message));
+                    _udpServerCommunicator.MessagesQueue.AddMessage(new Message(endPoint, message));
                 }
             }
         }

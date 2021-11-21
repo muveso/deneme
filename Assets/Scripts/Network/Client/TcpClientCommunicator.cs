@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
@@ -12,7 +12,7 @@ namespace Assets.Scripts.Network.Client {
 
         public TcpClientCommunicator(IPEndPoint serverEndPoint) {
             NetworkManager.Instance.ServerIpAddress = serverEndPoint.Address;
-            MessagesQueue = new ConcurrentQueue<Message>();
+            MessagesQueue = new MessagesQueue();
             Client = new TcpClient(serverEndPoint);
             _tcpClientReceiverThread = new TcpClientReceiverThread(this);
             _tcpClientReceiverThread.Start();
@@ -20,15 +20,18 @@ namespace Assets.Scripts.Network.Client {
 
         public TcpClient Client { get; }
 
-        public ConcurrentQueue<Message> MessagesQueue { get; }
+        public MessagesQueue MessagesQueue { get; }
 
         public void Send(IMessage message) {
             Client.Send(MessagesHelpers.ConvertMessageToBytes(message));
         }
 
-        public Message GetMessage() {
-            MessagesQueue.TryDequeue(out var message);
-            return message;
+        public Message Receive() {
+            return MessagesQueue.GetMessage();
+        }
+
+        public List<Message> ReceiveAll() {
+            return MessagesQueue.GetAllMessages();
         }
 
         public void Dispose() {
