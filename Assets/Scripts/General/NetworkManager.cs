@@ -69,7 +69,7 @@ namespace Assets.Scripts.General {
 
         public void UpdatePollTimeoutToRefreshRate() {
             Application.targetFrameRate = 300;
-            PollTimeoutMs = 1 / Application.targetFrameRate;
+            PollTimeoutMs = 1 / Application.targetFrameRate * 1000;
         }
     }
 }

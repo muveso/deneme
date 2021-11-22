@@ -19,12 +19,14 @@ namespace Assets.Scripts.Game {
         private void Update() {
             // All the game logic is here
             // Host does not need to get messages from server like the client because he is the server
-
-            var message = NetworkManager.Instance.Communicators.UdpServerCommunicator.GetMessage();
-            if (message != null) {
-                Debug.Log("HostGame got message");
-                HandleMessage(message);
-                SendGlobalStateToAllClients();
+            // Debug.Log($"HostGame index: {_index}");
+            var messages = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.ReceiveAll();
+            if (messages != null) {
+                foreach (var message in messages) {
+                    Debug.Log("HostGame got message");
+                    HandleMessage(message);
+                    SendGlobalStateToAllClients();
+                }
             }
         }
 

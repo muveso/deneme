@@ -8,12 +8,12 @@ namespace Assets.Scripts.Game {
         private void Awake() {
             var endpoint =
                 new IPEndPoint(NetworkManager.Instance.ServerIpAddress, GameConsts.DefaultUdpServerPort);
-            NetworkManager.Instance.Communicators.UdpClientCommunicator = new UdpClientCommunicator(endpoint);
+            NetworkManager.Instance.Communicators.UnreliableClientCommunicator = new UdpClientCommunicator(endpoint);
         }
 
         protected virtual void Update() {
             // Messages from server
-            var message = NetworkManager.Instance.Communicators.UdpClientCommunicator.GetMessage();
+            var message = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.ReceiveAll();
             if (message != null) { }
         }
 

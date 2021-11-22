@@ -31,7 +31,7 @@ namespace Assets.Scripts.Network.Server {
                     try {
                         var messageByes = client.Receive();
                         var message = MessagesHelpers.ConvertBytesToMessage(messageByes);
-                        _tcpServerCommunicator.MessagesQueue.Enqueue(
+                        _tcpServerCommunicator.MessagesQueue.AddMessage(
                             new Message(client.GetEndpoint(), message));
                     } catch (SocketClosedException) {
                         _tcpServerCommunicator.Clients.Remove(client);

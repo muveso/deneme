@@ -34,7 +34,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private bool HandleCommunicatorMessage() {
-            var message = NetworkManager.Instance.Communicators.ReliableClientCommunicator.GetMessage();
+            var message = NetworkManager.Instance.Communicators.ReliableClientCommunicator.Receive();
             if (message == null) {
                 return false;
             }

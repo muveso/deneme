@@ -15,11 +15,11 @@ namespace Assets.Scripts.Network.Server {
             _udpServerReceiverThread.Start();
         }
 
+        public void HostConnect(string nickname) { }
+
         public void InsertToQueue(Message message) {
             MessagesQueue.AddMessage(message);
         }
-
-        public void HostConnect(string nickname) { }
 
         public void AddClientIfNotExists(IPEndPoint endpoint) {
             if (!_clients.Contains(endpoint)) {

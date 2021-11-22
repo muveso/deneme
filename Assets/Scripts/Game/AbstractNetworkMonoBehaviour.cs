@@ -11,7 +11,7 @@ namespace Assets.Scripts.Game {
             if (IsLocal) {
                 var updateMessage = ClientUpdate();
                 if (updateMessage != null) {
-                    NetworkManager.Instance.Communicators.UdpClientCommunicator.Send(updateMessage);
+                    NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Send(updateMessage);
                 }
             }
         }
