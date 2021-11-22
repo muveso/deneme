@@ -29,10 +29,6 @@ namespace Assets.Scripts.Utils.Network.UDP {
             Sock.Send(bytes, SocketFlags.None);
         }
 
-        public void SendAsync(byte[] bytes) {
-            Sock.SendAsync(bytes, SocketFlags.None);
-        }
-
         public void SendTo(byte[] bytes, IPEndPoint endpoint) {
             Sock.SendTo(bytes, SocketFlags.None, endpoint);
         }
@@ -49,10 +45,6 @@ namespace Assets.Scripts.Utils.Network.UDP {
             }
 
             return message;
-        }
-
-        public void Close() {
-            Sock.Close();
         }
 
         public override string ToString() {

@@ -16,7 +16,6 @@ namespace Assets.Scripts.MainMenu {
         public InputField PortInputField;
 
         private void Awake() {
-            NetworkManager.Instance.UpdatePollTimeoutToRefreshRate();
             IPInputField.text = GameConsts.DefaultServerIpAddress;
             ClientGlobals.Nickname = "PanCHocKHost";
             NetworkManager.Instance.IsHost = true;

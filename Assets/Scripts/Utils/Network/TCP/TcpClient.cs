@@ -58,13 +58,9 @@ namespace Assets.Scripts.Utils.Network.TCP {
             return message;
         }
 
-        public void Close() {
-            Sock.Close();
-        }
-
         public override string ToString() {
             var remoteIpEndPoint = Sock.RemoteEndPoint as IPEndPoint;
-            return $"IP: {remoteIpEndPoint.Address} | Port: {remoteIpEndPoint.Port.ToString()}";
+            return $"IP: {remoteIpEndPoint?.Address} | Port: {remoteIpEndPoint?.Port}";
         }
     }
 }

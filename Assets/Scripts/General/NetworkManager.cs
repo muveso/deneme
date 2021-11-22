@@ -2,7 +2,6 @@
 using System.Net;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
-using UnityEngine;
 
 namespace Assets.Scripts.General {
     public class Communicators : IDisposable {
@@ -38,7 +37,6 @@ namespace Assets.Scripts.General {
             Communicators = new Communicators();
         }
 
-        public int PollTimeoutMs { get; set; }
         public IPAddress ServerIpAddress { get; set; }
         public Communicators Communicators { get; set; }
         public bool IsHost { get; set; }
@@ -65,11 +63,6 @@ namespace Assets.Scripts.General {
             ServerIpAddress = null;
             Communicators.Dispose();
             Communicators = new Communicators();
-        }
-
-        public void UpdatePollTimeoutToRefreshRate() {
-            Application.targetFrameRate = 300;
-            PollTimeoutMs = 1 / Application.targetFrameRate * 1000;
         }
     }
 }

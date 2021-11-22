@@ -4,7 +4,7 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Game {
-    public abstract class AbstractNetworkMonoBehaviour : MonoBehaviour {
+    public abstract class NetworkBehaviour : MonoBehaviour {
         protected bool IsLocal { get; set; } = true;
 
         private void Update() {

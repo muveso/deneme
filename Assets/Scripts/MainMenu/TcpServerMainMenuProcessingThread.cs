@@ -15,7 +15,7 @@ namespace Assets.Scripts.MainMenu {
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _tcpServerCommunicator.MessagesQueue.GetMessage();
+                var message = _tcpServerCommunicator.GetMessage();
                 if (message != null) {
                     HandleMessage(message);
                 }

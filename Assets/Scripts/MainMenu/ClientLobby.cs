@@ -3,6 +3,7 @@ using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Client;
 using Assets.Scripts.Network.Common;
+using Assets.Scripts.Utils.Network.TCP;
 using Assets.Scripts.Utils.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,7 +17,6 @@ namespace Assets.Scripts.MainMenu {
         public InputField PortInputField;
 
         private void Awake() {
-            NetworkManager.Instance.UpdatePollTimeoutToRefreshRate();
             Players = new List<ClientDetails>();
             ClientGlobals.Nickname = "PanCHocK";
             NetworkManager.Instance.IsHost = false;
@@ -34,7 +34,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private bool HandleCommunicatorMessage() {
-            var message = NetworkManager.Instance.Communicators.ReliableClientCommunicator.Receive();
+            var message = NetworkManager.Instance.Communicators.ReliableClientCommunicator.GetMessage();
             if (message == null) {
                 return false;
             }
@@ -59,9 +59,11 @@ namespace Assets.Scripts.MainMenu {
         }
 
         public void OnClickConnect() {
+            NetworkManager.Instance.ServerIpAddress = IPAddress.Parse(IPInputField.text);
+            var endpoint = new IPEndPoint(NetworkManager.Instance.ServerIpAddress, int.Parse(PortInputField.text));
+            var tcpMessageBasedClient = new TcpClientMessageBasedClient(new TcpClient(endpoint));
             NetworkManager.Instance.Communicators.ReliableClientCommunicator =
-                new TcpClientCommunicator(new IPEndPoint(IPAddress.Parse(IPInputField.text),
-                    int.Parse(PortInputField.text)));
+                new NetworkClientCommunicator(tcpMessageBasedClient);
             ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }

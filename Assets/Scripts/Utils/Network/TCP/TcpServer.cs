@@ -19,9 +19,5 @@ namespace Assets.Scripts.Utils.Network.TCP {
         public TcpClient Accept() {
             return new TcpClient(Sock.Accept());
         }
-
-        public void Close() {
-            Sock.Close();
-        }
     }
 }

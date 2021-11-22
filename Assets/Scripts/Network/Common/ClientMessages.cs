@@ -1,4 +1,5 @@
 using Assets.Scripts.General;
+using Assets.Scripts.Network.Client;
 
 namespace Assets.Scripts.Network.Common {
     public static class ClientMessages {
