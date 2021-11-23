@@ -30,15 +30,20 @@ namespace Assets.Scripts.MainMenu {
                 return;
             }
 
+            if (!_tcpServerMainMenuProcessingThread.StateChanged.WaitOne(0)) {
+                return;
+            }
+
+            Debug.Log("change stat");
             Utils.UI.General.DestroyAllChildren(transform);
             ScrollView.FillScrollViewWithObjects(NetworkManager.Instance.Communicators.TcpServerCommunicator.Clients,
                 transform);
         }
 
         private bool AreAllPlayersReady() {
-            foreach (var players in NetworkManager.Instance.Communicators.TcpServerCommunicator
-                .GetClientDetailsList()) {
-                if (!players.IsReady) {
+            foreach (var client in NetworkManager.Instance.Communicators.TcpServerCommunicator
+                .Clients) {
+                if (!client.Details.IsReady) {
                     return false;
                 }
             }
@@ -61,10 +66,11 @@ namespace Assets.Scripts.MainMenu {
                     ClientGlobals.Nickname);
         }
 
+
         public void OnClickStartGame() {
             if (AreAllPlayersReady()) {
                 Debug.Log("Starting Game");
-                NetworkManager.Instance.Communicators.TcpServerCommunicator.SendToAllClients(new StartGameMessage());
+                NetworkManager.Instance.Communicators.TcpServerCommunicator.SendAll(new StartGameMessage());
                 SceneManager.LoadScene("Game");
             } else {
                 Debug.Log("Not all clients ready");
