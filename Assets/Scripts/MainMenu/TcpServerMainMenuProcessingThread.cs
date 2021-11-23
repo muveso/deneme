@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Threading;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils;
@@ -12,13 +13,17 @@ namespace Assets.Scripts.MainMenu {
 
         public TcpServerMainMenuProcessingThread(TcpServerCommunicator tcpServerCommunicator) {
             _tcpServerCommunicator = tcpServerCommunicator;
+            StateChanged = new AutoResetEvent(false);
         }
+
+        public AutoResetEvent StateChanged { get; }
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
                 var message = _tcpServerCommunicator.Receive();
                 if (message != null) {
                     HandleMessage(message);
+                    StateChanged.Set();
                 }
             }
         }
@@ -62,7 +67,7 @@ namespace Assets.Scripts.MainMenu {
                 mainMenuMessage.ClientsDetails.Add(detailsMessage);
             }
 
-            _tcpServerCommunicator.SendToAllClients(mainMenuMessage);
+            _tcpServerCommunicator.SendAll(mainMenuMessage);
         }
     }
 }

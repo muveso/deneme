@@ -11,12 +11,17 @@ using Google.Protobuf;
 namespace Assets.Scripts.Network.Server {
     public class TcpServerCommunicator : IServerCommunicatorForHost, IMessageReader, IServerMessageWriter, IDisposable {
         private readonly ConcurrentQueue<MessageToReceive> _receieveMessagesQueue;
+        private readonly ConcurrentQueue<MessageToSend> _sendMessagesQueue;
         private readonly TcpServerCommunicatorReceiverThread _tcpServerCommunicatorReceiverThread;
+        private readonly TcpServerCommunicatorSenderThread _tcpServerCommunicatorSenderThread;
 
         public TcpServerCommunicator(IPEndPoint localEndPoint) {
             _receieveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
+            _sendMessagesQueue = new ConcurrentQueue<MessageToSend>();
             Clients = new SynchronizedCollection<Common.Client>();
             Server = new TcpServer(localEndPoint);
+            _tcpServerCommunicatorSenderThread = new TcpServerCommunicatorSenderThread(this);
+            _tcpServerCommunicatorSenderThread.Start();
             _tcpServerCommunicatorReceiverThread = new TcpServerCommunicatorReceiverThread(this);
             _tcpServerCommunicatorReceiverThread.Start();
         }
@@ -28,6 +33,7 @@ namespace Assets.Scripts.Network.Server {
 
         public void Dispose() {
             _tcpServerCommunicatorReceiverThread?.Stop();
+            _tcpServerCommunicatorSenderThread?.Stop();
             Server?.Dispose();
         }
 
@@ -49,27 +55,16 @@ namespace Assets.Scripts.Network.Server {
         }
 
         public void Send(IMessage message, List<IPEndPoint> clients) {
-            throw new NotImplementedException();
+            _sendMessagesQueue.Enqueue(new MessageToSend(clients, message));
         }
 
         public void SendAll(IMessage message) {
-            throw new NotImplementedException();
+            Send(message, null);
         }
 
-        public List<ClientDetails> GetClientDetailsList() {
-            var clientDetailsList = new List<ClientDetails>();
-            foreach (var client in Clients) {
-                clientDetailsList.Add(client.Details);
-            }
-
-            return clientDetailsList;
-        }
-
-        public void SendToAllClients(IMessage message) {
-            var messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
-            foreach (var client in Clients) {
-                client.Send(messageBytes);
-            }
+        public MessageToSend GetMessageToSend() {
+            _sendMessagesQueue.TryDequeue(out var message);
+            return message;
         }
     }
 }

@@ -1,7 +1,7 @@
 using Assets.Scripts.Utils.Messages;
 
 namespace Assets.Scripts.Network.Common {
-    public interface IInternalMessageWrite {
+    public interface IInternalMessageWriter {
         public void AddMessageToReceive(MessageToReceive messageToReceive);
     }
 }
