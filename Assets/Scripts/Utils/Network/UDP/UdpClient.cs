@@ -39,6 +39,11 @@ namespace Assets.Scripts.Utils.Network.UDP {
 
             var message = new byte[UdpBufferSize];
             var received = Sock.ReceiveFrom(message, UdpBufferSize, SocketFlags.None, ref tempRemoteEp);
+            if (received == 0) {
+                Sock.Close();
+                throw new SocketClosedException();
+            }
+
             remoteEp = (IPEndPoint) tempRemoteEp;
             if (received < UdpBufferSize) {
                 Array.Resize(ref message, received);

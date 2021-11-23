@@ -12,6 +12,8 @@ message PlayerInputMessage {
 	int32 index = 2;
 }
 
+message ServerDisconnectMessage {}
+
 message PlayerStateMessage {
 	Vector3Message position = 1;
 }

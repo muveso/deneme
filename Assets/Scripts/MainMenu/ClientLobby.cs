@@ -39,7 +39,10 @@ namespace Assets.Scripts.MainMenu {
                 return false;
             }
 
-            if (message.AnyMessage.Is(MainMenuStateMessage.Descriptor)) {
+            if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
+                SceneManager.LoadScene("MainMenu");
+            } else if (message.AnyMessage.Is(
+                MainMenuStateMessage.Descriptor)) {
                 var mainMenuStateMessage = message.AnyMessage.Unpack<MainMenuStateMessage>();
                 UpdateClients(mainMenuStateMessage);
             } else if (message.AnyMessage.Is(StartGameMessage.Descriptor)) {

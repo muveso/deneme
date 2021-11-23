@@ -20,8 +20,12 @@ namespace Assets.Scripts.Utils {
             _thread.Start();
         }
 
-        public void Stop() {
+        public void Stop(bool wait = true) {
             _stopEvent.Set();
+            if (!wait) {
+                return;
+            }
+
             if (!_thread.Join(TimeoutToWaitBeforeForceTerminateThreadMs)) {
                 Debug.LogError("Thread got timeout to stop so terminating :(");
                 _thread.Abort();

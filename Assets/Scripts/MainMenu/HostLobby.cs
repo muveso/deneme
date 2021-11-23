@@ -34,7 +34,6 @@ namespace Assets.Scripts.MainMenu {
                 return;
             }
 
-            Debug.Log("change stat");
             Utils.UI.General.DestroyAllChildren(transform);
             ScrollView.FillScrollViewWithObjects(NetworkManager.Instance.Communicators.TcpServerCommunicator.Clients,
                 transform);

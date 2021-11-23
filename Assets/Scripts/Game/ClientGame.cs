@@ -4,6 +4,7 @@ using Assets.Scripts.Network.Client;
 using Assets.Scripts.Utils.Network.UDP;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Game {
     public class ClientGame : MonoBehaviour {
@@ -21,8 +22,14 @@ namespace Assets.Scripts.Game {
         protected virtual void Update() {
             // Messages from server
             var messages = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.ReceiveAll();
-            if (messages != null) {
-                foreach (var message in messages) {
+            if (messages == null) {
+                return;
+            }
+
+            foreach (var message in messages) {
+                if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
+                    SceneManager.LoadScene("MainMenu");
+                } else {
                     HandleGlobalState(message.AnyMessage.Unpack<GlobalStateMessage>());
                 }
             }
