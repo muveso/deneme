@@ -1,60 +1,67 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using Assets.Scripts.Network.Client;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network.UDP;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
-    public class UdpServerCommunicator : IServerCommunicator, IMessageReader, IDisposable {
-        private readonly UdpClientMessageBasedClient _client;
-        private readonly SynchronizedCollection<IPEndPoint> _clients;
-        private readonly MessagesQueue _messagesQueue;
-        private readonly UdpServerReceiverThread _udpServerReceiverThread;
+    public class UdpServerCommunicator : IServerCommunicatorForHost, IMessageReader, IServerMessageWriter, IDisposable {
+        private readonly ConcurrentQueue<MessageToReceive> _receiveMessagesQueue;
+        private readonly ConcurrentQueue<MessageToSend> _sendMessagesQueue;
+        private readonly UdpServerCommunicatorReceiverThread _udpServerCommunicatorReceiverThread;
+        private readonly UdpServerCommunicatorSenderThread _udpServerCommunicatorSenderThread;
 
         public UdpServerCommunicator(int listeningPort) {
-            _messagesQueue = new MessagesQueue();
-            _client = new UdpClientMessageBasedClient(new UdpClient(listeningPort));
-            _clients = new SynchronizedCollection<IPEndPoint>();
-            _udpServerReceiverThread = new UdpServerReceiverThread(this);
-            _udpServerReceiverThread.Start();
+            _receiveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
+            _sendMessagesQueue = new ConcurrentQueue<MessageToSend>();
+            Client = new UdpClientMessageBasedClient(new UdpClient(listeningPort));
+            Clients = new SynchronizedCollection<IPEndPoint>();
+            _udpServerCommunicatorSenderThread = new UdpServerCommunicatorSenderThread(this);
+            _udpServerCommunicatorSenderThread.Start();
+            _udpServerCommunicatorReceiverThread = new UdpServerCommunicatorReceiverThread(this);
+            _udpServerCommunicatorReceiverThread.Start();
         }
+
+        public UdpClientMessageBasedClient Client { get; }
+        public SynchronizedCollection<IPEndPoint> Clients { get; }
 
         public void Dispose() {
-            _udpServerReceiverThread?.Stop();
-            _client?.Dispose();
+            _udpServerCommunicatorSenderThread?.Stop();
+            _udpServerCommunicatorReceiverThread?.Stop();
+            Client?.Dispose();
         }
 
-        public Message GetMessage() {
-            return _messagesQueue.GetMessage();
+        public MessageToReceive Receive() {
+            _receiveMessagesQueue.TryDequeue(out var message);
+            return message;
         }
 
-        public List<Message> GetAllMessages() {
-            return _messagesQueue.GetAllMessages();
+        public List<MessageToReceive> ReceiveAll() {
+            return EnumerableUtils.DequeueAllQueue(_receiveMessagesQueue);
         }
 
         public void HostConnect(string nickname) { }
 
-        public void AddMessage(Message message) {
-            _messagesQueue.AddMessage(message);
+        public void AddMessageToReceive(MessageToReceive messageToReceive) {
+            _receiveMessagesQueue.Enqueue(messageToReceive);
         }
 
-        public void AddClientIfNotExists(IPEndPoint endpoint) {
-            if (!_clients.Contains(endpoint)) {
-                _clients.Add(endpoint);
-            }
+        public void Send(IMessage message, List<IPEndPoint> clients) {
+            _sendMessagesQueue.Enqueue(new MessageToSend(clients, message));
         }
 
-        public Message Receive(bool block = true) {
-            return _client.Receive(block);
+        public void SendAll(IMessage message) {
+            Send(message, null);
         }
 
-        public void SendToAllClients(IMessage message) {
-            foreach (var client in _clients) {
-                _client.SendTo(message, client);
-            }
+        public MessageToSend GetMessageToSend() {
+            _sendMessagesQueue.TryDequeue(out var message);
+            return message;
         }
     }
 }

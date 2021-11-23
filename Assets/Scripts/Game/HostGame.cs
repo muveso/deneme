@@ -1,7 +1,7 @@
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
-using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
@@ -20,10 +20,10 @@ namespace Assets.Scripts.Game {
             // All the game logic is here
             // Host does not need to get messages from server like the client because he is the server
             // Debug.Log($"HostGame index: {_index}");
-            var messages = NetworkManager.Instance.Communicators.UdpServerCommunicator.GetAllMessages();
+            var messages = NetworkManager.Instance.Communicators.UdpServerCommunicator.ReceiveAll();
             if (messages != null) {
                 foreach (var message in messages) {
-                    Debug.Log("HostGame got message");
+                    Debug.Log("HostGame got messageToReceive");
                     HandleMessage(message);
                     SendGlobalStateToAllClients();
                 }
@@ -32,7 +32,7 @@ namespace Assets.Scripts.Game {
 
         private void SendGlobalStateToAllClients() {
             var globalState = GetGlobalState();
-            NetworkManager.Instance.Communicators.UdpServerCommunicator.SendToAllClients(globalState);
+            NetworkManager.Instance.Communicators.UdpServerCommunicator.SendAll(globalState);
         }
 
         private IMessage GetGlobalState() {
@@ -42,8 +42,8 @@ namespace Assets.Scripts.Game {
             return globalStateMessage;
         }
 
-        private void HandleMessage(Message message) {
-            var anyMessage = message.ProtobufMessage;
+        private void HandleMessage(MessageToReceive messageToReceive) {
+            var anyMessage = messageToReceive.AnyMessage;
             if (anyMessage.Is(PlayerInputMessage.Descriptor)) {
                 GameObject.FindWithTag("Player").GetComponent<Player>().ServerUpdate(anyMessage);
             }

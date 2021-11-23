@@ -1,19 +1,8 @@
-using System.Net;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
-namespace Assets.Scripts.Utils {
-    public class Message {
-        public Message(IPEndPoint ipEndpoint, Any protobuffMessage) {
-            IPEndpoint = ipEndpoint;
-            ProtobufMessage = protobuffMessage;
-        }
-
-        public IPEndPoint IPEndpoint { get; }
-        public Any ProtobufMessage { get; }
-    }
-
+namespace Assets.Scripts.Utils.Messages {
     public static class MessagesHelpers {
         public static Vector3Message CreateVector3Message(Vector3 vector) {
             var message = new Vector3Message {

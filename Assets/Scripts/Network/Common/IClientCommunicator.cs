@@ -1,8 +1,5 @@
 using System;
-using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Common {
-    public interface IClientCommunicator : IMessageReader, IDisposable {
-        void Send(IMessage message);
-    }
+    public interface IClientCommunicator : IMessageReader, IMessageWriter, IDisposable { }
 }

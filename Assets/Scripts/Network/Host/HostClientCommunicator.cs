@@ -1,37 +1,32 @@
 using System;
 using System.Collections.Generic;
-using Assets.Scripts.Network.Client;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
-using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Network.Host {
     public class HostClientCommunicator : IClientCommunicator {
-        private readonly IServerCommunicator _serverCommunicator;
+        private readonly IServerCommunicatorForHost _serverCommunicator;
 
-        public HostClientCommunicator(IServerCommunicator serverCommunicator, string nickname) {
+        public HostClientCommunicator(IServerCommunicatorForHost serverCommunicator, string nickname) {
             _serverCommunicator = serverCommunicator;
             _serverCommunicator.HostConnect(nickname);
         }
 
         public void Send(IMessage message) {
-            var messageToInsert = new Message(HostClient.GetHostClientEndpoint(), Any.Pack(message));
+            var messageToInsert = new MessageToReceive(HostClient.GetHostClientEndpoint(), Any.Pack(message));
             Debug.Log("Host client inserting message to queue");
-            _serverCommunicator.AddMessage(messageToInsert);
+            _serverCommunicator.AddMessageToReceive(messageToInsert);
         }
 
-        public Message Receive(bool block = true) {
+        public MessageToReceive Receive() {
             throw new NotImplementedException();
         }
 
-        public Message GetMessage() {
-            throw new NotImplementedException();
-        }
-
-        public List<Message> GetAllMessages() {
+        public List<MessageToReceive> ReceiveAll() {
             throw new NotImplementedException();
         }
 

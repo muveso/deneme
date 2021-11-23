@@ -1,44 +1,57 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
+using UnityEngine;
 
 namespace Assets.Scripts.Network.Client {
-    public class NetworkClientCommunicator : IClientCommunicator, IMessageWriter {
-        private readonly IMessageBasedClient _client;
-        private readonly MessagesQueue _messagesQueue;
-        private readonly NetworkClientReceiverThread _networkClientReceiverThread;
+    public class NetworkClientCommunicator : IClientCommunicator {
+        private readonly NetworkClientCommunicatorReceiverThread _networkClientCommunicatorReceiverThread;
+        private readonly NetworkClientCommunicatorSenderThread _networkClientCommunicatorSenderThread;
+        private readonly ConcurrentQueue<MessageToReceive> _receiveMessagesQueue;
+        private readonly ConcurrentQueue<IMessage> _sendMessagesQueue;
 
-        public NetworkClientCommunicator(IMessageBasedClient messageBasedClient) {
-            _messagesQueue = new MessagesQueue();
-            _client = messageBasedClient;
-            _networkClientReceiverThread = new NetworkClientReceiverThread(this);
-            _networkClientReceiverThread.Start();
+        public NetworkClientCommunicator(IMessageBasedClient messageBasedNetworkClient) {
+            _receiveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
+            _sendMessagesQueue = new ConcurrentQueue<IMessage>();
+            NetworkClient = messageBasedNetworkClient;
+            _networkClientCommunicatorSenderThread = new NetworkClientCommunicatorSenderThread(this);
+            _networkClientCommunicatorSenderThread.Start();
+            _networkClientCommunicatorReceiverThread = new NetworkClientCommunicatorReceiverThread(this);
+            _networkClientCommunicatorReceiverThread.Start();
         }
 
+        public IMessageBasedClient NetworkClient { get; }
+
         public void Dispose() {
-            _networkClientReceiverThread?.Stop();
-            _client?.Dispose();
+            _networkClientCommunicatorReceiverThread?.Stop();
+            _networkClientCommunicatorSenderThread?.Stop();
+            NetworkClient?.Dispose();
+        }
+
+        public MessageToReceive Receive() {
+            _receiveMessagesQueue.TryDequeue(out var message);
+            return message;
+        }
+
+        public List<MessageToReceive> ReceiveAll() {
+            return EnumerableUtils.DequeueAllQueue(_receiveMessagesQueue);
         }
 
         public void Send(IMessage message) {
-            _client.Send(message);
+            Debug.Log("Network client enqueue messageToReceive to send");
+            _sendMessagesQueue.Enqueue(message);
         }
 
-        public Message Receive(bool block = true) {
-            return _client.Receive(block);
+        public void AddMessageToReceive(MessageToReceive messageToReceive) {
+            _receiveMessagesQueue.Enqueue(messageToReceive);
         }
 
-        public Message GetMessage() {
-            return _messagesQueue.GetMessage();
-        }
-
-        public List<Message> GetAllMessages() {
-            return _messagesQueue.GetAllMessages();
-        }
-
-        public void AddMessage(Message message) {
-            _messagesQueue.AddMessage(message);
+        public IMessage GetMessageToSend() {
+            _sendMessagesQueue.TryDequeue(out var message);
+            return message;
         }
     }
 }

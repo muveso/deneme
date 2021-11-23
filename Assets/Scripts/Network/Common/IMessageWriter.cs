@@ -1,7 +1,7 @@
-using Assets.Scripts.Utils;
+using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Common {
     public interface IMessageWriter {
-        void AddMessage(Message message);
+        void Send(IMessage message);
     }
 }

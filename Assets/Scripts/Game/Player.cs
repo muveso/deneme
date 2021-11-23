@@ -1,4 +1,4 @@
-using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;

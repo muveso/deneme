@@ -34,15 +34,15 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private bool HandleCommunicatorMessage() {
-            var message = NetworkManager.Instance.Communicators.ReliableClientCommunicator.GetMessage();
+            var message = NetworkManager.Instance.Communicators.ReliableClientCommunicator.Receive();
             if (message == null) {
                 return false;
             }
 
-            if (message.ProtobufMessage.Is(MainMenuStateMessage.Descriptor)) {
-                var mainMenuStateMessage = message.ProtobufMessage.Unpack<MainMenuStateMessage>();
+            if (message.AnyMessage.Is(MainMenuStateMessage.Descriptor)) {
+                var mainMenuStateMessage = message.AnyMessage.Unpack<MainMenuStateMessage>();
                 UpdateClients(mainMenuStateMessage);
-            } else if (message.ProtobufMessage.Is(StartGameMessage.Descriptor)) {
+            } else if (message.AnyMessage.Is(StartGameMessage.Descriptor)) {
                 SceneManager.LoadScene("Game");
             }
 

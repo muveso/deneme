@@ -2,6 +2,7 @@
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network;
 using UnityEngine;
 
@@ -15,22 +16,22 @@ namespace Assets.Scripts.MainMenu {
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _tcpServerCommunicator.GetMessage();
+                var message = _tcpServerCommunicator.Receive();
                 if (message != null) {
                     HandleMessage(message);
                 }
             }
         }
 
-        private void HandleMessage(Message message) {
-            var protobufMessage = message.ProtobufMessage;
-            var client = FindClientByIPEndpoint(message.IPEndpoint);
+        private void HandleMessage(MessageToReceive messageToReceive) {
+            var protobufMessage = messageToReceive.AnyMessage;
+            var client = FindClientByIPEndpoint(messageToReceive.IPEndpoint);
             try {
                 if (protobufMessage.Is(ClientReadyMessage.Descriptor)) {
-                    Debug.Log($"Client {client.Details.Nickname} sent Ready message");
+                    Debug.Log($"Client {client.Details.Nickname} sent Ready messageToReceive");
                     client.Details.ToggleReady();
                 } else if (protobufMessage.Is(ClientDetailsMessage.Descriptor)) {
-                    Debug.Log($"Client {client.Details.Nickname} sent initilize details message");
+                    Debug.Log($"Client {client.Details.Nickname} sent initilize details messageToReceive");
                     var details = protobufMessage.Unpack<ClientDetailsMessage>();
                     client.Details.Nickname = details.Nickname;
                 }

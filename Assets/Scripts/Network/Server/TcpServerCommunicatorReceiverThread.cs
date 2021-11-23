@@ -2,14 +2,15 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network;
 using UnityEngine;
 
 namespace Assets.Scripts.Network.Server {
-    public class TcpServerReceiverThread : BaseThread {
+    public class TcpServerCommunicatorReceiverThread : BaseThread {
         private readonly TcpServerCommunicator _tcpServerCommunicator;
 
-        public TcpServerReceiverThread(TcpServerCommunicator tcpServerCommunicator) {
+        public TcpServerCommunicatorReceiverThread(TcpServerCommunicator tcpServerCommunicator) {
             _tcpServerCommunicator = tcpServerCommunicator;
         }
 
@@ -31,8 +32,8 @@ namespace Assets.Scripts.Network.Server {
                     try {
                         var messageByes = client.Receive();
                         var message = MessagesHelpers.ConvertBytesToMessage(messageByes);
-                        _tcpServerCommunicator.AddMessage(
-                            new Message(client.GetEndpoint(), message));
+                        _tcpServerCommunicator.AddMessageToReceive(
+                            new MessageToReceive(client.GetEndpoint(), message));
                     } catch (SocketClosedException) {
                         _tcpServerCommunicator.Clients.Remove(client);
                     }

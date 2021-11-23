@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 
 namespace Assets.Scripts.Network.Common {
     public interface IMessageReader {
-        Message GetMessage();
-        List<Message> GetAllMessages();
+        MessageToReceive Receive();
+        List<MessageToReceive> ReceiveAll();
     }
 }

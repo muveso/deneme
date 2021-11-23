@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 using UdpClient = Assets.Scripts.Utils.Network.UDP.UdpClient;
 
@@ -16,14 +17,14 @@ namespace Assets.Scripts.Network.Client {
             _udpClient.Send(MessagesHelpers.ConvertMessageToBytes(message));
         }
 
-        public Message Receive(bool block = true) {
+        public MessageToReceive Receive(bool block = true) {
             if (!block && !_udpClient.Sock.Poll(0, SelectMode.SelectRead)) {
                 return null;
             }
 
             var endpoint = new IPEndPoint(IPAddress.Any, 0);
             var message = MessagesHelpers.ConvertBytesToMessage(_udpClient.Receive(ref endpoint));
-            return new Message(endpoint, message);
+            return new MessageToReceive(endpoint, message);
         }
 
         public void Dispose() {

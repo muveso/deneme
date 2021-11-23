@@ -1,22 +1,24 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
+using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network.TCP;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
-    public class TcpServerCommunicator : IServerCommunicator, IMessageReader, IDisposable {
-        private readonly MessagesQueue _messagesQueue;
-        private readonly TcpServerReceiverThread _tcpServerReceiverThread;
+    public class TcpServerCommunicator : IServerCommunicatorForHost, IMessageReader, IServerMessageWriter, IDisposable {
+        private readonly ConcurrentQueue<MessageToReceive> _receieveMessagesQueue;
+        private readonly TcpServerCommunicatorReceiverThread _tcpServerCommunicatorReceiverThread;
 
         public TcpServerCommunicator(IPEndPoint localEndPoint) {
-            _messagesQueue = new MessagesQueue();
+            _receieveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
             Clients = new SynchronizedCollection<Common.Client>();
             Server = new TcpServer(localEndPoint);
-            _tcpServerReceiverThread = new TcpServerReceiverThread(this);
-            _tcpServerReceiverThread.Start();
+            _tcpServerCommunicatorReceiverThread = new TcpServerCommunicatorReceiverThread(this);
+            _tcpServerCommunicatorReceiverThread.Start();
         }
 
         public TcpServer Server { get; }
@@ -25,24 +27,33 @@ namespace Assets.Scripts.Network.Server {
 
 
         public void Dispose() {
-            _tcpServerReceiverThread?.Stop();
+            _tcpServerCommunicatorReceiverThread?.Stop();
             Server?.Dispose();
         }
 
-        public Message GetMessage() {
-            return _messagesQueue.GetMessage();
+        public MessageToReceive Receive() {
+            _receieveMessagesQueue.TryDequeue(out var message);
+            return message;
         }
 
-        public List<Message> GetAllMessages() {
-            return _messagesQueue.GetAllMessages();
+        public List<MessageToReceive> ReceiveAll() {
+            return EnumerableUtils.DequeueAllQueue(_receieveMessagesQueue);
         }
 
         public void HostConnect(string nickname) {
             Clients.Add(new HostClient(new ClientDetails(nickname)));
         }
 
-        public void AddMessage(Message message) {
-            _messagesQueue.AddMessage(message);
+        public void AddMessageToReceive(MessageToReceive messageToReceive) {
+            _receieveMessagesQueue.Enqueue(messageToReceive);
+        }
+
+        public void Send(IMessage message, List<IPEndPoint> clients) {
+            throw new NotImplementedException();
+        }
+
+        public void SendAll(IMessage message) {
+            throw new NotImplementedException();
         }
 
         public List<ClientDetails> GetClientDetailsList() {

@@ -20,10 +20,10 @@ namespace Assets.Scripts.Game {
 
         protected virtual void Update() {
             // Messages from server
-            var messages = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.GetAllMessages();
+            var messages = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.ReceiveAll();
             if (messages != null) {
                 foreach (var message in messages) {
-                    HandleGlobalState(message.ProtobufMessage.Unpack<GlobalStateMessage>());
+                    HandleGlobalState(message.AnyMessage.Unpack<GlobalStateMessage>());
                 }
             }
         }
