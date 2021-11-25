@@ -21,17 +21,16 @@ namespace Assets.Scripts.Game {
 
         protected virtual void Update() {
             // Messages from server
-            var messages = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.ReceiveAll();
-            if (messages == null) {
+            var message = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Receive();
+            if (message == null) {
                 return;
             }
 
-            foreach (var message in messages) {
-                if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
-                    SceneManager.LoadScene("MainMenu");
-                } else {
-                    HandleGlobalState(message.AnyMessage.Unpack<GlobalStateMessage>());
-                }
+
+            if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
+                SceneManager.LoadScene("MainMenu");
+            } else {
+                HandleGlobalState(message.AnyMessage.Unpack<GlobalStateMessage>());
             }
         }
 
