@@ -38,8 +38,7 @@ namespace Assets.Scripts.Network.Server {
         }
 
         public MessageToReceive Receive() {
-            _receieveMessagesQueue.TryDequeue(out var message);
-            return message;
+            return EnumerableUtils.TryDequeue(_receieveMessagesQueue);
         }
 
         public List<MessageToReceive> ReceiveAll() {
@@ -63,8 +62,7 @@ namespace Assets.Scripts.Network.Server {
         }
 
         public MessageToSend GetMessageToSend() {
-            _sendMessagesQueue.TryDequeue(out var message);
-            return message;
+            return EnumerableUtils.TryDequeue(_sendMessagesQueue);
         }
     }
 }
