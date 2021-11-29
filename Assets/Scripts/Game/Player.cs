@@ -6,6 +6,7 @@ using UnityEngine;
 namespace Assets.Scripts.Game {
     public class Player : NetworkBehaviour {
         private int _index = 1;
+        private int _serializeIndex = 1;
         public Rigidbody PlayerRigidbody;
         public float Speed;
 
@@ -36,14 +37,19 @@ namespace Assets.Scripts.Game {
         }
 
         public override void DeserializeState(Any message) {
+            Debug.Log($"Deserialize player state with index: {message.Unpack<PlayerStateMessage>().Index}");
             var position = message.Unpack<PlayerStateMessage>().Position;
-            PlayerRigidbody.position = MessagesHelpers.CreateVector3FromMessage(position);
+            transform.position = MessagesHelpers.CreateVector3FromMessage(position);
         }
 
         public override IMessage SerializeState() {
-            return new PlayerStateMessage {
-                Position = MessagesHelpers.CreateVector3Message(PlayerRigidbody.position)
+            Debug.Log($"Serialize player state with index: {_serializeIndex}");
+            var playerStateMessage = new PlayerStateMessage {
+                Position = MessagesHelpers.CreateVector3Message(transform.position),
+                Index = _serializeIndex
             };
+            _serializeIndex++;
+            return playerStateMessage;
         }
     }
 }
