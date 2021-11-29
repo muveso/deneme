@@ -26,17 +26,17 @@ public static partial class GameReflection {
           "Y3RvcjNNZXNzYWdlEgkKAXgYASABKAISCQoBeRgCIAEoAhIJCgF6GAMgASgC",
           "IksKElBsYXllcklucHV0TWVzc2FnZRImCg1rZXlib2FyZElucHV0GAEgASgL",
           "Mg8uVmVjdG9yM01lc3NhZ2USDQoFaW5kZXgYAiABKAUiGQoXU2VydmVyRGlz",
-          "Y29ubmVjdE1lc3NhZ2UiNwoSUGxheWVyU3RhdGVNZXNzYWdlEiEKCHBvc2l0",
-          "aW9uGAEgASgLMg8uVmVjdG9yM01lc3NhZ2UiQAoSR2xvYmFsU3RhdGVNZXNz",
-          "YWdlEioKDG9iamVjdHNTdGF0ZRgBIAMoCzIULmdvb2dsZS5wcm90b2J1Zi5B",
-          "bnliBnByb3RvMw=="));
+          "Y29ubmVjdE1lc3NhZ2UiRgoSUGxheWVyU3RhdGVNZXNzYWdlEiEKCHBvc2l0",
+          "aW9uGAEgASgLMg8uVmVjdG9yM01lc3NhZ2USDQoFaW5kZXgYAiABKAUiQAoS",
+          "R2xvYmFsU3RhdGVNZXNzYWdlEioKDG9iamVjdHNTdGF0ZRgBIAMoCzIULmdv",
+          "b2dsZS5wcm90b2J1Zi5BbnliBnByb3RvMw=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::Vector3Message), global::Vector3Message.Parser, new[]{ "X", "Y", "Z" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::PlayerInputMessage), global::PlayerInputMessage.Parser, new[]{ "KeyboardInput", "Index" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::ServerDisconnectMessage), global::ServerDisconnectMessage.Parser, null, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerStateMessage), global::PlayerStateMessage.Parser, new[]{ "Position" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerStateMessage), global::PlayerStateMessage.Parser, new[]{ "Position", "Index" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::GlobalStateMessage), global::GlobalStateMessage.Parser, new[]{ "ObjectsState" }, null, null, null, null)
         }));
   }
@@ -729,6 +729,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public PlayerStateMessage(PlayerStateMessage other) : this() {
     position_ = other.position_ != null ? other.position_.Clone() : null;
+    index_ = other.index_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -750,6 +751,18 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
     }
   }
 
+  /// <summary>Field number for the "index" field.</summary>
+  public const int IndexFieldNumber = 2;
+  private int index_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int Index {
+    get { return index_; }
+    set {
+      index_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -766,6 +779,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
       return true;
     }
     if (!object.Equals(Position, other.Position)) return false;
+    if (Index != other.Index) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -774,6 +788,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
   public override int GetHashCode() {
     int hash = 1;
     if (position_ != null) hash ^= Position.GetHashCode();
+    if (Index != 0) hash ^= Index.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -796,6 +811,10 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
       output.WriteRawTag(10);
       output.WriteMessage(Position);
     }
+    if (Index != 0) {
+      output.WriteRawTag(16);
+      output.WriteInt32(Index);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -810,6 +829,10 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
       output.WriteRawTag(10);
       output.WriteMessage(Position);
     }
+    if (Index != 0) {
+      output.WriteRawTag(16);
+      output.WriteInt32(Index);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -822,6 +845,9 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
     int size = 0;
     if (position_ != null) {
       size += 1 + pb::CodedOutputStream.ComputeMessageSize(Position);
+    }
+    if (Index != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(Index);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -840,6 +866,9 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
         Position = new global::Vector3Message();
       }
       Position.MergeFrom(other.Position);
+    }
+    if (other.Index != 0) {
+      Index = other.Index;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -863,6 +892,10 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
           input.ReadMessage(Position);
           break;
         }
+        case 16: {
+          Index = input.ReadInt32();
+          break;
+        }
       }
     }
   #endif
@@ -883,6 +916,10 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
             Position = new global::Vector3Message();
           }
           input.ReadMessage(Position);
+          break;
+        }
+        case 16: {
+          Index = input.ReadInt32();
           break;
         }
       }
