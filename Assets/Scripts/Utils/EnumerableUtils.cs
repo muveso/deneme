@@ -29,7 +29,8 @@ namespace Assets.Scripts.Utils {
         }
 
         public static T TryDequeue<T>(Queue<T> queue) {
-            return queue.Dequeue();
+            queue.TryDequeue(out var message);
+            return message;
         }
     }
 }
