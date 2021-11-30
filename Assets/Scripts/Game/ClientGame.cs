@@ -17,6 +17,7 @@ namespace Assets.Scripts.Game {
             var udpClient = new UdpClientMessageBasedClient(new UdpClient(endpoint));
             NetworkManager.Instance.Communicators.UnreliableClientCommunicator =
                 new NetworkClientCommunicator(udpClient);
+            NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Send(new ClientReadyMessage());
         }
 
         protected virtual void Update() {
