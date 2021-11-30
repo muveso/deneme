@@ -1,3 +1,4 @@
+using System;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
@@ -8,6 +9,8 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public class HostGame : MonoBehaviour {
+        private DateTime _lastSendDateTime = DateTime.MinValue;
+
         private void Awake() {
             NetworkManager.Instance.Communicators.UdpServerCommunicator =
                 new UdpServerCommunicator(GameConsts.DefaultUdpServerPort);
@@ -19,18 +22,28 @@ namespace Assets.Scripts.Game {
         private void Update() {
             // All the game logic is here
             // Host does not need to get messages from server like the client because he is the server
-            // Debug.Log($"HostGame index: {_index}");
-            var message = NetworkManager.Instance.Communicators.UdpServerCommunicator.Receive();
-            if (message != null) {
-                Debug.Log("HostGame got messageToReceive");
-                HandleMessage(message);
+            var messages = NetworkManager.Instance.Communicators.UdpServerCommunicator.ReceiveAll();
+            if (messages != null) {
+                foreach (var message in messages) {
+                    HandleMessage(message);
+                    var currentDateTime = DateTime.Now;
+                    if ((currentDateTime - _lastSendDateTime).TotalSeconds >= GameConsts.TickRate) {
+                        _lastSendDateTime = currentDateTime;
+                        SendGlobalStateToAllClients();
+                    }
+                }
+            } else {
                 SendGlobalStateToAllClients();
             }
         }
 
         private void SendGlobalStateToAllClients() {
-            var globalState = GetGlobalState();
-            NetworkManager.Instance.Communicators.UdpServerCommunicator.SendAll(globalState);
+            var currentDateTime = DateTime.Now;
+            if ((currentDateTime - _lastSendDateTime).TotalSeconds >= GameConsts.TickRate) {
+                _lastSendDateTime = currentDateTime;
+                var globalState = GetGlobalState();
+                NetworkManager.Instance.Communicators.UdpServerCommunicator.SendAll(globalState);
+            }
         }
 
         private IMessage GetGlobalState() {

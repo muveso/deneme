@@ -33,7 +33,7 @@ namespace Assets.Scripts.Game {
             var playerInput = message.Unpack<PlayerInputMessage>().KeyboardInput;
             Debug.Log($"Got player input with index: {message.Unpack<PlayerInputMessage>().Index}");
             var moveDirection = MessagesHelpers.CreateVector3FromMessage(playerInput);
-            PlayerRigidbody.velocity = moveDirection * Speed * 100 * Time.deltaTime;
+            PlayerRigidbody.velocity = moveDirection * Speed;
         }
 
         public override void DeserializeState(Any message) {
