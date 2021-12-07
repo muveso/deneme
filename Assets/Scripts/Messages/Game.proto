@@ -17,6 +17,7 @@ message ServerDisconnectMessage {}
 message PlayerStateMessage {
 	Vector3Message position = 1;
 	int32 index = 2;
+	Vector3Message velocity = 3;
 }
 
 message GlobalStateMessage {

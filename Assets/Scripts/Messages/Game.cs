@@ -26,17 +26,18 @@ public static partial class GameReflection {
           "Y3RvcjNNZXNzYWdlEgkKAXgYASABKAISCQoBeRgCIAEoAhIJCgF6GAMgASgC",
           "IksKElBsYXllcklucHV0TWVzc2FnZRImCg1rZXlib2FyZElucHV0GAEgASgL",
           "Mg8uVmVjdG9yM01lc3NhZ2USDQoFaW5kZXgYAiABKAUiGQoXU2VydmVyRGlz",
-          "Y29ubmVjdE1lc3NhZ2UiRgoSUGxheWVyU3RhdGVNZXNzYWdlEiEKCHBvc2l0",
-          "aW9uGAEgASgLMg8uVmVjdG9yM01lc3NhZ2USDQoFaW5kZXgYAiABKAUiQAoS",
-          "R2xvYmFsU3RhdGVNZXNzYWdlEioKDG9iamVjdHNTdGF0ZRgBIAMoCzIULmdv",
-          "b2dsZS5wcm90b2J1Zi5BbnliBnByb3RvMw=="));
+          "Y29ubmVjdE1lc3NhZ2UiaQoSUGxheWVyU3RhdGVNZXNzYWdlEiEKCHBvc2l0",
+          "aW9uGAEgASgLMg8uVmVjdG9yM01lc3NhZ2USDQoFaW5kZXgYAiABKAUSIQoI",
+          "dmVsb2NpdHkYAyABKAsyDy5WZWN0b3IzTWVzc2FnZSJAChJHbG9iYWxTdGF0",
+          "ZU1lc3NhZ2USKgoMb2JqZWN0c1N0YXRlGAEgAygLMhQuZ29vZ2xlLnByb3Rv",
+          "YnVmLkFueWIGcHJvdG8z"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::Vector3Message), global::Vector3Message.Parser, new[]{ "X", "Y", "Z" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::PlayerInputMessage), global::PlayerInputMessage.Parser, new[]{ "KeyboardInput", "Index" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::ServerDisconnectMessage), global::ServerDisconnectMessage.Parser, null, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerStateMessage), global::PlayerStateMessage.Parser, new[]{ "Position", "Index" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerStateMessage), global::PlayerStateMessage.Parser, new[]{ "Position", "Index", "Velocity" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::GlobalStateMessage), global::GlobalStateMessage.Parser, new[]{ "ObjectsState" }, null, null, null, null)
         }));
   }
@@ -730,6 +731,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
   public PlayerStateMessage(PlayerStateMessage other) : this() {
     position_ = other.position_ != null ? other.position_.Clone() : null;
     index_ = other.index_;
+    velocity_ = other.velocity_ != null ? other.velocity_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -763,6 +765,18 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
     }
   }
 
+  /// <summary>Field number for the "velocity" field.</summary>
+  public const int VelocityFieldNumber = 3;
+  private global::Vector3Message velocity_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::Vector3Message Velocity {
+    get { return velocity_; }
+    set {
+      velocity_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -780,6 +794,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
     }
     if (!object.Equals(Position, other.Position)) return false;
     if (Index != other.Index) return false;
+    if (!object.Equals(Velocity, other.Velocity)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -789,6 +804,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
     int hash = 1;
     if (position_ != null) hash ^= Position.GetHashCode();
     if (Index != 0) hash ^= Index.GetHashCode();
+    if (velocity_ != null) hash ^= Velocity.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -815,6 +831,10 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
       output.WriteRawTag(16);
       output.WriteInt32(Index);
     }
+    if (velocity_ != null) {
+      output.WriteRawTag(26);
+      output.WriteMessage(Velocity);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -833,6 +853,10 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
       output.WriteRawTag(16);
       output.WriteInt32(Index);
     }
+    if (velocity_ != null) {
+      output.WriteRawTag(26);
+      output.WriteMessage(Velocity);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -848,6 +872,9 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
     }
     if (Index != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(Index);
+    }
+    if (velocity_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(Velocity);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -869,6 +896,12 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
     }
     if (other.Index != 0) {
       Index = other.Index;
+    }
+    if (other.velocity_ != null) {
+      if (velocity_ == null) {
+        Velocity = new global::Vector3Message();
+      }
+      Velocity.MergeFrom(other.Velocity);
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -896,6 +929,13 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
           Index = input.ReadInt32();
           break;
         }
+        case 26: {
+          if (velocity_ == null) {
+            Velocity = new global::Vector3Message();
+          }
+          input.ReadMessage(Velocity);
+          break;
+        }
       }
     }
   #endif
@@ -920,6 +960,13 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
         }
         case 16: {
           Index = input.ReadInt32();
+          break;
+        }
+        case 26: {
+          if (velocity_ == null) {
+            Velocity = new global::Vector3Message();
+          }
+          input.ReadMessage(Velocity);
           break;
         }
       }

@@ -39,14 +39,17 @@ namespace Assets.Scripts.Game {
         public override void DeserializeState(Any message) {
             Debug.Log($"Deserialize player state with index: {message.Unpack<PlayerStateMessage>().Index}");
             var position = message.Unpack<PlayerStateMessage>().Position;
+            var velocity = message.Unpack<PlayerStateMessage>().Velocity;
             transform.position = MessagesHelpers.CreateVector3FromMessage(position);
+            PlayerRigidbody.velocity = MessagesHelpers.CreateVector3FromMessage(velocity);
         }
 
         public override IMessage SerializeState() {
             Debug.Log($"Serialize player state with index: {_serializeIndex}");
             var playerStateMessage = new PlayerStateMessage {
                 Position = MessagesHelpers.CreateVector3Message(transform.position),
-                Index = _serializeIndex
+                Index = _serializeIndex,
+                Velocity = MessagesHelpers.CreateVector3Message(PlayerRigidbody.velocity)
             };
             _serializeIndex++;
             return playerStateMessage;
