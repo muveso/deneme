@@ -26,20 +26,14 @@ namespace Assets.Scripts.Game {
             if (messages != null) {
                 foreach (var message in messages) {
                     HandleMessage(message);
-                    var currentDateTime = DateTime.Now;
-                    if ((currentDateTime - _lastSendDateTime).TotalSeconds >= GameConsts.TickRate) {
-                        _lastSendDateTime = currentDateTime;
-                        SendGlobalStateToAllClients();
-                    }
+                    SendGlobalStateToAllClients();
                 }
-            } else {
-                SendGlobalStateToAllClients();
             }
         }
 
         private void SendGlobalStateToAllClients() {
             var currentDateTime = DateTime.Now;
-            if ((currentDateTime - _lastSendDateTime).TotalSeconds >= GameConsts.TickRate) {
+            if (true) {
                 _lastSendDateTime = currentDateTime;
                 var globalState = GetGlobalState();
                 NetworkManager.Instance.Communicators.UdpServerCommunicator.SendAll(globalState);
