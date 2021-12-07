@@ -20,7 +20,7 @@ namespace Assets.Scripts.Game {
 
         private void SendUpdate(IMessage message) {
             var currentDateTime = DateTime.Now;
-            if ((currentDateTime - _lastSendDateTime).TotalSeconds >= GameConsts.TickRate) {
+            if (true) {
                 _lastSendDateTime = currentDateTime;
                 NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Send(message);
             }
