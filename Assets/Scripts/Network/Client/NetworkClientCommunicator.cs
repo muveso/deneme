@@ -9,18 +9,20 @@ namespace Assets.Scripts.Network.Client {
     public class NetworkClientCommunicator : IClientCommunicator {
         private readonly NetworkClientCommunicatorReceiverThread _networkClientCommunicatorReceiverThread;
         private readonly NetworkClientCommunicatorSenderThread _networkClientCommunicatorSenderThread;
-        private readonly ConcurrentQueue<MessageToReceive> _receiveMessagesQueue;
-        private readonly ConcurrentQueue<IMessage> _sendMessagesQueue;
 
         public NetworkClientCommunicator(IMessageBasedClient messageBasedNetworkClient) {
-            _receiveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
-            _sendMessagesQueue = new ConcurrentQueue<IMessage>();
+            ReceiveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
+            SendMessagesQueue = new ConcurrentQueue<IMessage>();
             NetworkClient = messageBasedNetworkClient;
             _networkClientCommunicatorSenderThread = new NetworkClientCommunicatorSenderThread(this);
             _networkClientCommunicatorSenderThread.Start();
             _networkClientCommunicatorReceiverThread = new NetworkClientCommunicatorReceiverThread(this);
             _networkClientCommunicatorReceiverThread.Start();
         }
+
+        public ConcurrentQueue<IMessage> SendMessagesQueue { get; }
+
+        public ConcurrentQueue<MessageToReceive> ReceiveMessagesQueue { get; }
 
         public IMessageBasedClient NetworkClient { get; }
 
@@ -31,20 +33,12 @@ namespace Assets.Scripts.Network.Client {
         }
 
         public MessageToReceive Receive() {
-            return EnumerableUtils.TryDequeue(_receiveMessagesQueue);
+            return EnumerableUtils.TryDequeue(ReceiveMessagesQueue);
         }
 
         public void Send(IMessage message) {
             Debug.Log("Network client enqueue messageToReceive to send");
-            _sendMessagesQueue.Enqueue(message);
-        }
-
-        public void AddMessageToReceive(MessageToReceive messageToReceive) {
-            _receiveMessagesQueue.Enqueue(messageToReceive);
-        }
-
-        public IMessage GetMessageToSend() {
-            return EnumerableUtils.TryDequeue(_sendMessagesQueue);
+            SendMessagesQueue.Enqueue(message);
         }
     }
 }

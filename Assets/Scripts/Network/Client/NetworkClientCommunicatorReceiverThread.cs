@@ -19,7 +19,7 @@ namespace Assets.Scripts.Network.Client {
                 try {
                     var message = _networkClientCommunicator.NetworkClient.Receive(false);
                     if (message != null) {
-                        _networkClientCommunicator.AddMessageToReceive(message);
+                        _networkClientCommunicator.ReceiveMessagesQueue.Enqueue(message);
                     }
                 } catch (Exception exception) {
                     if (exception is SocketException || exception is SocketClosedException) {
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Network.Client {
         private void HandleServerDisconnected() {
             Debug.Log("Exception: Server disconnected! :(");
             var disconnectedMessage = new MessageToReceive(null, Any.Pack(new ServerDisconnectMessage()));
-            _networkClientCommunicator.AddMessageToReceive(disconnectedMessage);
+            _networkClientCommunicator.ReceiveMessagesQueue.Enqueue(disconnectedMessage);
             Stop(false);
         }
     }

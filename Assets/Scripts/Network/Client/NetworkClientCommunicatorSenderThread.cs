@@ -10,7 +10,7 @@ namespace Assets.Scripts.Network.Client {
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _networkClientCommunicator.GetMessageToSend();
+                var message = EnumerableUtils.TryDequeue(_networkClientCommunicator.SendMessagesQueue);
                 if (message != null) {
                     _networkClientCommunicator.NetworkClient.Send(message);
                 }
