@@ -9,7 +9,7 @@ using Assets.Scripts.Utils.Network.TCP;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
-    public class TcpServerCommunicator : IServerCommunicatorForHost, IMessageReader, IServerMessageWriter, IDisposable {
+    public class TcpServerCommunicator : IServerCommunicatorForHost, IDisposable {
         private readonly ConcurrentQueue<MessageToReceive> _receieveMessagesQueue;
         private readonly ConcurrentQueue<MessageToSend> _sendMessagesQueue;
         private readonly TcpServerCommunicatorReceiverThread _tcpServerCommunicatorReceiverThread;
@@ -37,20 +37,20 @@ namespace Assets.Scripts.Network.Server {
             Server?.Dispose();
         }
 
-        public MessageToReceive Receive() {
-            return EnumerableUtils.TryDequeue(_receieveMessagesQueue);
-        }
-
-        public List<MessageToReceive> ReceiveAll() {
-            return EnumerableUtils.DequeueAllQueue(_receieveMessagesQueue);
-        }
-
         public void HostConnect(string nickname) {
             Clients.Add(new HostClient(new ClientDetails(nickname)));
         }
 
         public void AddMessageToReceive(MessageToReceive messageToReceive) {
             _receieveMessagesQueue.Enqueue(messageToReceive);
+        }
+
+        public MessageToReceive Receive() {
+            return EnumerableUtils.TryDequeue(_receieveMessagesQueue);
+        }
+
+        public List<MessageToReceive> ReceiveAll() {
+            return EnumerableUtils.DequeueAllQueue(_receieveMessagesQueue);
         }
 
         public void Send(IMessage message, List<IPEndPoint> clients) {

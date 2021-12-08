@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Messages;
@@ -33,10 +32,6 @@ namespace Assets.Scripts.Network.Client {
 
         public MessageToReceive Receive() {
             return EnumerableUtils.TryDequeue(_receiveMessagesQueue);
-        }
-
-        public List<MessageToReceive> ReceiveAll() {
-            return EnumerableUtils.DequeueAllQueue(_receiveMessagesQueue);
         }
 
         public void Send(IMessage message) {
