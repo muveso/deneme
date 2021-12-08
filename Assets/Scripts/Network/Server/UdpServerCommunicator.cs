@@ -41,10 +41,6 @@ namespace Assets.Scripts.Network.Server {
             _receiveMessagesQueue.Enqueue(messageToReceive);
         }
 
-        public MessageToReceive Receive() {
-            return EnumerableUtils.TryDequeue(_receiveMessagesQueue);
-        }
-
         public List<MessageToReceive> ReceiveAll() {
             return EnumerableUtils.DequeueAllQueue(_receiveMessagesQueue);
         }
