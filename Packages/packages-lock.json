@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "948ab23d0961066b135f52cbb39ac3bc639361a1"
     },
+    "com.tayx.graphy": {
+      "version": "https://github.com/Tayx94/graphy.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "008ca2e1b64201e26ee41800d54bcec61991fc75"
+    },
     "com.unity.collab-proxy": {
       "version": "1.13.5",
       "depth": 0,
