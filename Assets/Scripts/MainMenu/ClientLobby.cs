@@ -23,7 +23,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private void Update() {
-            if (NetworkManager.Instance.Communicators.ReliableClientCommunicator == null) {
+            if (NetworkManager.Instance.Communicators.ReliableClientManager == null) {
                 return;
             }
 
@@ -34,7 +34,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private bool HandleCommunicatorMessage() {
-            var message = NetworkManager.Instance.Communicators.ReliableClientCommunicator.Receive();
+            var message = NetworkManager.Instance.Communicators.ReliableClientManager.Receive();
             if (message == null) {
                 return false;
             }
@@ -65,14 +65,14 @@ namespace Assets.Scripts.MainMenu {
             NetworkManager.Instance.ServerIpAddress = IPAddress.Parse(IPInputField.text);
             var endpoint = new IPEndPoint(NetworkManager.Instance.ServerIpAddress, int.Parse(PortInputField.text));
             var tcpMessageBasedClient = new TcpClientMessageBasedClient(new TcpClient(endpoint));
-            NetworkManager.Instance.Communicators.ReliableClientCommunicator =
+            NetworkManager.Instance.Communicators.ReliableClientManager =
                 new NetworkClientManager(tcpMessageBasedClient);
-            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
+            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientManager);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }
 
         public void OnClickReady() {
-            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
+            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ReliableClientManager);
         }
     }
 }

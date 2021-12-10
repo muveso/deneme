@@ -11,7 +11,7 @@ namespace Assets.Scripts.Game {
         private void Awake() {
             NetworkManager.Instance.Communicators.UdpServerCommunicator =
                 new UdpServerCommunicator(GameConsts.DefaultUdpServerPort);
-            NetworkManager.Instance.Communicators.UnreliableClientCommunicator =
+            NetworkManager.Instance.Communicators.UnreliableClientManager =
                 new HostClientManager(NetworkManager.Instance.Communicators.UdpServerCommunicator,
                     ClientGlobals.Nickname);
         }

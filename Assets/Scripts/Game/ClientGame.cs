@@ -15,14 +15,14 @@ namespace Assets.Scripts.Game {
             var endpoint =
                 new IPEndPoint(NetworkManager.Instance.ServerIpAddress, GameConsts.DefaultUdpServerPort);
             var udpClient = new UdpClientMessageBasedClient(new UdpClient(endpoint));
-            NetworkManager.Instance.Communicators.UnreliableClientCommunicator =
+            NetworkManager.Instance.Communicators.UnreliableClientManager =
                 new NetworkClientManager(udpClient);
-            NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Send(new ClientReadyMessage());
+            NetworkManager.Instance.Communicators.UnreliableClientManager.Send(new ClientReadyMessage());
         }
 
         protected virtual void FixedUpdate() {
             // Messages from server
-            var message = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Receive();
+            var message = NetworkManager.Instance.Communicators.UnreliableClientManager.Receive();
             if (message == null) {
                 return;
             }

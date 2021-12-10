@@ -60,7 +60,7 @@ namespace Assets.Scripts.MainMenu {
                 new TcpServerMainMenuProcessingThread(NetworkManager.Instance.Communicators.TcpServerCommunicator);
             _tcpServerMainMenuProcessingThread.Start();
             // Initialize Host communicator
-            NetworkManager.Instance.Communicators.ReliableClientCommunicator =
+            NetworkManager.Instance.Communicators.ReliableClientManager =
                 new HostClientManager(NetworkManager.Instance.Communicators.TcpServerCommunicator,
                     ClientGlobals.Nickname);
         }
@@ -78,12 +78,12 @@ namespace Assets.Scripts.MainMenu {
 
         public void OnClickConnect() {
             InitializeCommunicatorAndServer();
-            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
+            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientManager);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }
 
         public void OnClickReady() {
-            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ReliableClientCommunicator);
+            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ReliableClientManager);
         }
     }
 }

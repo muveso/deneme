@@ -5,22 +5,22 @@ using Assets.Scripts.Network.Server;
 
 namespace Assets.Scripts.General {
     public class Communicators : IDisposable {
-        public IManager ReliableClientCommunicator { get; set; }
-        public IManager UnreliableClientCommunicator { get; set; }
+        public IManager ReliableClientManager { get; set; }
+        public IManager UnreliableClientManager { get; set; }
         public TcpServerCommunicator TcpServerCommunicator { get; set; }
         public UdpServerCommunicator UdpServerCommunicator { get; set; }
 
         public void Dispose() {
-            if (ReliableClientCommunicator != null) {
-                ReliableClientCommunicator.Dispose();
+            if (ReliableClientManager != null) {
+                ReliableClientManager.Dispose();
             }
 
             if (TcpServerCommunicator != null) {
                 TcpServerCommunicator.Dispose();
             }
 
-            if (UnreliableClientCommunicator != null) {
-                UnreliableClientCommunicator.Dispose();
+            if (UnreliableClientManager != null) {
+                UnreliableClientManager.Dispose();
             }
 
             if (UdpServerCommunicator != null) {

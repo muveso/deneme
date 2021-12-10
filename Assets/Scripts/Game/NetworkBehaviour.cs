@@ -21,7 +21,7 @@ namespace Assets.Scripts.Game {
         }
 
         private void SendUpdate(IMessage message) {
-            NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Send(message);
+            NetworkManager.Instance.Communicators.UnreliableClientManager.Send(message);
         }
 
         public abstract void ServerUpdate(Any message);
