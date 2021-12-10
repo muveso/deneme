@@ -2,6 +2,7 @@ using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Client;
 using Assets.Scripts.Utils.Network.UDP;
+using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,11 +34,17 @@ namespace Assets.Scripts.Game {
 
         private void HandleGlobalState(GlobalStateMessage globalStateMessage) {
             foreach (var state in globalStateMessage.ObjectsState) {
-                HandleState(state.Unpack<PlayerStateMessage>());
+                HandleState(state);
             }
         }
 
-        private void HandleState(PlayerStateMessage state) {
+        private void HandleState(Any state) {
+            if (state.Is(PlayerStateMessage.Descriptor)) {
+                HandlePlayerState(state.Unpack<PlayerStateMessage>());
+            }
+        }
+
+        private void HandlePlayerState(PlayerStateMessage state) {
             var player = GameObject.Find(state.Nickname);
             if (player == null) {
                 player = CreatePlayer(state);
