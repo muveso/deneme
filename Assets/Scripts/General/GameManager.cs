@@ -30,7 +30,7 @@ namespace Assets.Scripts.General {
     }
 
     public class GameManager {
-        private static readonly object _padlock = new();
+        private static readonly object Padlock = new();
         private static GameManager _instance;
 
         private GameManager() {
@@ -46,7 +46,7 @@ namespace Assets.Scripts.General {
                 // There is no reason to lock if the instance is already initialized
                 if (_instance == null) {
                     // Lock to make sure that only one thread will create instance
-                    lock (_padlock) {
+                    lock (Padlock) {
                         if (_instance == null) {
                             _instance = new GameManager();
                         }
