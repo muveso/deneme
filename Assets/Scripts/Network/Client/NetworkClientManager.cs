@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Concurrent;
 using Assets.Scripts.Network.Common;
-using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
-using UnityEngine;
 
 namespace Assets.Scripts.Network.Client {
-    public class NetworkClientCommunicator : ICommunicator {
+    public class NetworkClientManager : IManager {
         private readonly NetworkClientCommunicatorReceiverThread _networkClientCommunicatorReceiverThread;
         private readonly NetworkClientCommunicatorSenderThread _networkClientCommunicatorSenderThread;
 
-        public NetworkClientCommunicator(IMessageBasedClient messageBasedNetworkClient) {
-            ReceiveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
-            SendMessagesQueue = new ConcurrentQueue<IMessage>();
+        public NetworkClientManager(IMessageBasedClient messageBasedNetworkClient) {
+            Communicator = new QueueCommunicator();
             NetworkClient = messageBasedNetworkClient;
             _networkClientCommunicatorSenderThread = new NetworkClientCommunicatorSenderThread(this);
             _networkClientCommunicatorSenderThread.Start();
@@ -21,9 +16,7 @@ namespace Assets.Scripts.Network.Client {
             _networkClientCommunicatorReceiverThread.Start();
         }
 
-        public ConcurrentQueue<IMessage> SendMessagesQueue { get; }
-
-        public ConcurrentQueue<MessageToReceive> ReceiveMessagesQueue { get; }
+        public QueueCommunicator Communicator { get; }
 
         public IMessageBasedClient NetworkClient { get; }
 
@@ -34,16 +27,15 @@ namespace Assets.Scripts.Network.Client {
         }
 
         public MessageToReceive Receive() {
-            return EnumerableUtils.TryDequeue(ReceiveMessagesQueue);
+            return Communicator.Receive();
         }
 
         public void Send(IMessage message) {
-            Debug.Log("Network client enqueue messageToReceive to send");
-            SendMessagesQueue.Enqueue(message);
+            Communicator.Send(message);
         }
 
         public void Send(MessageToSend message) {
-            throw new NotImplementedException();
+            Communicator.Send(message);
         }
     }
 }

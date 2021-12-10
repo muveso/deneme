@@ -16,7 +16,7 @@ namespace Assets.Scripts.Game {
                 new IPEndPoint(NetworkManager.Instance.ServerIpAddress, GameConsts.DefaultUdpServerPort);
             var udpClient = new UdpClientMessageBasedClient(new UdpClient(endpoint));
             NetworkManager.Instance.Communicators.UnreliableClientCommunicator =
-                new NetworkClientCommunicator(udpClient);
+                new NetworkClientManager(udpClient);
             NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Send(new ClientReadyMessage());
         }
 

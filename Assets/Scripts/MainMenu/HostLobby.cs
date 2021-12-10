@@ -61,7 +61,7 @@ namespace Assets.Scripts.MainMenu {
             _tcpServerMainMenuProcessingThread.Start();
             // Initialize Host communicator
             NetworkManager.Instance.Communicators.ReliableClientCommunicator =
-                new HostClientCommunicator(NetworkManager.Instance.Communicators.TcpServerCommunicator,
+                new HostClientManager(NetworkManager.Instance.Communicators.TcpServerCommunicator,
                     ClientGlobals.Nickname);
         }
 

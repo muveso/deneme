@@ -12,7 +12,7 @@ namespace Assets.Scripts.Game {
             NetworkManager.Instance.Communicators.UdpServerCommunicator =
                 new UdpServerCommunicator(GameConsts.DefaultUdpServerPort);
             NetworkManager.Instance.Communicators.UnreliableClientCommunicator =
-                new HostClientCommunicator(NetworkManager.Instance.Communicators.UdpServerCommunicator,
+                new HostClientManager(NetworkManager.Instance.Communicators.UdpServerCommunicator,
                     ClientGlobals.Nickname);
         }
 

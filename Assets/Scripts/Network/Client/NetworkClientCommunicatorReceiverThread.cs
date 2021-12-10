@@ -8,18 +8,18 @@ using UnityEngine;
 
 namespace Assets.Scripts.Network.Client {
     public class NetworkClientCommunicatorReceiverThread : BaseThread {
-        private readonly NetworkClientCommunicator _networkClientCommunicator;
+        private readonly NetworkClientManager _networkClientManager;
 
-        public NetworkClientCommunicatorReceiverThread(NetworkClientCommunicator networkClientCommunicator) {
-            _networkClientCommunicator = networkClientCommunicator;
+        public NetworkClientCommunicatorReceiverThread(NetworkClientManager networkClientManager) {
+            _networkClientManager = networkClientManager;
         }
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
                 try {
-                    var message = _networkClientCommunicator.NetworkClient.Receive(false);
+                    var message = _networkClientManager.NetworkClient.Receive(false);
                     if (message != null) {
-                        _networkClientCommunicator.ReceiveMessagesQueue.Enqueue(message);
+                        _networkClientManager.Communicator.AddMessageToReceive(message);
                     }
                 } catch (Exception exception) {
                     if (exception is SocketException || exception is SocketClosedException) {
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Network.Client {
         private void HandleServerDisconnected() {
             Debug.Log("Exception: Server disconnected! :(");
             var disconnectedMessage = new MessageToReceive(null, Any.Pack(new ServerDisconnectMessage()));
-            _networkClientCommunicator.ReceiveMessagesQueue.Enqueue(disconnectedMessage);
+            _networkClientManager.Communicator.AddMessageToReceive(disconnectedMessage);
             Stop(false);
         }
     }
