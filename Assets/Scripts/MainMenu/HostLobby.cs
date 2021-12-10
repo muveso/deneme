@@ -18,7 +18,7 @@ namespace Assets.Scripts.MainMenu {
         private void Awake() {
             IPInputField.text = GameConsts.DefaultServerIpAddress;
             ClientGlobals.Nickname = "PanCHocKHost";
-            NetworkManager.Instance.IsHost = true;
+            GameManager.Instance.IsHost = true;
         }
 
         private void OnDestroy() {
@@ -26,7 +26,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private void Update() {
-            if (NetworkManager.Instance.Communicators.TcpServerCommunicator == null) {
+            if (GameManager.Instance.NetworkManagers.TcpServerCommunicator == null) {
                 return;
             }
 
@@ -35,12 +35,12 @@ namespace Assets.Scripts.MainMenu {
             }
 
             Utils.UI.General.DestroyAllChildren(transform);
-            ScrollView.FillScrollViewWithObjects(NetworkManager.Instance.Communicators.TcpServerCommunicator.Clients,
+            ScrollView.FillScrollViewWithObjects(GameManager.Instance.NetworkManagers.TcpServerCommunicator.Clients,
                 transform);
         }
 
         private bool AreAllPlayersReady() {
-            foreach (var client in NetworkManager.Instance.Communicators.TcpServerCommunicator
+            foreach (var client in GameManager.Instance.NetworkManagers.TcpServerCommunicator
                 .Clients) {
                 if (!client.Details.IsReady) {
                     return false;
@@ -52,16 +52,16 @@ namespace Assets.Scripts.MainMenu {
 
         private void InitializeCommunicatorAndServer() {
             // Initialize TCP server
-            NetworkManager.Instance.Communicators.TcpServerCommunicator =
+            GameManager.Instance.NetworkManagers.TcpServerCommunicator =
                 new TcpServerCommunicator(new IPEndPoint(IPAddress.Parse(IPInputField.text),
                     int.Parse(PortInputField.text)));
             // Initialize Processing Thread
             _tcpServerMainMenuProcessingThread =
-                new TcpServerMainMenuProcessingThread(NetworkManager.Instance.Communicators.TcpServerCommunicator);
+                new TcpServerMainMenuProcessingThread(GameManager.Instance.NetworkManagers.TcpServerCommunicator);
             _tcpServerMainMenuProcessingThread.Start();
             // Initialize Host communicator
-            NetworkManager.Instance.Communicators.ReliableClientManager =
-                new HostClientManager(NetworkManager.Instance.Communicators.TcpServerCommunicator,
+            GameManager.Instance.NetworkManagers.ReliableClientManager =
+                new HostClientManager(GameManager.Instance.NetworkManagers.TcpServerCommunicator,
                     ClientGlobals.Nickname);
         }
 
@@ -69,7 +69,7 @@ namespace Assets.Scripts.MainMenu {
         public void OnClickStartGame() {
             if (AreAllPlayersReady()) {
                 Debug.Log("Starting Game");
-                NetworkManager.Instance.Communicators.TcpServerCommunicator.SendAll(new StartGameMessage());
+                GameManager.Instance.NetworkManagers.TcpServerCommunicator.SendAll(new StartGameMessage());
                 SceneManager.LoadScene("Game");
             } else {
                 Debug.Log("Not all clients ready");
@@ -78,12 +78,12 @@ namespace Assets.Scripts.MainMenu {
 
         public void OnClickConnect() {
             InitializeCommunicatorAndServer();
-            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientManager);
+            ClientMessages.SendClientDetails(GameManager.Instance.NetworkManagers.ReliableClientManager);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }
 
         public void OnClickReady() {
-            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ReliableClientManager);
+            ClientMessages.SendClientReady(GameManager.Instance.NetworkManagers.ReliableClientManager);
         }
     }
 }

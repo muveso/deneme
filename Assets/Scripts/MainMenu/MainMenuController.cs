@@ -19,7 +19,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         public void OnClickGoBackToMainMenu() {
-            NetworkManager.Instance.Reset();
+            GameManager.Instance.Reset();
             SceneManager.LoadScene("MainMenu");
         }
     }

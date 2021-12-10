@@ -19,11 +19,11 @@ namespace Assets.Scripts.MainMenu {
         private void Awake() {
             Players = new List<ClientDetails>();
             ClientGlobals.Nickname = "PanCHocK";
-            NetworkManager.Instance.IsHost = false;
+            GameManager.Instance.IsHost = false;
         }
 
         private void Update() {
-            if (NetworkManager.Instance.Communicators.ReliableClientManager == null) {
+            if (GameManager.Instance.NetworkManagers.ReliableClientManager == null) {
                 return;
             }
 
@@ -34,7 +34,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private bool HandleCommunicatorMessage() {
-            var message = NetworkManager.Instance.Communicators.ReliableClientManager.Receive();
+            var message = GameManager.Instance.NetworkManagers.ReliableClientManager.Receive();
             if (message == null) {
                 return false;
             }
@@ -62,17 +62,17 @@ namespace Assets.Scripts.MainMenu {
         }
 
         public void OnClickConnect() {
-            NetworkManager.Instance.ServerIpAddress = IPAddress.Parse(IPInputField.text);
-            var endpoint = new IPEndPoint(NetworkManager.Instance.ServerIpAddress, int.Parse(PortInputField.text));
+            GameManager.Instance.ServerIpAddress = IPAddress.Parse(IPInputField.text);
+            var endpoint = new IPEndPoint(GameManager.Instance.ServerIpAddress, int.Parse(PortInputField.text));
             var tcpMessageBasedClient = new TcpClientMessageBasedClient(new TcpClient(endpoint));
-            NetworkManager.Instance.Communicators.ReliableClientManager =
+            GameManager.Instance.NetworkManagers.ReliableClientManager =
                 new NetworkClientManager(tcpMessageBasedClient);
-            ClientMessages.SendClientDetails(NetworkManager.Instance.Communicators.ReliableClientManager);
+            ClientMessages.SendClientDetails(GameManager.Instance.NetworkManagers.ReliableClientManager);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }
 
         public void OnClickReady() {
-            ClientMessages.SendClientReady(NetworkManager.Instance.Communicators.ReliableClientManager);
+            ClientMessages.SendClientReady(GameManager.Instance.NetworkManagers.ReliableClientManager);
         }
     }
 }

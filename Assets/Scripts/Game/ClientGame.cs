@@ -13,16 +13,16 @@ namespace Assets.Scripts.Game {
         private void Awake() {
             _player = GameObject.FindWithTag("Player").GetComponent<Player>();
             var endpoint =
-                new IPEndPoint(NetworkManager.Instance.ServerIpAddress, GameConsts.DefaultUdpServerPort);
+                new IPEndPoint(GameManager.Instance.ServerIpAddress, GameConsts.DefaultUdpServerPort);
             var udpClient = new UdpClientMessageBasedClient(new UdpClient(endpoint));
-            NetworkManager.Instance.Communicators.UnreliableClientManager =
+            GameManager.Instance.NetworkManagers.UnreliableClientManager =
                 new NetworkClientManager(udpClient);
-            NetworkManager.Instance.Communicators.UnreliableClientManager.Send(new ClientReadyMessage());
+            GameManager.Instance.NetworkManagers.UnreliableClientManager.Send(new ClientReadyMessage());
         }
 
         protected virtual void FixedUpdate() {
             // Messages from server
-            var message = NetworkManager.Instance.Communicators.UnreliableClientManager.Receive();
+            var message = GameManager.Instance.NetworkManagers.UnreliableClientManager.Receive();
             if (message == null) {
                 return;
             }
@@ -46,7 +46,7 @@ namespace Assets.Scripts.Game {
         }
 
         private void OnDestroy() {
-            NetworkManager.Instance.Reset();
+            GameManager.Instance.Reset();
         }
     }
 }

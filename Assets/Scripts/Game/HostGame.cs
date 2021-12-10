@@ -9,17 +9,17 @@ using UnityEngine;
 namespace Assets.Scripts.Game {
     public class HostGame : MonoBehaviour {
         private void Awake() {
-            NetworkManager.Instance.Communicators.UdpServerCommunicator =
+            GameManager.Instance.NetworkManagers.UdpServerCommunicator =
                 new UdpServerCommunicator(GameConsts.DefaultUdpServerPort);
-            NetworkManager.Instance.Communicators.UnreliableClientManager =
-                new HostClientManager(NetworkManager.Instance.Communicators.UdpServerCommunicator,
+            GameManager.Instance.NetworkManagers.UnreliableClientManager =
+                new HostClientManager(GameManager.Instance.NetworkManagers.UdpServerCommunicator,
                     ClientGlobals.Nickname);
         }
 
         private void FixedUpdate() {
             // All the game logic is here
             // Host does not need to get messages from server like the client because he is the server
-            var messages = NetworkManager.Instance.Communicators.UdpServerCommunicator.ReceiveAll();
+            var messages = GameManager.Instance.NetworkManagers.UdpServerCommunicator.ReceiveAll();
             if (messages != null) {
                 foreach (var message in messages) {
                     HandleMessage(message);
@@ -30,7 +30,7 @@ namespace Assets.Scripts.Game {
 
         private void SendGlobalStateToAllClients() {
             var globalState = GetGlobalState();
-            NetworkManager.Instance.Communicators.UdpServerCommunicator.SendAll(globalState);
+            GameManager.Instance.NetworkManagers.UdpServerCommunicator.SendAll(globalState);
         }
 
         private IMessage GetGlobalState() {
@@ -48,7 +48,7 @@ namespace Assets.Scripts.Game {
         }
 
         private void OnDestroy() {
-            NetworkManager.Instance.Reset();
+            GameManager.Instance.Reset();
         }
     }
 }
