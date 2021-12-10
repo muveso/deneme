@@ -7,10 +7,10 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Network.Host {
-    public class HostClientClientManager : IClientManager {
+    public class HostClientManager : IClientManager {
         private readonly IServerCommunicatorForHost _serverCommunicator;
 
-        public HostClientClientManager(IServerCommunicatorForHost serverCommunicator, string nickname) {
+        public HostClientManager(IServerCommunicatorForHost serverCommunicator, string nickname) {
             _serverCommunicator = serverCommunicator;
             _serverCommunicator.HostConnect(nickname);
         }
@@ -21,14 +21,14 @@ namespace Assets.Scripts.Network.Host {
             _serverCommunicator.AddMessageToReceive(messageToInsert);
         }
 
-        public void Send(MessageToSend message) {
-            throw new NotImplementedException();
-        }
-
         public MessageToReceive Receive() {
             throw new NotImplementedException();
         }
 
         public void Dispose() { }
+
+        public void Send(MessageToSend message) {
+            throw new NotImplementedException();
+        }
     }
 }

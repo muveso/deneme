@@ -5,13 +5,21 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public abstract class NetworkBehaviour : MonoBehaviour {
-        protected bool IsLocal { get; set; } = true;
+        protected bool IsLocal {
+            get {
+                if (GameManager.Instance.IsHost) {
+                    return name == GameManager.Instance.ClientId;
+                }
+
+                return name == GameManager.Instance.Nickname;
+            }
+        }
 
         /// <summary>
         ///     FixedUpdate used in order to sync the input speed from clients.
         ///     If one client will run on higher fps we don't want it to send more input to the server.
         /// </summary>
-        private void FixedUpdate() {
+        protected virtual void FixedUpdate() {
             if (IsLocal) {
                 var updateMessage = ClientUpdate();
                 if (updateMessage != null) {
@@ -21,7 +29,11 @@ namespace Assets.Scripts.Game {
         }
 
         private void SendUpdate(IMessage message) {
-            GameManager.Instance.NetworkManagers.UnreliableClientManager.Send(message);
+            var inputMessage = new PlayerInputMessage {
+                ClientId = GameManager.Instance.ClientId,
+                Input = Any.Pack(message)
+            };
+            GameManager.Instance.NetworkManagers.UnreliableClientManager.Send(inputMessage);
         }
 
         public abstract void ServerUpdate(Any message);

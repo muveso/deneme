@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network.TCP;
@@ -34,7 +35,9 @@ namespace Assets.Scripts.Network.Server {
         }
 
         public void HostConnect(string nickname) {
-            Clients.Add(new HostClient(new ClientDetails(nickname)));
+            var hostClient = new HostClient(new ClientDetails(nickname));
+            GameManager.Instance.ClientId = hostClient.Id;
+            Clients.Add(hostClient);
         }
 
         public void AddMessageToReceive(MessageToReceive messageToReceive) {

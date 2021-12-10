@@ -4,7 +4,7 @@ namespace Assets.Scripts.Network.Common {
     public static class ClientMessages {
         public static void SendClientDetails(IClientManager clientManager) {
             var clientDetailsMessage = new ClientDetailsMessage {
-                Nickname = ClientGlobals.Nickname
+                Nickname = GameManager.Instance.Nickname
             };
             clientManager.Send(clientDetailsMessage);
         }

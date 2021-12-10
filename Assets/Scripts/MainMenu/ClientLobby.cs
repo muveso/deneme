@@ -3,6 +3,7 @@ using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Client;
 using Assets.Scripts.Network.Common;
+using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network.TCP;
 using Assets.Scripts.Utils.UI;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace Assets.Scripts.MainMenu {
 
         private void Awake() {
             Players = new List<ClientDetails>();
-            ClientGlobals.Nickname = "PanCHocK";
+            GameManager.Instance.Nickname = "PanCHocK";
             GameManager.Instance.IsHost = false;
         }
 
@@ -69,6 +70,16 @@ namespace Assets.Scripts.MainMenu {
                 new NetworkClientClientManager(tcpMessageBasedClient);
             ClientMessages.SendClientDetails(GameManager.Instance.NetworkManagers.ReliableClientManager);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
+            WaitForClientIdFromServer();
+        }
+
+        private void WaitForClientIdFromServer() {
+            MessageToReceive clientIdMessage;
+            do {
+                clientIdMessage = GameManager.Instance.NetworkManagers.ReliableClientManager.Receive();
+            } while (clientIdMessage == null);
+
+            GameManager.Instance.ClientId = clientIdMessage.AnyMessage.Unpack<SetClientIdMessage>().ClientId;
         }
 
         public void OnClickReady() {

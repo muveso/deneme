@@ -12,3 +12,7 @@ message MainMenuStateMessage {
 message ClientReadyMessage {}
 
 message StartGameMessage {}
+
+message SetClientIdMessage {
+    string clientId = 1;
+}

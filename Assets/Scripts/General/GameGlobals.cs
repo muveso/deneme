@@ -4,8 +4,4 @@ namespace Assets.Scripts.General {
         public const int DefaultUdpServerPort = 55556;
         public const float TickRate = 1f / 60f;
     }
-
-    public static class ClientGlobals {
-        public static string Nickname = "DefaultNickname";
-    }
 }

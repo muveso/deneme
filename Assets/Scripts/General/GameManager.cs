@@ -40,6 +40,8 @@ namespace Assets.Scripts.General {
         public IPAddress ServerIpAddress { get; set; }
         public NetworkManagers NetworkManagers { get; set; }
         public bool IsHost { get; set; }
+        public string Nickname { get; set; }
+        public string ClientId { get; set; }
 
         public static GameManager Instance {
             get {

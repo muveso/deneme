@@ -12,8 +12,8 @@ namespace Assets.Scripts.Game {
             GameManager.Instance.NetworkManagers.UdpServerManager =
                 new UdpServerManager(GameConsts.DefaultUdpServerPort);
             GameManager.Instance.NetworkManagers.UnreliableClientManager =
-                new HostClientClientManager(GameManager.Instance.NetworkManagers.UdpServerManager,
-                    ClientGlobals.Nickname);
+                new HostClientManager(GameManager.Instance.NetworkManagers.UdpServerManager,
+                    GameManager.Instance.Nickname);
         }
 
         private void FixedUpdate() {
@@ -35,15 +35,24 @@ namespace Assets.Scripts.Game {
 
         private IMessage GetGlobalState() {
             var globalStateMessage = new GlobalStateMessage();
-            var messageToPack = GameObject.FindWithTag("Player").GetComponent<Player>().SerializeState();
-            globalStateMessage.ObjectsState.Add(Any.Pack(messageToPack));
+            foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
+                var messageToPack = GameObject.Find(client.Id).GetComponent<Player>().SerializeState();
+                var stateMessage = new PlayerStateMessage {
+                    Nickname = client.Details.Nickname,
+                    State = Any.Pack(messageToPack)
+                };
+                globalStateMessage.ObjectsState.Add(Any.Pack(stateMessage));
+            }
+
             return globalStateMessage;
         }
 
         private void HandleMessage(MessageToReceive messageToReceive) {
             var anyMessage = messageToReceive.AnyMessage;
             if (anyMessage.Is(PlayerInputMessage.Descriptor)) {
-                GameObject.FindWithTag("Player").GetComponent<Player>().ServerUpdate(anyMessage);
+                var playerInputMessage = anyMessage.Unpack<PlayerInputMessage>();
+                GameObject.Find(playerInputMessage.ClientId).GetComponent<Player>()
+                    .ServerUpdate(playerInputMessage.Input);
             }
         }
 

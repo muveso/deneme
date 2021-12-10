@@ -2,16 +2,12 @@ using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Client;
 using Assets.Scripts.Utils.Network.UDP;
-using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Game {
     public class ClientGame : MonoBehaviour {
-        private Player _player;
-
         private void Awake() {
-            _player = GameObject.FindWithTag("Player").GetComponent<Player>();
             var endpoint =
                 new IPEndPoint(GameManager.Instance.ServerIpAddress, GameConsts.DefaultUdpServerPort);
             var udpClient = new UdpClientMessageBasedClient(new UdpClient(endpoint));
@@ -37,12 +33,28 @@ namespace Assets.Scripts.Game {
 
         private void HandleGlobalState(GlobalStateMessage globalStateMessage) {
             foreach (var state in globalStateMessage.ObjectsState) {
-                HandleState(state);
+                HandleState(state.Unpack<PlayerStateMessage>());
             }
         }
 
-        private void HandleState(Any state) {
-            _player.DeserializeState(state);
+        private void HandleState(PlayerStateMessage state) {
+            var player = GameObject.Find(state.Nickname);
+            if (player == null) {
+                player = CreatePlayer(state);
+            }
+
+            player.GetComponent<Player>().DeserializeState(state.State);
+        }
+
+        private GameObject CreatePlayer(PlayerStateMessage state) {
+            var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
+            var player = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            player.name = state.Nickname;
+            if (player.name == GameManager.Instance.Nickname) {
+                player.AddComponent<Camera>();
+            }
+
+            return player;
         }
 
         private void OnDestroy() {

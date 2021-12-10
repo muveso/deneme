@@ -1,23 +1,34 @@
 syntax = "proto3";
 import "google/protobuf/any.proto";
 
+// generic
 message Vector3Message {
 	float x = 1;
 	float y = 2;
 	float z = 3;
 }
-
-message PlayerInputMessage {
-	Vector3Message keyboardInput = 1;
-	int32 index = 2;
-}
-
 message ServerDisconnectMessage {}
 
-message PlayerStateMessage {
-	Vector3Message position = 1;
-	int32 index = 2;
+//// input
+message PlayerMovementMessage {
+	Vector3Message keyboardInput = 1;
+}
+
+message PlayerInputMessage {
+	string clientId = 1;
+	google.protobuf.Any input = 2;
+}
+
+
+//// state
+message PlayerMovementStateMessage {
+	Vector3Message position = 2;
 	Vector3Message velocity = 3;
+}
+
+message PlayerStateMessage {
+	string nickname = 1;
+	google.protobuf.Any state = 2;
 }
 
 message GlobalStateMessage {

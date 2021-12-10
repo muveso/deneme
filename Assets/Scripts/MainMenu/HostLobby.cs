@@ -17,7 +17,7 @@ namespace Assets.Scripts.MainMenu {
 
         private void Awake() {
             IPInputField.text = GameConsts.DefaultServerIpAddress;
-            ClientGlobals.Nickname = "PanCHocKHost";
+            GameManager.Instance.Nickname = "PanCHocKHost";
             GameManager.Instance.IsHost = true;
         }
 
@@ -61,8 +61,8 @@ namespace Assets.Scripts.MainMenu {
             _tcpServerMainMenuProcessingThread.Start();
             // Initialize Host communicator
             GameManager.Instance.NetworkManagers.ReliableClientManager =
-                new HostClientClientManager(GameManager.Instance.NetworkManagers.TcpServerManager,
-                    ClientGlobals.Nickname);
+                new HostClientManager(GameManager.Instance.NetworkManagers.TcpServerManager,
+                    GameManager.Instance.Nickname);
         }
 
 

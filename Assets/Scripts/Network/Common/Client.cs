@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using TcpClient = Assets.Scripts.Utils.Network.TCP.TcpClient;
 
@@ -6,13 +7,17 @@ namespace Assets.Scripts.Network.Common {
     public abstract class Client {
         protected Client() {
             Details = new ClientDetails();
+            Id = Guid.NewGuid().ToString();
         }
 
         protected Client(ClientDetails clientDetails) {
             Details = clientDetails;
+            Id = Guid.NewGuid().ToString();
         }
 
         public ClientDetails Details { get; }
+
+        public string Id { get; }
 
         public abstract void Send(byte[] bytes);
         public abstract byte[] Receive();

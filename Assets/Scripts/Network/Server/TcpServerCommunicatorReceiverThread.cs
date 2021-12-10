@@ -56,7 +56,12 @@ namespace Assets.Scripts.Network.Server {
 
         private void HandleNewClient() {
             Debug.Log("New client connected");
-            _tcpServerManager.Clients.Add(new NetworkTcpClient(_tcpServerManager.Server.Accept()));
+            var newClient = new NetworkTcpClient(_tcpServerManager.Server.Accept());
+            _tcpServerManager.Clients.Add(newClient);
+            var setClientIdMessage = new SetClientIdMessage {
+                ClientId = newClient.Id
+            };
+            newClient.Send(MessagesHelpers.ConvertMessageToBytes(setClientIdMessage));
         }
 
 
