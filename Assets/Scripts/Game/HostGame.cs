@@ -1,4 +1,3 @@
-using System;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
@@ -9,8 +8,6 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public class HostGame : MonoBehaviour {
-        private DateTime _lastSendDateTime = DateTime.MinValue;
-
         private void Awake() {
             NetworkManager.Instance.Communicators.UdpServerCommunicator =
                 new UdpServerCommunicator(GameConsts.DefaultUdpServerPort);
@@ -19,7 +16,7 @@ namespace Assets.Scripts.Game {
                     ClientGlobals.Nickname);
         }
 
-        private void Update() {
+        private void FixedUpdate() {
             // All the game logic is here
             // Host does not need to get messages from server like the client because he is the server
             var messages = NetworkManager.Instance.Communicators.UdpServerCommunicator.ReceiveAll();
@@ -32,12 +29,8 @@ namespace Assets.Scripts.Game {
         }
 
         private void SendGlobalStateToAllClients() {
-            var currentDateTime = DateTime.Now;
-            if (true) {
-                _lastSendDateTime = currentDateTime;
-                var globalState = GetGlobalState();
-                NetworkManager.Instance.Communicators.UdpServerCommunicator.SendAll(globalState);
-            }
+            var globalState = GetGlobalState();
+            NetworkManager.Instance.Communicators.UdpServerCommunicator.SendAll(globalState);
         }
 
         private IMessage GetGlobalState() {

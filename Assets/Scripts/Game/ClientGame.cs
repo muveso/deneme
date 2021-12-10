@@ -20,7 +20,7 @@ namespace Assets.Scripts.Game {
             NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Send(new ClientReadyMessage());
         }
 
-        protected virtual void Update() {
+        protected virtual void FixedUpdate() {
             // Messages from server
             var message = NetworkManager.Instance.Communicators.UnreliableClientCommunicator.Receive();
             if (message == null) {
