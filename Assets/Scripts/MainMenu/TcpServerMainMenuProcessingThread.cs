@@ -9,10 +9,10 @@ using UnityEngine;
 
 namespace Assets.Scripts.MainMenu {
     public class TcpServerMainMenuProcessingThread : BaseThread {
-        private readonly TcpServerCommunicator _tcpServerCommunicator;
+        private readonly TcpServerManager _tcpServerManager;
 
-        public TcpServerMainMenuProcessingThread(TcpServerCommunicator tcpServerCommunicator) {
-            _tcpServerCommunicator = tcpServerCommunicator;
+        public TcpServerMainMenuProcessingThread(TcpServerManager tcpServerManager) {
+            _tcpServerManager = tcpServerManager;
             StateChanged = new AutoResetEvent(false);
         }
 
@@ -20,7 +20,7 @@ namespace Assets.Scripts.MainMenu {
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _tcpServerCommunicator.Receive();
+                var message = _tcpServerManager.Communicator.Receive();
                 if (message != null) {
                     HandleMessage(message);
                     StateChanged.Set();
@@ -41,14 +41,14 @@ namespace Assets.Scripts.MainMenu {
                     client.Details.Nickname = details.Nickname;
                 }
             } catch (SocketClosedException) {
-                _tcpServerCommunicator.Clients.Remove(client);
+                _tcpServerManager.Clients.Remove(client);
             }
 
             StateUpdateToAllClients();
         }
 
         private Client FindClientByIPEndpoint(IPEndPoint messageIpEndpoint) {
-            foreach (var client in _tcpServerCommunicator.Clients) {
+            foreach (var client in _tcpServerManager.Clients) {
                 if (Equals(client.GetEndpoint(), messageIpEndpoint)) {
                     return client;
                 }
@@ -59,7 +59,7 @@ namespace Assets.Scripts.MainMenu {
 
         private void StateUpdateToAllClients() {
             var mainMenuMessage = new MainMenuStateMessage();
-            foreach (var client in _tcpServerCommunicator.Clients) {
+            foreach (var client in _tcpServerManager.Clients) {
                 var detailsMessage = new ClientDetailsMessage {
                     Nickname = client.Details.Nickname,
                     IsReady = client.Details.IsReady
@@ -67,7 +67,7 @@ namespace Assets.Scripts.MainMenu {
                 mainMenuMessage.ClientsDetails.Add(detailsMessage);
             }
 
-            _tcpServerCommunicator.SendAll(mainMenuMessage);
+            _tcpServerManager.Communicator.Send(mainMenuMessage);
         }
     }
 }

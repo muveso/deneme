@@ -8,16 +8,16 @@ using UnityEngine;
 
 namespace Assets.Scripts.Network.Server {
     public class TcpServerCommunicatorReceiverThread : BaseThread {
-        private readonly TcpServerCommunicator _tcpServerCommunicator;
+        private readonly TcpServerManager _tcpServerManager;
 
-        public TcpServerCommunicatorReceiverThread(TcpServerCommunicator tcpServerCommunicator) {
-            _tcpServerCommunicator = tcpServerCommunicator;
+        public TcpServerCommunicatorReceiverThread(TcpServerManager tcpServerManager) {
+            _tcpServerManager = tcpServerManager;
         }
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
                 var checkReadSockets = GetSocketListFromClients();
-                checkReadSockets.Add(_tcpServerCommunicator.Server.Sock);
+                checkReadSockets.Add(_tcpServerManager.Server.Sock);
                 Socket.Select(checkReadSockets, null, null, 0);
                 HandleReadySockets(checkReadSockets);
             }
@@ -25,17 +25,17 @@ namespace Assets.Scripts.Network.Server {
 
         private void HandleReadySockets(List<Socket> readySocket) {
             foreach (var sock in readySocket) {
-                if (sock == _tcpServerCommunicator.Server.Sock) {
+                if (sock == _tcpServerManager.Server.Sock) {
                     HandleNewClient();
                 } else {
                     var client = FindClientBySocket(sock);
                     try {
                         var messageByes = client.Receive();
                         var message = MessagesHelpers.ConvertBytesToMessage(messageByes);
-                        _tcpServerCommunicator.AddMessageToReceive(
+                        _tcpServerManager.Communicator.AddMessageToReceive(
                             new MessageToReceive(client.GetEndpoint(), message));
                     } catch (SocketClosedException) {
-                        _tcpServerCommunicator.Clients.Remove(client);
+                        _tcpServerManager.Clients.Remove(client);
                     }
                 }
             }
@@ -43,7 +43,7 @@ namespace Assets.Scripts.Network.Server {
 
         private List<Socket> GetSocketListFromClients() {
             var clientSocketList = new List<Socket>();
-            foreach (var client in _tcpServerCommunicator.Clients) {
+            foreach (var client in _tcpServerManager.Clients) {
                 if (HostClient.IsHostClient(client)) {
                     continue;
                 }
@@ -56,12 +56,12 @@ namespace Assets.Scripts.Network.Server {
 
         private void HandleNewClient() {
             Debug.Log("New client connected");
-            _tcpServerCommunicator.Clients.Add(new NetworkTcpClient(_tcpServerCommunicator.Server.Accept()));
+            _tcpServerManager.Clients.Add(new NetworkTcpClient(_tcpServerManager.Server.Accept()));
         }
 
 
         private Common.Client FindClientBySocket(Socket sock) {
-            foreach (var client in _tcpServerCommunicator.Clients) {
+            foreach (var client in _tcpServerManager.Clients) {
                 if (client.GetSock() == sock) {
                     return client;
                 }

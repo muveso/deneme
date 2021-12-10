@@ -1,23 +1,17 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using Assets.Scripts.Network.Common;
-using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network.TCP;
-using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
-    public class TcpServerCommunicator : IServerCommunicatorForHost, IDisposable {
-        private readonly ConcurrentQueue<MessageToReceive> _receieveMessagesQueue;
-        private readonly ConcurrentQueue<MessageToSend> _sendMessagesQueue;
+    public class TcpServerManager : IServerCommunicatorForHost, IDisposable {
         private readonly TcpServerCommunicatorReceiverThread _tcpServerCommunicatorReceiverThread;
         private readonly TcpServerCommunicatorSenderThread _tcpServerCommunicatorSenderThread;
 
-        public TcpServerCommunicator(IPEndPoint localEndPoint) {
-            _receieveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
-            _sendMessagesQueue = new ConcurrentQueue<MessageToSend>();
+        public TcpServerManager(IPEndPoint localEndPoint) {
+            Communicator = new QueueCommunicator();
             Clients = new SynchronizedCollection<Common.Client>();
             Server = new TcpServer(localEndPoint);
             _tcpServerCommunicatorSenderThread = new TcpServerCommunicatorSenderThread(this);
@@ -25,6 +19,8 @@ namespace Assets.Scripts.Network.Server {
             _tcpServerCommunicatorReceiverThread = new TcpServerCommunicatorReceiverThread(this);
             _tcpServerCommunicatorReceiverThread.Start();
         }
+
+        public QueueCommunicator Communicator { get; }
 
         public TcpServer Server { get; }
 
@@ -42,27 +38,7 @@ namespace Assets.Scripts.Network.Server {
         }
 
         public void AddMessageToReceive(MessageToReceive messageToReceive) {
-            _receieveMessagesQueue.Enqueue(messageToReceive);
-        }
-
-        public MessageToReceive Receive() {
-            return EnumerableUtils.TryDequeue(_receieveMessagesQueue);
-        }
-
-        public List<MessageToReceive> ReceiveAll() {
-            return EnumerableUtils.DequeueAllQueue(_receieveMessagesQueue);
-        }
-
-        public void Send(IMessage message, List<IPEndPoint> clients) {
-            _sendMessagesQueue.Enqueue(new MessageToSend(clients, message));
-        }
-
-        public void SendAll(IMessage message) {
-            Send(message, null);
-        }
-
-        public MessageToSend GetMessageToSend() {
-            return EnumerableUtils.TryDequeue(_sendMessagesQueue);
+            Communicator.AddMessageToReceive(messageToReceive);
         }
     }
 }

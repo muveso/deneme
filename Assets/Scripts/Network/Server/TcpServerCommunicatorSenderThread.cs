@@ -6,15 +6,15 @@ using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
     public class TcpServerCommunicatorSenderThread : BaseThread {
-        private readonly TcpServerCommunicator _tcpServerCommunicator;
+        private readonly TcpServerManager _tcpServerManager;
 
-        public TcpServerCommunicatorSenderThread(TcpServerCommunicator tcpServerCommunicator) {
-            _tcpServerCommunicator = tcpServerCommunicator;
+        public TcpServerCommunicatorSenderThread(TcpServerManager tcpServerManager) {
+            _tcpServerManager = tcpServerManager;
         }
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _tcpServerCommunicator.GetMessageToSend();
+                var message = _tcpServerManager.Communicator.GetMessageToSend();
                 if (message != null) {
                     if (message.IPEndpoints != null) {
                         SendToClients(message.IPEndpoints, message.Message);
@@ -27,7 +27,7 @@ namespace Assets.Scripts.Network.Server {
 
         public void SendToClients(List<IPEndPoint> clients, IMessage message) {
             var messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
-            foreach (var client in _tcpServerCommunicator.Clients) {
+            foreach (var client in _tcpServerManager.Clients) {
                 if (clients.Contains(client.GetEndpoint())) {
                     client.Send(messageBytes);
                 }
@@ -36,7 +36,7 @@ namespace Assets.Scripts.Network.Server {
 
         public void SendToAllClients(IMessage message) {
             var messageBytes = MessagesHelpers.ConvertMessageToBytes(message);
-            foreach (var client in _tcpServerCommunicator.Clients) {
+            foreach (var client in _tcpServerManager.Clients) {
                 client.Send(messageBytes);
             }
         }

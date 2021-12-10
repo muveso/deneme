@@ -26,7 +26,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private void Update() {
-            if (GameManager.Instance.NetworkManagers.TcpServerCommunicator == null) {
+            if (GameManager.Instance.NetworkManagers.TcpServerManager == null) {
                 return;
             }
 
@@ -35,12 +35,12 @@ namespace Assets.Scripts.MainMenu {
             }
 
             Utils.UI.General.DestroyAllChildren(transform);
-            ScrollView.FillScrollViewWithObjects(GameManager.Instance.NetworkManagers.TcpServerCommunicator.Clients,
+            ScrollView.FillScrollViewWithObjects(GameManager.Instance.NetworkManagers.TcpServerManager.Clients,
                 transform);
         }
 
         private bool AreAllPlayersReady() {
-            foreach (var client in GameManager.Instance.NetworkManagers.TcpServerCommunicator
+            foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager
                 .Clients) {
                 if (!client.Details.IsReady) {
                     return false;
@@ -52,16 +52,16 @@ namespace Assets.Scripts.MainMenu {
 
         private void InitializeCommunicatorAndServer() {
             // Initialize TCP server
-            GameManager.Instance.NetworkManagers.TcpServerCommunicator =
-                new TcpServerCommunicator(new IPEndPoint(IPAddress.Parse(IPInputField.text),
+            GameManager.Instance.NetworkManagers.TcpServerManager =
+                new TcpServerManager(new IPEndPoint(IPAddress.Parse(IPInputField.text),
                     int.Parse(PortInputField.text)));
             // Initialize Processing Thread
             _tcpServerMainMenuProcessingThread =
-                new TcpServerMainMenuProcessingThread(GameManager.Instance.NetworkManagers.TcpServerCommunicator);
+                new TcpServerMainMenuProcessingThread(GameManager.Instance.NetworkManagers.TcpServerManager);
             _tcpServerMainMenuProcessingThread.Start();
             // Initialize Host communicator
             GameManager.Instance.NetworkManagers.ReliableClientManager =
-                new HostClientManager(GameManager.Instance.NetworkManagers.TcpServerCommunicator,
+                new HostClientManager(GameManager.Instance.NetworkManagers.TcpServerManager,
                     ClientGlobals.Nickname);
         }
 
@@ -69,7 +69,7 @@ namespace Assets.Scripts.MainMenu {
         public void OnClickStartGame() {
             if (AreAllPlayersReady()) {
                 Debug.Log("Starting Game");
-                GameManager.Instance.NetworkManagers.TcpServerCommunicator.SendAll(new StartGameMessage());
+                GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Send(new StartGameMessage());
                 SceneManager.LoadScene("Game");
             } else {
                 Debug.Log("Not all clients ready");

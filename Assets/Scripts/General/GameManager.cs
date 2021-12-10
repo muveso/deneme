@@ -7,7 +7,7 @@ namespace Assets.Scripts.General {
     public class NetworkManagers : IDisposable {
         public IManager ReliableClientManager { get; set; }
         public IManager UnreliableClientManager { get; set; }
-        public TcpServerCommunicator TcpServerCommunicator { get; set; }
+        public TcpServerManager TcpServerManager { get; set; }
         public UdpServerCommunicator UdpServerCommunicator { get; set; }
 
         public void Dispose() {
@@ -15,8 +15,8 @@ namespace Assets.Scripts.General {
                 ReliableClientManager.Dispose();
             }
 
-            if (TcpServerCommunicator != null) {
-                TcpServerCommunicator.Dispose();
+            if (TcpServerManager != null) {
+                TcpServerManager.Dispose();
             }
 
             if (UnreliableClientManager != null) {
