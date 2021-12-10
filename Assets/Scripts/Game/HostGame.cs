@@ -1,3 +1,4 @@
+using System;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
@@ -49,12 +50,15 @@ namespace Assets.Scripts.Game {
 
         private void HandleMessage(MessageToReceive messageToReceive) {
             var anyMessage = messageToReceive.AnyMessage;
-            if (anyMessage.Is(PlayerInputMessage.Descriptor)) {
-                var playerInputMessage = anyMessage.Unpack<PlayerInputMessage>();
-                GameObject.Find(playerInputMessage.ClientId).GetComponent<Player>()
-                    .ServerUpdate(playerInputMessage.Input);
+            if (!anyMessage.Is(PlayerInputMessage.Descriptor)) {
+                throw new Exception("Got unsupported message from client");
             }
+
+            var playerInputMessage = anyMessage.Unpack<PlayerInputMessage>();
+            GameObject.Find(playerInputMessage.ClientId).GetComponent<Player>()
+                .ServerUpdate(playerInputMessage.Input);
         }
+
 
         private void OnDestroy() {
             GameManager.Instance.Reset();
