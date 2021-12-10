@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
@@ -15,6 +16,10 @@ namespace Assets.Scripts.Network.Common {
 
         public MessageToReceive Receive() {
             return EnumerableUtils.TryDequeue(_receiveMessagesQueue);
+        }
+
+        public List<MessageToReceive> ReceiveAll() {
+            return EnumerableUtils.DequeueAllQueue(_receiveMessagesQueue);
         }
 
         public void Send(IMessage message) {

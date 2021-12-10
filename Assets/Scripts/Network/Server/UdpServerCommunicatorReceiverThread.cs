@@ -4,26 +4,26 @@ using UnityEngine;
 
 namespace Assets.Scripts.Network.Server {
     public class UdpServerCommunicatorReceiverThread : BaseThread {
-        private readonly UdpServerCommunicator _udpServerCommunicator;
+        private readonly UdpServerManager _udpServerManager;
 
-        public UdpServerCommunicatorReceiverThread(UdpServerCommunicator udpCommunicator) {
-            _udpServerCommunicator = udpCommunicator;
+        public UdpServerCommunicatorReceiverThread(UdpServerManager udpManager) {
+            _udpServerManager = udpManager;
         }
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _udpServerCommunicator.Client.Receive(false);
+                var message = _udpServerManager.Client.Receive(false);
                 if (message != null) {
                     AddClientIfNotExists(message.IPEndpoint);
                     Debug.Log("Got message, inserting to queue");
-                    _udpServerCommunicator.AddMessageToReceive(message);
+                    _udpServerManager.AddMessageToReceive(message);
                 }
             }
         }
 
         public void AddClientIfNotExists(IPEndPoint endpoint) {
-            if (!_udpServerCommunicator.Clients.Contains(endpoint)) {
-                _udpServerCommunicator.Clients.Add(endpoint);
+            if (!_udpServerManager.Clients.Contains(endpoint)) {
+                _udpServerManager.Clients.Add(endpoint);
             }
         }
     }

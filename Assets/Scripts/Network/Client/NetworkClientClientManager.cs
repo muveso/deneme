@@ -3,11 +3,11 @@ using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Client {
-    public class NetworkClientManager : IManager {
+    public class NetworkClientClientManager : IClientManager {
         private readonly NetworkClientCommunicatorReceiverThread _networkClientCommunicatorReceiverThread;
         private readonly NetworkClientCommunicatorSenderThread _networkClientCommunicatorSenderThread;
 
-        public NetworkClientManager(IMessageBasedClient messageBasedNetworkClient) {
+        public NetworkClientClientManager(IMessageBasedClient messageBasedNetworkClient) {
             Communicator = new QueueCommunicator();
             NetworkClient = messageBasedNetworkClient;
             _networkClientCommunicatorSenderThread = new NetworkClientCommunicatorSenderThread(this);
@@ -31,10 +31,6 @@ namespace Assets.Scripts.Network.Client {
         }
 
         public void Send(IMessage message) {
-            Communicator.Send(message);
-        }
-
-        public void Send(MessageToSend message) {
             Communicator.Send(message);
         }
     }

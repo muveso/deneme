@@ -66,7 +66,7 @@ namespace Assets.Scripts.MainMenu {
             var endpoint = new IPEndPoint(GameManager.Instance.ServerIpAddress, int.Parse(PortInputField.text));
             var tcpMessageBasedClient = new TcpClientMessageBasedClient(new TcpClient(endpoint));
             GameManager.Instance.NetworkManagers.ReliableClientManager =
-                new NetworkClientManager(tcpMessageBasedClient);
+                new NetworkClientClientManager(tcpMessageBasedClient);
             ClientMessages.SendClientDetails(GameManager.Instance.NetworkManagers.ReliableClientManager);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
         }

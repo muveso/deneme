@@ -1,5 +1,4 @@
 using System;
-using Assets.Scripts.Network.Client;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils.Messages;
@@ -8,10 +7,10 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Network.Host {
-    public class HostClientManager : IManager {
+    public class HostClientClientManager : IClientManager {
         private readonly IServerCommunicatorForHost _serverCommunicator;
 
-        public HostClientManager(IServerCommunicatorForHost serverCommunicator, string nickname) {
+        public HostClientClientManager(IServerCommunicatorForHost serverCommunicator, string nickname) {
             _serverCommunicator = serverCommunicator;
             _serverCommunicator.HostConnect(nickname);
         }

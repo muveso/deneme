@@ -5,10 +5,10 @@ using Assets.Scripts.Network.Server;
 
 namespace Assets.Scripts.General {
     public class NetworkManagers : IDisposable {
-        public IManager ReliableClientManager { get; set; }
-        public IManager UnreliableClientManager { get; set; }
+        public IClientManager ReliableClientManager { get; set; }
+        public IClientManager UnreliableClientManager { get; set; }
         public TcpServerManager TcpServerManager { get; set; }
-        public UdpServerCommunicator UdpServerCommunicator { get; set; }
+        public UdpServerManager UdpServerManager { get; set; }
 
         public void Dispose() {
             if (ReliableClientManager != null) {
@@ -23,8 +23,8 @@ namespace Assets.Scripts.General {
                 UnreliableClientManager.Dispose();
             }
 
-            if (UdpServerCommunicator != null) {
-                UdpServerCommunicator.Dispose();
+            if (UdpServerManager != null) {
+                UdpServerManager.Dispose();
             }
         }
     }

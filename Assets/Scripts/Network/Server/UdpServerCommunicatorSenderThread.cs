@@ -5,15 +5,15 @@ using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
     public class UdpServerCommunicatorSenderThread : BaseThread {
-        private readonly UdpServerCommunicator _udpServerCommunicator;
+        private readonly UdpServerManager _udpServerManager;
 
-        public UdpServerCommunicatorSenderThread(UdpServerCommunicator udpServerCommunicator) {
-            _udpServerCommunicator = udpServerCommunicator;
+        public UdpServerCommunicatorSenderThread(UdpServerManager udpServerManager) {
+            _udpServerManager = udpServerManager;
         }
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _udpServerCommunicator.GetMessageToSend();
+                var message = _udpServerManager.Communicator.GetMessageToSend();
                 if (message != null) {
                     if (message.IPEndpoints != null) {
                         SendToClients(message.IPEndpoints, message.Message);
@@ -25,16 +25,16 @@ namespace Assets.Scripts.Network.Server {
         }
 
         public void SendToClients(List<IPEndPoint> clients, IMessage message) {
-            foreach (var client in _udpServerCommunicator.Clients) {
+            foreach (var client in _udpServerManager.Clients) {
                 if (clients.Contains(client)) {
-                    _udpServerCommunicator.Client.SendTo(message, client);
+                    _udpServerManager.Client.SendTo(message, client);
                 }
             }
         }
 
         public void SendToAllClients(IMessage message) {
-            foreach (var client in _udpServerCommunicator.Clients) {
-                _udpServerCommunicator.Client.SendTo(message, client);
+            foreach (var client in _udpServerManager.Clients) {
+                _udpServerManager.Client.SendTo(message, client);
             }
         }
     }
