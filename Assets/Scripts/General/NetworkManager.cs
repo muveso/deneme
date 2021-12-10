@@ -5,8 +5,8 @@ using Assets.Scripts.Network.Server;
 
 namespace Assets.Scripts.General {
     public class Communicators : IDisposable {
-        public IClientCommunicator ReliableClientCommunicator { get; set; }
-        public IClientCommunicator UnreliableClientCommunicator { get; set; }
+        public ICommunicator ReliableClientCommunicator { get; set; }
+        public ICommunicator UnreliableClientCommunicator { get; set; }
         public TcpServerCommunicator TcpServerCommunicator { get; set; }
         public UdpServerCommunicator UdpServerCommunicator { get; set; }
 

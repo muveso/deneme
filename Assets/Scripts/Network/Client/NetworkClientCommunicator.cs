@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
@@ -6,7 +7,7 @@ using Google.Protobuf;
 using UnityEngine;
 
 namespace Assets.Scripts.Network.Client {
-    public class NetworkClientCommunicator : IClientCommunicator {
+    public class NetworkClientCommunicator : ICommunicator {
         private readonly NetworkClientCommunicatorReceiverThread _networkClientCommunicatorReceiverThread;
         private readonly NetworkClientCommunicatorSenderThread _networkClientCommunicatorSenderThread;
 
@@ -39,6 +40,10 @@ namespace Assets.Scripts.Network.Client {
         public void Send(IMessage message) {
             Debug.Log("Network client enqueue messageToReceive to send");
             SendMessagesQueue.Enqueue(message);
+        }
+
+        public void Send(MessageToSend message) {
+            throw new NotImplementedException();
         }
     }
 }

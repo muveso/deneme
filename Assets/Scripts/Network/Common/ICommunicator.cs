@@ -3,8 +3,9 @@ using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Common {
-    public interface IClientCommunicator : IDisposable {
+    public interface ICommunicator : IDisposable {
         MessageToReceive Receive();
         void Send(IMessage message);
+        void Send(MessageToSend message);
     }
 }

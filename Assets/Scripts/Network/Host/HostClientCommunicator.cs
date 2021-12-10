@@ -7,7 +7,7 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Network.Host {
-    public class HostClientCommunicator : IClientCommunicator {
+    public class HostClientCommunicator : ICommunicator {
         private readonly IServerCommunicatorForHost _serverCommunicator;
 
         public HostClientCommunicator(IServerCommunicatorForHost serverCommunicator, string nickname) {
@@ -19,6 +19,10 @@ namespace Assets.Scripts.Network.Host {
             var messageToInsert = new MessageToReceive(HostClient.GetHostClientEndpoint(), Any.Pack(message));
             Debug.Log("Host client inserting message to queue");
             _serverCommunicator.AddMessageToReceive(messageToInsert);
+        }
+
+        public void Send(MessageToSend message) {
+            throw new NotImplementedException();
         }
 
         public MessageToReceive Receive() {
