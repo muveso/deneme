@@ -26,10 +26,6 @@ namespace Assets.Scripts.Network.Common {
             _sendMessagesQueue.Enqueue(new MessageToSend(null, message));
         }
 
-        public void Send(MessageToSend message) {
-            _sendMessagesQueue.Enqueue(message);
-        }
-
         public MessageToSend GetMessageToSend() {
             return EnumerableUtils.TryDequeue(_sendMessagesQueue);
         }
