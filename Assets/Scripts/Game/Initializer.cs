@@ -23,6 +23,7 @@ namespace Assets.Scripts.Game {
             foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
                 var playerObject = Instantiate(playerPrefab, new Vector3(0, 1, -1), Quaternion.identity);
                 playerObject.name = Guid.NewGuid().ToString();
+                playerObject.GetComponentInChildren<TextMesh>().text = client.Details.Nickname;
                 if (HostClient.IsHostClient(client)) {
                     playerObject.AddComponent<Camera>();
                     playerObject.GetComponent<NetworkBehaviour>().IsLocal = true;

@@ -26,6 +26,8 @@ namespace Assets.Scripts.Game {
                     HandleMessage(message);
                     SendGlobalStateToAllClients();
                 }
+            } else {
+                SendGlobalStateToAllClients();
             }
         }
 

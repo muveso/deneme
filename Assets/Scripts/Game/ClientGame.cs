@@ -52,6 +52,7 @@ namespace Assets.Scripts.Game {
             var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
             var playerObject = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             playerObject.name = objectStateMessage.ObjectId;
+            playerObject.GetComponentInChildren<TextMesh>().text = objectStateMessage.OwnerNickname;
             if (objectStateMessage.OwnerNickname == GameManager.Instance.Nickname) {
                 playerObject.AddComponent<Camera>();
                 playerObject.GetComponent<NetworkBehaviour>().IsLocal = true;
