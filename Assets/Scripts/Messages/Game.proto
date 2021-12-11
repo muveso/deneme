@@ -21,16 +21,16 @@ message PlayerInputMessage {
 
 
 //// state
-message PlayerMovementStateMessage {
+message PlayerStateMessage {
 	Vector3Message position = 2;
 	Vector3Message velocity = 3;
 }
 
-message PlayerStateMessage {
+message ObjectStateMessage {
 	string nickname = 1;
 	google.protobuf.Any state = 2;
 }
 
 message GlobalStateMessage {
-	repeated google.protobuf.Any objectsState = 1;
+	repeated ObjectStateMessage objectsState = 1;
 }

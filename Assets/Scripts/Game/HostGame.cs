@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
@@ -15,6 +16,15 @@ namespace Assets.Scripts.Game {
             GameManager.Instance.NetworkManagers.UnreliableClientManager =
                 new HostClientManager(GameManager.Instance.NetworkManagers.UdpServerManager,
                     GameManager.Instance.Nickname);
+            // WaitForAllClientsToConnectToGameScene();
+            SendGlobalStateToAllClients();
+        }
+
+        private void WaitForAllClientsToConnectToGameScene() {
+            while (GameManager.Instance.NetworkManagers.UdpServerManager.Clients.Count !=
+                   GameManager.Instance.NetworkManagers.TcpServerManager.Clients.Count) {
+                Thread.Sleep(100);
+            }
         }
 
         private void FixedUpdate() {
@@ -38,11 +48,11 @@ namespace Assets.Scripts.Game {
             var globalStateMessage = new GlobalStateMessage();
             foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
                 var messageToPack = GameObject.Find(client.Id).GetComponent<Player>().SerializeState();
-                var stateMessage = new PlayerStateMessage {
+                var stateMessage = new ObjectStateMessage {
                     Nickname = client.Details.Nickname,
                     State = Any.Pack(messageToPack)
                 };
-                globalStateMessage.ObjectsState.Add(Any.Pack(stateMessage));
+                globalStateMessage.ObjectsState.Add(stateMessage);
             }
 
             return globalStateMessage;

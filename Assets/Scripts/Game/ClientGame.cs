@@ -2,7 +2,6 @@ using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Client;
 using Assets.Scripts.Utils.Network.UDP;
-using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,30 +32,30 @@ namespace Assets.Scripts.Game {
         }
 
         private void HandleGlobalState(GlobalStateMessage globalStateMessage) {
-            foreach (var state in globalStateMessage.ObjectsState) {
-                HandleState(state);
+            foreach (var objectStateMessage in globalStateMessage.ObjectsState) {
+                HandleState(objectStateMessage);
             }
         }
 
-        private void HandleState(Any state) {
-            if (state.Is(PlayerStateMessage.Descriptor)) {
-                HandlePlayerState(state.Unpack<PlayerStateMessage>());
+        private void HandleState(ObjectStateMessage objectStateMessage) {
+            if (objectStateMessage.State.Is(PlayerStateMessage.Descriptor)) {
+                HandlePlayerState(objectStateMessage);
             }
         }
 
-        private void HandlePlayerState(PlayerStateMessage state) {
-            var player = GameObject.Find(state.Nickname);
+        private void HandlePlayerState(ObjectStateMessage objectStateMessage) {
+            var player = GameObject.Find(objectStateMessage.Nickname);
             if (player == null) {
-                player = CreatePlayer(state);
+                player = CreatePlayer(objectStateMessage);
             }
 
-            player.GetComponent<Player>().DeserializeState(state.State);
+            player.GetComponent<Player>().DeserializeState(objectStateMessage.State);
         }
 
-        private GameObject CreatePlayer(PlayerStateMessage state) {
+        private GameObject CreatePlayer(ObjectStateMessage objectStateMessage) {
             var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
             var player = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            player.name = state.Nickname;
+            player.name = objectStateMessage.Nickname;
             if (player.name == GameManager.Instance.Nickname) {
                 player.AddComponent<Camera>();
             }

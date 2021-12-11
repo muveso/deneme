@@ -27,13 +27,13 @@ public static partial class GameReflection {
           "IhkKF1NlcnZlckRpc2Nvbm5lY3RNZXNzYWdlIj8KFVBsYXllck1vdmVtZW50",
           "TWVzc2FnZRImCg1rZXlib2FyZElucHV0GAEgASgLMg8uVmVjdG9yM01lc3Nh",
           "Z2UiSwoSUGxheWVySW5wdXRNZXNzYWdlEhAKCGNsaWVudElkGAEgASgJEiMK",
-          "BWlucHV0GAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueSJiChpQbGF5ZXJN",
-          "b3ZlbWVudFN0YXRlTWVzc2FnZRIhCghwb3NpdGlvbhgCIAEoCzIPLlZlY3Rv",
-          "cjNNZXNzYWdlEiEKCHZlbG9jaXR5GAMgASgLMg8uVmVjdG9yM01lc3NhZ2Ui",
-          "SwoSUGxheWVyU3RhdGVNZXNzYWdlEhAKCG5pY2tuYW1lGAEgASgJEiMKBXN0",
-          "YXRlGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueSJAChJHbG9iYWxTdGF0",
-          "ZU1lc3NhZ2USKgoMb2JqZWN0c1N0YXRlGAEgAygLMhQuZ29vZ2xlLnByb3Rv",
-          "YnVmLkFueWIGcHJvdG8z"));
+          "BWlucHV0GAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueSJaChJQbGF5ZXJT",
+          "dGF0ZU1lc3NhZ2USIQoIcG9zaXRpb24YAiABKAsyDy5WZWN0b3IzTWVzc2Fn",
+          "ZRIhCgh2ZWxvY2l0eRgDIAEoCzIPLlZlY3RvcjNNZXNzYWdlIksKEk9iamVj",
+          "dFN0YXRlTWVzc2FnZRIQCghuaWNrbmFtZRgBIAEoCRIjCgVzdGF0ZRgCIAEo",
+          "CzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiPwoSR2xvYmFsU3RhdGVNZXNzYWdl",
+          "EikKDG9iamVjdHNTdGF0ZRgBIAMoCzITLk9iamVjdFN0YXRlTWVzc2FnZWIG",
+          "cHJvdG8z"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -41,8 +41,8 @@ public static partial class GameReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::ServerDisconnectMessage), global::ServerDisconnectMessage.Parser, null, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::PlayerMovementMessage), global::PlayerMovementMessage.Parser, new[]{ "KeyboardInput" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::PlayerInputMessage), global::PlayerInputMessage.Parser, new[]{ "ClientId", "Input" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerMovementStateMessage), global::PlayerMovementStateMessage.Parser, new[]{ "Position", "Velocity" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerStateMessage), global::PlayerStateMessage.Parser, new[]{ "Nickname", "State" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::PlayerStateMessage), global::PlayerStateMessage.Parser, new[]{ "Position", "Velocity" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::ObjectStateMessage), global::ObjectStateMessage.Parser, new[]{ "Nickname", "State" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::GlobalStateMessage), global::GlobalStateMessage.Parser, new[]{ "ObjectsState" }, null, null, null, null)
         }));
   }
@@ -907,16 +907,16 @@ public sealed partial class PlayerInputMessage : pb::IMessage<PlayerInputMessage
 /// <summary>
 ///// state
 /// </summary>
-public sealed partial class PlayerMovementStateMessage : pb::IMessage<PlayerMovementStateMessage>
+public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage>
 #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     , pb::IBufferMessage
 #endif
 {
-  private static readonly pb::MessageParser<PlayerMovementStateMessage> _parser = new pb::MessageParser<PlayerMovementStateMessage>(() => new PlayerMovementStateMessage());
+  private static readonly pb::MessageParser<PlayerStateMessage> _parser = new pb::MessageParser<PlayerStateMessage>(() => new PlayerStateMessage());
   private pb::UnknownFieldSet _unknownFields;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public static pb::MessageParser<PlayerMovementStateMessage> Parser { get { return _parser; } }
+  public static pb::MessageParser<PlayerStateMessage> Parser { get { return _parser; } }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -932,7 +932,7 @@ public sealed partial class PlayerMovementStateMessage : pb::IMessage<PlayerMove
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public PlayerMovementStateMessage() {
+  public PlayerStateMessage() {
     OnConstruction();
   }
 
@@ -940,7 +940,7 @@ public sealed partial class PlayerMovementStateMessage : pb::IMessage<PlayerMove
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public PlayerMovementStateMessage(PlayerMovementStateMessage other) : this() {
+  public PlayerStateMessage(PlayerStateMessage other) : this() {
     position_ = other.position_ != null ? other.position_.Clone() : null;
     velocity_ = other.velocity_ != null ? other.velocity_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -948,8 +948,8 @@ public sealed partial class PlayerMovementStateMessage : pb::IMessage<PlayerMove
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public PlayerMovementStateMessage Clone() {
-    return new PlayerMovementStateMessage(this);
+  public PlayerStateMessage Clone() {
+    return new PlayerStateMessage(this);
   }
 
   /// <summary>Field number for the "position" field.</summary>
@@ -979,12 +979,12 @@ public sealed partial class PlayerMovementStateMessage : pb::IMessage<PlayerMove
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
-    return Equals(other as PlayerMovementStateMessage);
+    return Equals(other as PlayerStateMessage);
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public bool Equals(PlayerMovementStateMessage other) {
+  public bool Equals(PlayerStateMessage other) {
     if (ReferenceEquals(other, null)) {
       return false;
     }
@@ -1070,7 +1070,7 @@ public sealed partial class PlayerMovementStateMessage : pb::IMessage<PlayerMove
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public void MergeFrom(PlayerMovementStateMessage other) {
+  public void MergeFrom(PlayerStateMessage other) {
     if (other == null) {
       return;
     }
@@ -1151,16 +1151,16 @@ public sealed partial class PlayerMovementStateMessage : pb::IMessage<PlayerMove
 
 }
 
-public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage>
+public sealed partial class ObjectStateMessage : pb::IMessage<ObjectStateMessage>
 #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     , pb::IBufferMessage
 #endif
 {
-  private static readonly pb::MessageParser<PlayerStateMessage> _parser = new pb::MessageParser<PlayerStateMessage>(() => new PlayerStateMessage());
+  private static readonly pb::MessageParser<ObjectStateMessage> _parser = new pb::MessageParser<ObjectStateMessage>(() => new ObjectStateMessage());
   private pb::UnknownFieldSet _unknownFields;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public static pb::MessageParser<PlayerStateMessage> Parser { get { return _parser; } }
+  public static pb::MessageParser<ObjectStateMessage> Parser { get { return _parser; } }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1176,7 +1176,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public PlayerStateMessage() {
+  public ObjectStateMessage() {
     OnConstruction();
   }
 
@@ -1184,7 +1184,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public PlayerStateMessage(PlayerStateMessage other) : this() {
+  public ObjectStateMessage(ObjectStateMessage other) : this() {
     nickname_ = other.nickname_;
     state_ = other.state_ != null ? other.state_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -1192,8 +1192,8 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public PlayerStateMessage Clone() {
-    return new PlayerStateMessage(this);
+  public ObjectStateMessage Clone() {
+    return new ObjectStateMessage(this);
   }
 
   /// <summary>Field number for the "nickname" field.</summary>
@@ -1223,12 +1223,12 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
-    return Equals(other as PlayerStateMessage);
+    return Equals(other as ObjectStateMessage);
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public bool Equals(PlayerStateMessage other) {
+  public bool Equals(ObjectStateMessage other) {
     if (ReferenceEquals(other, null)) {
       return false;
     }
@@ -1314,7 +1314,7 @@ public sealed partial class PlayerStateMessage : pb::IMessage<PlayerStateMessage
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public void MergeFrom(PlayerStateMessage other) {
+  public void MergeFrom(ObjectStateMessage other) {
     if (other == null) {
       return;
     }
@@ -1432,12 +1432,12 @@ public sealed partial class GlobalStateMessage : pb::IMessage<GlobalStateMessage
 
   /// <summary>Field number for the "objectsState" field.</summary>
   public const int ObjectsStateFieldNumber = 1;
-  private static readonly pb::FieldCodec<global::Google.Protobuf.WellKnownTypes.Any> _repeated_objectsState_codec
-      = pb::FieldCodec.ForMessage(10, global::Google.Protobuf.WellKnownTypes.Any.Parser);
-  private readonly pbc::RepeatedField<global::Google.Protobuf.WellKnownTypes.Any> objectsState_ = new pbc::RepeatedField<global::Google.Protobuf.WellKnownTypes.Any>();
+  private static readonly pb::FieldCodec<global::ObjectStateMessage> _repeated_objectsState_codec
+      = pb::FieldCodec.ForMessage(10, global::ObjectStateMessage.Parser);
+  private readonly pbc::RepeatedField<global::ObjectStateMessage> objectsState_ = new pbc::RepeatedField<global::ObjectStateMessage>();
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public pbc::RepeatedField<global::Google.Protobuf.WellKnownTypes.Any> ObjectsState {
+  public pbc::RepeatedField<global::ObjectStateMessage> ObjectsState {
     get { return objectsState_; }
   }
 
