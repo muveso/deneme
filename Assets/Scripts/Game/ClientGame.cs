@@ -39,17 +39,13 @@ namespace Assets.Scripts.Game {
 
         private void HandleState(ObjectStateMessage objectStateMessage) {
             if (objectStateMessage.State.Is(PlayerStateMessage.Descriptor)) {
-                HandlePlayerState(objectStateMessage);
-            }
-        }
+                var foundGameObject = GameObject.Find(objectStateMessage.ObjectId);
+                if (foundGameObject == null) {
+                    foundGameObject = CreatePlayer(objectStateMessage);
+                }
 
-        private void HandlePlayerState(ObjectStateMessage objectStateMessage) {
-            var player = GameObject.Find(objectStateMessage.ObjectId);
-            if (player == null) {
-                player = CreatePlayer(objectStateMessage);
+                foundGameObject.GetComponent<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
             }
-
-            player.GetComponent<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
         }
 
         private GameObject CreatePlayer(ObjectStateMessage objectStateMessage) {

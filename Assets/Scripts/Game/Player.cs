@@ -26,10 +26,9 @@ namespace Assets.Scripts.Game {
         }
 
         public override void DeserializeState(Any message) {
-            var position = message.Unpack<PlayerStateMessage>().Position;
-            var velocity = message.Unpack<PlayerStateMessage>().Velocity;
-            transform.position = MessagesHelpers.CreateVector3FromMessage(position);
-            PlayerRigidbody.velocity = MessagesHelpers.CreateVector3FromMessage(velocity);
+            var playerStateMessage = message.Unpack<PlayerStateMessage>();
+            transform.position = MessagesHelpers.CreateVector3FromMessage(playerStateMessage.Position);
+            PlayerRigidbody.velocity = MessagesHelpers.CreateVector3FromMessage(playerStateMessage.Velocity);
         }
 
         public override IMessage SerializeState() {

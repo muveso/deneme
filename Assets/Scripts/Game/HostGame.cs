@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
@@ -16,15 +15,6 @@ namespace Assets.Scripts.Game {
             GameManager.Instance.NetworkManagers.UnreliableClientManager =
                 new HostClientManager(GameManager.Instance.NetworkManagers.UdpServerManager,
                     GameManager.Instance.Nickname);
-            // WaitForAllClientsToConnectToGameScene();
-            SendGlobalStateToAllClients();
-        }
-
-        private void WaitForAllClientsToConnectToGameScene() {
-            while (GameManager.Instance.NetworkManagers.UdpServerManager.Clients.Count !=
-                   GameManager.Instance.NetworkManagers.TcpServerManager.Clients.Count) {
-                Thread.Sleep(100);
-            }
         }
 
         private void FixedUpdate() {
