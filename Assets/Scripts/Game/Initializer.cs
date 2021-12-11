@@ -1,7 +1,6 @@
 using System;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
-using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.Game {
@@ -23,7 +22,7 @@ namespace Assets.Scripts.Game {
             var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
             foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
                 var playerObject = Instantiate(playerPrefab, new Vector3(0, 1, -1), Quaternion.identity);
-                playerObject.name = GUID.Generate().ToString();
+                playerObject.name = Guid.NewGuid().ToString();
                 if (HostClient.IsHostClient(client)) {
                     playerObject.AddComponent<Camera>();
                     playerObject.GetComponent<NetworkBehaviour>().IsLocal = true;
