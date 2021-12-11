@@ -20,6 +20,10 @@ namespace Assets.Scripts.Game {
             }
         }
 
+        /// <summary>
+        ///     Create input message and send it to server
+        /// </summary>
+        /// <param name="message">The inner message to send to server</param>
         private void SendUpdate(IMessage message) {
             var inputMessage = new ObjectInputMessage {
                 ObjectId = name,
@@ -29,9 +33,28 @@ namespace Assets.Scripts.Game {
             GameManager.Instance.NetworkManagers.UnreliableClientManager.Send(inputMessage);
         }
 
+        /// <summary>
+        ///     The FixedUpdate logic on the server
+        /// </summary>
+        /// <param name="message">The input message from client</param>
         public abstract void ServerUpdate(Any message);
+
+        /// <summary>
+        ///     Gets state from server and deserialize it to the object
+        /// </summary>
+        /// <param name="message">The input message from client</param>
         public abstract void DeserializeState(Any message);
+
+        /// <summary>
+        ///     Serialize the object into message
+        /// </summary>
+        /// <returns>State message to send to client</returns>
         public abstract IMessage SerializeState();
+
+        /// <summary>
+        ///     The FixedUpdate logic on the client
+        /// </summary>
+        /// <returns>Input message to send to server</returns>
         protected abstract IMessage ClientUpdate();
     }
 }
