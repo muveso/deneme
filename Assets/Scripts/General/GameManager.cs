@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
+using UnityEngine;
 
 namespace Assets.Scripts.General {
     public class NetworkManagers : IDisposable {
@@ -34,7 +36,7 @@ namespace Assets.Scripts.General {
         private static GameManager _instance;
 
         private GameManager() {
-            NetworkManagers = new NetworkManagers();
+            Reset();
         }
 
         public IPAddress ServerIpAddress { get; set; }
@@ -42,6 +44,7 @@ namespace Assets.Scripts.General {
         public bool IsHost { get; set; }
         public string Nickname { get; set; }
         public string ClientId { get; set; }
+        public Dictionary<string, Tuple<GameObject, string>> ServerGameObjects { get; set; }
 
         public static GameManager Instance {
             get {
@@ -63,8 +66,12 @@ namespace Assets.Scripts.General {
         public void Reset() {
             IsHost = false;
             ServerIpAddress = null;
-            NetworkManagers.Dispose();
+            if (NetworkManagers != null) {
+                NetworkManagers.Dispose();
+            }
+
             NetworkManagers = new NetworkManagers();
+            ServerGameObjects = new Dictionary<string, Tuple<GameObject, string>>();
         }
     }
 }

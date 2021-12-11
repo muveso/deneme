@@ -44,23 +44,24 @@ namespace Assets.Scripts.Game {
         }
 
         private void HandlePlayerState(ObjectStateMessage objectStateMessage) {
-            var player = GameObject.Find(objectStateMessage.Nickname);
+            var player = GameObject.Find(objectStateMessage.ObjectId);
             if (player == null) {
                 player = CreatePlayer(objectStateMessage);
             }
 
-            player.GetComponent<Player>().DeserializeState(objectStateMessage.State);
+            player.GetComponent<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
         }
 
         private GameObject CreatePlayer(ObjectStateMessage objectStateMessage) {
             var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
-            var player = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            player.name = objectStateMessage.Nickname;
-            if (player.name == GameManager.Instance.Nickname) {
-                player.AddComponent<Camera>();
+            var playerObject = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            playerObject.name = objectStateMessage.ObjectId;
+            if (objectStateMessage.OwnerNickname == GameManager.Instance.Nickname) {
+                playerObject.AddComponent<Camera>();
+                playerObject.GetComponent<NetworkBehaviour>().IsLocal = true;
             }
 
-            return player;
+            return playerObject;
         }
 
         private void OnDestroy() {

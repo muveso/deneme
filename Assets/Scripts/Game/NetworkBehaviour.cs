@@ -5,15 +5,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public abstract class NetworkBehaviour : MonoBehaviour {
-        protected bool IsLocal {
-            get {
-                if (GameManager.Instance.IsHost) {
-                    return name == GameManager.Instance.ClientId;
-                }
-
-                return name == GameManager.Instance.Nickname;
-            }
-        }
+        public bool IsLocal { get; set; }
 
         /// <summary>
         ///     FixedUpdate used in order to sync the input speed from clients.
@@ -29,7 +21,8 @@ namespace Assets.Scripts.Game {
         }
 
         private void SendUpdate(IMessage message) {
-            var inputMessage = new PlayerInputMessage {
+            var inputMessage = new ObjectInputMessage {
+                ObjectId = name,
                 ClientId = GameManager.Instance.ClientId,
                 Input = Any.Pack(message)
             };

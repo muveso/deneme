@@ -14,9 +14,10 @@ message PlayerMovementMessage {
 	Vector3Message keyboardInput = 1;
 }
 
-message PlayerInputMessage {
-	string clientId = 1;
-	google.protobuf.Any input = 2;
+message ObjectInputMessage {
+	string objectId = 1;
+	string clientId = 2;
+	google.protobuf.Any input = 3;
 }
 
 
@@ -27,8 +28,9 @@ message PlayerStateMessage {
 }
 
 message ObjectStateMessage {
-	string nickname = 1;
-	google.protobuf.Any state = 2;
+	string objectId = 1;
+	string ownerNickname = 2;
+	google.protobuf.Any state = 3;
 }
 
 message GlobalStateMessage {

@@ -46,10 +46,15 @@ namespace Assets.Scripts.Game {
 
         private IMessage GetGlobalState() {
             var globalStateMessage = new GlobalStateMessage();
-            foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
-                var messageToPack = GameObject.Find(client.Id).GetComponent<Player>().SerializeState();
+            foreach (var serverGameObject in GameManager.Instance.ServerGameObjects) {
+                var objectId = serverGameObject.Key;
+                var realGameObject = serverGameObject.Value.Item1;
+                var ownerNickname = serverGameObject.Value.Item2;
+
+                var messageToPack = realGameObject.GetComponent<NetworkBehaviour>().SerializeState();
                 var stateMessage = new ObjectStateMessage {
-                    Nickname = client.Details.Nickname,
+                    ObjectId = objectId,
+                    OwnerNickname = ownerNickname,
                     State = Any.Pack(messageToPack)
                 };
                 globalStateMessage.ObjectsState.Add(stateMessage);
@@ -60,13 +65,14 @@ namespace Assets.Scripts.Game {
 
         private void HandleMessage(MessageToReceive messageToReceive) {
             var anyMessage = messageToReceive.AnyMessage;
-            if (!anyMessage.Is(PlayerInputMessage.Descriptor)) {
+            if (!anyMessage.Is(ObjectInputMessage.Descriptor)) {
                 throw new Exception("Got unsupported message from client");
             }
 
-            var playerInputMessage = anyMessage.Unpack<PlayerInputMessage>();
-            GameObject.Find(playerInputMessage.ClientId).GetComponent<Player>()
-                .ServerUpdate(playerInputMessage.Input);
+            var objectInputMessage = anyMessage.Unpack<ObjectInputMessage>();
+
+            GameManager.Instance.ServerGameObjects[objectInputMessage.ObjectId].Item1.GetComponent<NetworkBehaviour>()
+                .ServerUpdate(objectInputMessage.Input);
         }
 
 
