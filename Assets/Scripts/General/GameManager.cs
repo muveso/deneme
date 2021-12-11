@@ -1,36 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using Assets.Scripts.Network.Common;
-using Assets.Scripts.Network.Server;
 using UnityEngine;
 
 namespace Assets.Scripts.General {
-    public class NetworkManagers : IDisposable {
-        public IClientManager ReliableClientManager { get; set; }
-        public IClientManager UnreliableClientManager { get; set; }
-        public TcpServerManager TcpServerManager { get; set; }
-        public UdpServerManager UdpServerManager { get; set; }
-
-        public void Dispose() {
-            if (ReliableClientManager != null) {
-                ReliableClientManager.Dispose();
-            }
-
-            if (TcpServerManager != null) {
-                TcpServerManager.Dispose();
-            }
-
-            if (UnreliableClientManager != null) {
-                UnreliableClientManager.Dispose();
-            }
-
-            if (UdpServerManager != null) {
-                UdpServerManager.Dispose();
-            }
-        }
-    }
-
     public class GameManager {
         private static readonly object Padlock = new();
         private static GameManager _instance;
@@ -66,10 +39,7 @@ namespace Assets.Scripts.General {
         public void Reset() {
             IsHost = false;
             ServerIpAddress = null;
-            if (NetworkManagers != null) {
-                NetworkManagers.Dispose();
-            }
-
+            NetworkManagers?.Dispose();
             NetworkManagers = new NetworkManagers();
             ServerGameObjects = new Dictionary<string, Tuple<GameObject, string>>();
         }
