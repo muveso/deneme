@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils.Messages;
@@ -19,6 +20,10 @@ namespace Assets.Scripts.Network.Host {
             var messageToInsert = new MessageToReceive(HostClient.GetHostClientEndpoint(), Any.Pack(message));
             Debug.Log("Host client inserting message to queue");
             _serverCommunicator.AddMessageToReceive(messageToInsert);
+        }
+
+        public List<MessageToReceive> ReceiveAll() {
+            throw new NotImplementedException();
         }
 
         public MessageToReceive Receive() {

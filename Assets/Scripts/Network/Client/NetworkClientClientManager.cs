@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
@@ -24,6 +25,10 @@ namespace Assets.Scripts.Network.Client {
             _networkClientCommunicatorReceiverThread?.Stop();
             _networkClientCommunicatorSenderThread?.Stop();
             NetworkClient?.Dispose();
+        }
+
+        public List<MessageToReceive> ReceiveAll() {
+            return Communicator.ReceiveAll();
         }
 
         public MessageToReceive Receive() {
