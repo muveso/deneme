@@ -21,7 +21,7 @@ namespace Assets.Scripts.Game {
             // All the game logic is here
             // Host does not need to get messages from server like the client because he is the server
             var messages = GameManager.Instance.NetworkManagers.UdpServerManager.Communicator.ReceiveAll();
-            if (messages != null) {
+            if (messages.Count > 0) {
                 foreach (var message in messages) {
                     HandleMessage(message);
                     SendGlobalStateToAllClients();
