@@ -24,11 +24,10 @@ namespace Assets.Scripts.Game {
             if (messages.Count > 0) {
                 foreach (var message in messages) {
                     HandleMessage(message);
-                    SendGlobalStateToAllClients();
                 }
-            } else {
-                SendGlobalStateToAllClients();
             }
+
+            SendGlobalStateToAllClients();
         }
 
         private void SendGlobalStateToAllClients() {
