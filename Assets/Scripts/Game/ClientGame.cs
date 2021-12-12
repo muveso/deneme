@@ -18,17 +18,15 @@ namespace Assets.Scripts.Game {
 
         protected virtual void FixedUpdate() {
             // Messages from server
-            var messages = GameManager.Instance.NetworkManagers.UnreliableClientManager.ReceiveAll();
-            if (messages.Count <= 0) {
+            var message = GameManager.Instance.NetworkManagers.UnreliableClientManager.Receive();
+            if (message == null) {
                 return;
             }
 
-            foreach (var message in messages) {
-                if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
-                    SceneManager.LoadScene("MainMenu");
-                } else {
-                    HandleGlobalState(message.AnyMessage.Unpack<GlobalStateMessage>());
-                }
+            if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
+                SceneManager.LoadScene("MainMenu");
+            } else {
+                HandleGlobalState(message.AnyMessage.Unpack<GlobalStateMessage>());
             }
         }
 
