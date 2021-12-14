@@ -2,17 +2,17 @@
 
 namespace Assets.Scripts.Network.Client {
     public class NetworkClientCommunicatorSenderThread : BaseThread {
-        private readonly NetworkClientClientManager _networkClientClientManager;
+        private readonly NetworkClientManager _networkClientManager;
 
-        public NetworkClientCommunicatorSenderThread(NetworkClientClientManager networkClientClientManager) {
-            _networkClientClientManager = networkClientClientManager;
+        public NetworkClientCommunicatorSenderThread(NetworkClientManager networkClientManager) {
+            _networkClientManager = networkClientManager;
         }
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _networkClientClientManager.Communicator.GetMessageToSend();
+                var message = _networkClientManager.Communicator.GetMessageToSend();
                 if (message != null) {
-                    _networkClientClientManager.NetworkClient.Send(message.Message);
+                    _networkClientManager.NetworkClient.Send(message.Message);
                 }
             }
         }
