@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils.Messages;
@@ -22,18 +21,10 @@ namespace Assets.Scripts.Network.Host {
             _serverCommunicator.AddMessageToReceive(messageToInsert);
         }
 
-        public List<MessageToReceive> ReceiveAll() {
-            throw new NotImplementedException();
-        }
-
         public MessageToReceive Receive() {
             throw new NotImplementedException();
         }
 
         public void Dispose() { }
-
-        public void Send(MessageToSend message) {
-            throw new NotImplementedException();
-        }
     }
 }
