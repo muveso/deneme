@@ -52,6 +52,8 @@ namespace Assets.Scripts.Game {
             var playerObject = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             playerObject.name = objectStateMessage.ObjectId;
             playerObject.GetComponentInChildren<TextMesh>().text = objectStateMessage.OwnerNickname;
+            // Disable physics
+            playerObject.GetComponent<Rigidbody>().isKinematic = true;
             if (objectStateMessage.OwnerNickname == GameManager.Instance.Nickname) {
                 playerObject.AddComponent<Camera>();
                 playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
