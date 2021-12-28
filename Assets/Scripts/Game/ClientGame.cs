@@ -48,7 +48,7 @@ namespace Assets.Scripts.Game {
                         true);
                 }
 
-                foundGameObject.GetComponent<ISerializableNetworkObject>().DeserializeState(objectStateMessage.State);
+                foundGameObject.GetComponent<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
             }
         }
 

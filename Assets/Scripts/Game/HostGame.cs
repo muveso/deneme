@@ -42,7 +42,7 @@ namespace Assets.Scripts.Game {
                 var realGameObject = serverGameObject.Value.Item1;
                 var ownerNickname = serverGameObject.Value.Item2;
 
-                var messageToPack = realGameObject.GetComponent<ISerializableNetworkObject>().SerializeState();
+                var messageToPack = realGameObject.GetComponent<NetworkBehaviour>().SerializeState();
                 var stateMessage = new ObjectStateMessage {
                     ObjectId = objectId,
                     OwnerNickname = ownerNickname,
@@ -63,7 +63,7 @@ namespace Assets.Scripts.Game {
             var objectInputMessage = anyMessage.Unpack<ObjectInputMessage>();
 
             GameManager.Instance.ServerGameObjects[objectInputMessage.ObjectId].Item1
-                .GetComponent<ClientNetworkBehaviour>()
+                .GetComponent<NetworkBehaviour>()
                 .ServerUpdate(objectInputMessage.Input);
         }
 

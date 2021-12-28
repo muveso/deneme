@@ -4,7 +4,7 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Game {
-    public class Player : ClientNetworkBehaviour {
+    public class Player : NetworkBehaviour {
         public Rigidbody PlayerRigidbody;
         public float Speed;
 
@@ -47,7 +47,7 @@ namespace Assets.Scripts.Game {
             playerObject.GetComponentInChildren<TextMesh>().text = nickname;
 
             if (isLocal) {
-                playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
+                playerObject.GetComponent<NetworkBehaviour>().IsLocal = true;
             } else {
                 playerObject.GetComponentInChildren<Camera>().gameObject.SetActive(false);
             }

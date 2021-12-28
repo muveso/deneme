@@ -5,24 +5,29 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class ObstacleOne : MonoBehaviour, ISerializableNetworkObject {
+public class ObstacleOne : NetworkBehaviour {
     private float _movementSpeed;
     private Rigidbody _rigidbody;
 
-    public void DeserializeState(Any message) {
-        throw new NotImplementedException();
-    }
-
-    public IMessage SerializeState() {
-        throw new NotImplementedException();
-    }
 
     private void Awake() {
         _rigidbody = GetComponent<Rigidbody>();
         _movementSpeed = GetRandomMovementSpeed();
     }
 
-    private void FixedUpdate() {
+    public override void DeserializeState(Any message) {
+        throw new NotImplementedException();
+    }
+
+    public override IMessage SerializeState() {
+        throw new NotImplementedException();
+    }
+
+    protected override IMessage ClientUpdate() {
+        throw new NotImplementedException();
+    }
+
+    public override void ServerUpdate(Any message) {
         _rigidbody.velocity = Vector3.right * _movementSpeed;
     }
 

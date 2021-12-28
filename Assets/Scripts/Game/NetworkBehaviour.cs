@@ -4,11 +4,9 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Game {
-    public abstract class ClientNetworkBehaviour : MonoBehaviour, ISerializableNetworkObject {
+    public abstract class NetworkBehaviour : MonoBehaviour {
         public bool IsLocal { get; set; }
-
-        public abstract void DeserializeState(Any message);
-        public abstract IMessage SerializeState();
+        public bool IsServer { get; set; }
 
         /// <summary>
         ///     FixedUpdate used in order to sync the input speed from clients.
@@ -20,6 +18,10 @@ namespace Assets.Scripts.Game {
                 if (updateMessage != null) {
                     SendUpdate(updateMessage);
                 }
+            }
+
+            if (IsServer) {
+                ServerUpdate(null);
             }
         }
 
@@ -47,5 +49,17 @@ namespace Assets.Scripts.Game {
         /// </summary>
         /// <returns>Input message to send to server</returns>
         protected abstract IMessage ClientUpdate();
+
+        /// <summary>
+        ///     Gets state from server and deserialize it to the object
+        /// </summary>
+        /// <param name="message">The input message from client</param>
+        public abstract void DeserializeState(Any message);
+
+        /// <summary>
+        ///     Serialize the object into message
+        /// </summary>
+        /// <returns>State message to send to client</returns>
+        public abstract IMessage SerializeState();
     }
 }
