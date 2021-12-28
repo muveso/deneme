@@ -55,8 +55,9 @@ namespace Assets.Scripts.Game {
             // Disable physics
             playerObject.GetComponent<Rigidbody>().isKinematic = true;
             if (objectStateMessage.OwnerNickname == GameManager.Instance.Nickname) {
-                playerObject.AddComponent<Camera>();
                 playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
+            } else {
+                playerObject.GetComponentInChildren<Camera>().gameObject.SetActive(false);
             }
 
             return playerObject;

@@ -26,8 +26,9 @@ namespace Assets.Scripts.Game {
                 playerObject.name = Guid.NewGuid().ToString();
                 playerObject.GetComponentInChildren<TextMesh>().text = client.Details.Nickname;
                 if (HostClient.IsHostClient(client)) {
-                    playerObject.AddComponent<Camera>();
                     playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
+                } else {
+                    playerObject.GetComponentInChildren<Camera>().gameObject.SetActive(false);
                 }
 
                 GameManager.Instance.ServerGameObjects[playerObject.name] =
