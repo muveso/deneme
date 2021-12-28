@@ -37,7 +37,7 @@ namespace Assets.Scripts.General {
 
         // Manual reset for singleton
         public void Reset() {
-            IsHost = false;
+            IsHost = true;
             ServerIpAddress = null;
             NetworkManagers?.Dispose();
             NetworkManagers = new NetworkManagers();
