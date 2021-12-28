@@ -26,7 +26,7 @@ namespace Assets.Scripts.Game {
                 playerObject.GetComponentInChildren<TextMesh>().text = client.Details.Nickname;
                 if (HostClient.IsHostClient(client)) {
                     playerObject.AddComponent<Camera>();
-                    playerObject.GetComponent<NetworkBehaviour>().IsLocal = true;
+                    playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
                 }
 
                 GameManager.Instance.ServerGameObjects[playerObject.name] =

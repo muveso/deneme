@@ -43,7 +43,7 @@ namespace Assets.Scripts.Game {
                     foundGameObject = CreatePlayer(objectStateMessage);
                 }
 
-                foundGameObject.GetComponent<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
+                foundGameObject.GetComponent<ISerializableNetworkObject>().DeserializeState(objectStateMessage.State);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Assets.Scripts.Game {
             playerObject.GetComponentInChildren<TextMesh>().text = objectStateMessage.OwnerNickname;
             if (objectStateMessage.OwnerNickname == GameManager.Instance.Nickname) {
                 playerObject.AddComponent<Camera>();
-                playerObject.GetComponent<NetworkBehaviour>().IsLocal = true;
+                playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
             }
 
             return playerObject;

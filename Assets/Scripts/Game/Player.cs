@@ -4,7 +4,7 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Game {
-    public class Player : NetworkBehaviour {
+    public class Player : ClientNetworkBehaviour {
         public Rigidbody PlayerRigidbody;
         public float Speed;
 
