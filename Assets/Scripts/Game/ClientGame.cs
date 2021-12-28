@@ -40,27 +40,16 @@ namespace Assets.Scripts.Game {
             if (objectStateMessage.State.Is(PlayerStateMessage.Descriptor)) {
                 var foundGameObject = GameObject.Find(objectStateMessage.ObjectId);
                 if (foundGameObject == null) {
-                    foundGameObject = CreatePlayer(objectStateMessage);
+                    foundGameObject = Player.CreatePlayer(
+                        Vector3.zero,
+                        objectStateMessage.ObjectId,
+                        objectStateMessage.OwnerNickname,
+                        objectStateMessage.OwnerNickname == GameManager.Instance.Nickname,
+                        true);
                 }
 
                 foundGameObject.GetComponent<ISerializableNetworkObject>().DeserializeState(objectStateMessage.State);
             }
-        }
-
-        private GameObject CreatePlayer(ObjectStateMessage objectStateMessage) {
-            var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
-            var playerObject = Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            playerObject.name = objectStateMessage.ObjectId;
-            playerObject.GetComponentInChildren<TextMesh>().text = objectStateMessage.OwnerNickname;
-            // Disable physics
-            playerObject.GetComponent<Rigidbody>().isKinematic = true;
-            if (objectStateMessage.OwnerNickname == GameManager.Instance.Nickname) {
-                playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
-            } else {
-                playerObject.GetComponentInChildren<Camera>().gameObject.SetActive(false);
-            }
-
-            return playerObject;
         }
 
         private void OnDestroy() {

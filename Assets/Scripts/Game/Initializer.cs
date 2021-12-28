@@ -16,21 +16,21 @@ namespace Assets.Scripts.Game {
 
         private void CreateGameObjects() {
             CreatePlayersObjects();
+            // CreateObstacles();
+        }
+
+        private void CreateObstacles() {
+            throw new NotImplementedException();
         }
 
         private void CreatePlayersObjects() {
-            var startingPoint = GameObject.Find("StartingPoint").transform;
-            var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
+            var startingPoint = GameObject.Find("StartingPoint").transform.position;
             foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
-                var playerObject = Instantiate(playerPrefab, startingPoint.position, Quaternion.identity);
-                playerObject.name = Guid.NewGuid().ToString();
-                playerObject.GetComponentInChildren<TextMesh>().text = client.Details.Nickname;
-                if (HostClient.IsHostClient(client)) {
-                    playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
-                } else {
-                    playerObject.GetComponentInChildren<Camera>().gameObject.SetActive(false);
-                }
-
+                var playerObject =
+                    Player.CreatePlayer(startingPoint,
+                        Guid.NewGuid().ToString(),
+                        client.Details.Nickname,
+                        HostClient.IsHostClient(client));
                 GameManager.Instance.ServerGameObjects[playerObject.name] =
                     new Tuple<GameObject, string>(playerObject, client.Details.Nickname);
             }

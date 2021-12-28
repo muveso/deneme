@@ -38,5 +38,25 @@ namespace Assets.Scripts.Game {
             };
             return playerStateMessage;
         }
+
+        public static GameObject CreatePlayer(Vector3 position, string name, string nickname, bool isLocal,
+            bool disablePhysics = false) {
+            var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
+            var playerObject = Instantiate(playerPrefab, position, Quaternion.identity);
+            playerObject.name = name;
+            playerObject.GetComponentInChildren<TextMesh>().text = nickname;
+
+            if (isLocal) {
+                playerObject.GetComponent<ClientNetworkBehaviour>().IsLocal = true;
+            } else {
+                playerObject.GetComponentInChildren<Camera>().gameObject.SetActive(false);
+            }
+
+            if (disablePhysics) {
+                playerObject.GetComponent<Rigidbody>().isKinematic = true;
+            }
+
+            return playerObject;
+        }
     }
 }
