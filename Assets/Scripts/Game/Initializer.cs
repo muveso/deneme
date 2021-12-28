@@ -19,9 +19,10 @@ namespace Assets.Scripts.Game {
         }
 
         private void CreatePlayersObjects() {
+            var startingPoint = GameObject.Find("StartingPoint").transform;
             var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
             foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
-                var playerObject = Instantiate(playerPrefab, new Vector3(0, 1, -1), Quaternion.identity);
+                var playerObject = Instantiate(playerPrefab, startingPoint.position, Quaternion.identity);
                 playerObject.name = Guid.NewGuid().ToString();
                 playerObject.GetComponentInChildren<TextMesh>().text = client.Details.Nickname;
                 if (HostClient.IsHostClient(client)) {
