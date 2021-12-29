@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using Assets.Scripts.Network.Common;
 using UnityEngine;
 
 namespace Assets.Scripts.General {
@@ -17,7 +18,7 @@ namespace Assets.Scripts.General {
         public bool IsHost { get; set; }
         public string Nickname { get; set; }
         public string ClientId { get; set; }
-        public Dictionary<string, Tuple<GameObject, string>> ServerGameObjects { get; set; }
+        public Dictionary<string, Tuple<GameObject, Client>> ServerGameObjects { get; set; }
 
         public static GameManager Instance {
             get {
@@ -41,7 +42,7 @@ namespace Assets.Scripts.General {
             ServerIpAddress = null;
             NetworkManagers?.Dispose();
             NetworkManagers = new NetworkManagers();
-            ServerGameObjects = new Dictionary<string, Tuple<GameObject, string>>();
+            ServerGameObjects = new Dictionary<string, Tuple<GameObject, Client>>();
         }
     }
 }

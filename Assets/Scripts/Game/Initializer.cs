@@ -16,12 +16,10 @@ namespace Assets.Scripts.Game {
 
         private void CreateGameObjects() {
             CreatePlayersObjects();
-            // CreateObstacles();
+            CreateObstaclesObjects();
         }
 
-        private void CreateObstacles() {
-            throw new NotImplementedException();
-        }
+        private void CreateObstaclesObjects() { }
 
         private void CreatePlayersObjects() {
             var startingPoint = GameObject.Find("StartingPoint").transform.position;
@@ -32,7 +30,7 @@ namespace Assets.Scripts.Game {
                         client.Details.Nickname,
                         HostClient.IsHostClient(client));
                 GameManager.Instance.ServerGameObjects[playerObject.name] =
-                    new Tuple<GameObject, string>(playerObject, client.Details.Nickname);
+                    new Tuple<GameObject, Client>(playerObject, client);
             }
         }
     }

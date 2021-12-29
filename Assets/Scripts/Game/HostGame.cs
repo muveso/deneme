@@ -40,12 +40,12 @@ namespace Assets.Scripts.Game {
             foreach (var serverGameObject in GameManager.Instance.ServerGameObjects) {
                 var objectId = serverGameObject.Key;
                 var realGameObject = serverGameObject.Value.Item1;
-                var ownerNickname = serverGameObject.Value.Item2;
+                var ownerClient = serverGameObject.Value.Item2;
 
                 var messageToPack = realGameObject.GetComponent<NetworkBehaviour>().SerializeState();
                 var stateMessage = new ObjectStateMessage {
                     ObjectId = objectId,
-                    OwnerNickname = ownerNickname,
+                    OwnerNickname = ownerClient.Details.Nickname,
                     State = Any.Pack(messageToPack)
                 };
                 globalStateMessage.ObjectsState.Add(stateMessage);
@@ -62,9 +62,13 @@ namespace Assets.Scripts.Game {
 
             var objectInputMessage = anyMessage.Unpack<ObjectInputMessage>();
 
-            GameManager.Instance.ServerGameObjects[objectInputMessage.ObjectId].Item1
-                .GetComponent<NetworkBehaviour>()
-                .ServerUpdate(objectInputMessage.Input);
+            var gameObjectIdentifier = GameManager.Instance.ServerGameObjects[objectInputMessage.ObjectId];
+            if (gameObjectIdentifier.Item2.Id != objectInputMessage.ClientId) {
+                throw new Exception(
+                    $"Client: {objectInputMessage.ClientId} tries to change object which is not owned be him");
+            }
+
+            gameObjectIdentifier.Item1.GetComponent<NetworkBehaviour>().ServerUpdate(objectInputMessage.Input);
         }
 
 
