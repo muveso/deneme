@@ -11,7 +11,6 @@ public class ObstacleOne : NetworkBehaviour {
 
 
     private void Awake() {
-        IsServer = true;
         _rigidbody = GetComponent<Rigidbody>();
         _movementSpeed = GetRandomMovementSpeed();
     }
@@ -45,5 +44,22 @@ public class ObstacleOne : NetworkBehaviour {
 
     private float GetRandomMovementSpeed() {
         return Random.Range(20f, 40f);
+    }
+
+    public static GameObject CreateObstacleOne(Vector3 position, string name, bool isServer,
+        bool disablePhysics = false) {
+        var obstacleOnePrefab = Resources.Load("Game/Prefabs/ObstacleOne") as GameObject;
+        var obstacleOneObject = Instantiate(obstacleOnePrefab, position, Quaternion.identity);
+        obstacleOneObject.name = name;
+
+        if (isServer) {
+            obstacleOneObject.GetComponentInChildren<NetworkBehaviour>().IsServer = true;
+        }
+
+        if (disablePhysics) {
+            obstacleOneObject.GetComponentInChildren<Rigidbody>().isKinematic = true;
+        }
+
+        return obstacleOneObject;
     }
 }

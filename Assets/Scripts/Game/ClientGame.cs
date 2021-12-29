@@ -49,6 +49,8 @@ namespace Assets.Scripts.Game {
                 }
 
                 foundGameObject.GetComponent<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
+            } else {
+                Debug.Log("Got unsupported state message");
             }
         }
 

@@ -80,4 +80,24 @@ namespace Assets.Scripts.Network.Common {
             return null;
         }
     }
+
+    public class ServerClient : Client {
+        public ServerClient() : base(new ClientDetails("Server")) { }
+
+        public override void Send(byte[] bytes) {
+            throw new NotImplementedException();
+        }
+
+        public override byte[] Receive() {
+            throw new NotImplementedException();
+        }
+
+        public override IPEndPoint GetEndpoint() {
+            throw new NotImplementedException();
+        }
+
+        public override Socket GetSock() {
+            throw new NotImplementedException();
+        }
+    }
 }

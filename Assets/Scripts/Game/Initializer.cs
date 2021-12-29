@@ -7,8 +7,8 @@ namespace Assets.Scripts.Game {
     public class Initializer : MonoBehaviour {
         private void Awake() {
             if (GameManager.Instance.IsHost) {
-                CreateGameObjects();
                 gameObject.AddComponent<HostGame>();
+                CreateGameObjects();
             } else {
                 gameObject.AddComponent<ClientGame>();
             }
@@ -19,7 +19,13 @@ namespace Assets.Scripts.Game {
             CreateObstaclesObjects();
         }
 
-        private void CreateObstaclesObjects() { }
+        private void CreateObstaclesObjects() {
+            var serverClient = new ServerClient();
+            var startingPoint = GameObject.Find("StartingPoint").transform.position + new Vector3(0, 0, 50);
+            var obstacleOneObject = ObstacleOne.CreateObstacleOne(startingPoint, Guid.NewGuid().ToString(), true);
+            GameManager.Instance.ServerGameObjects[obstacleOneObject.name] =
+                new Tuple<GameObject, Client>(obstacleOneObject, serverClient);
+        }
 
         private void CreatePlayersObjects() {
             var startingPoint = GameObject.Find("StartingPoint").transform.position;
