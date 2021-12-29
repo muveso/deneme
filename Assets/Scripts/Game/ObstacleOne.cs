@@ -1,5 +1,6 @@
 using System;
 using Assets.Scripts.Game;
+using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
@@ -16,11 +17,17 @@ public class ObstacleOne : NetworkBehaviour {
     }
 
     public override void DeserializeState(Any message) {
-        throw new NotImplementedException();
+        var obstacleStateMessage = message.Unpack<ObstacleStateMessage>();
+        transform.position = MessagesHelpers.CreateVector3FromMessage(obstacleStateMessage.Position);
+        _rigidbody.velocity = MessagesHelpers.CreateVector3FromMessage(obstacleStateMessage.Velocity);
     }
 
     public override IMessage SerializeState() {
-        throw new NotImplementedException();
+        var obstacleStateMessage = new ObstacleStateMessage {
+            Position = MessagesHelpers.CreateVector3Message(transform.position),
+            Velocity = MessagesHelpers.CreateVector3Message(_rigidbody.velocity)
+        };
+        return obstacleStateMessage;
     }
 
     protected override IMessage ClientUpdate() {

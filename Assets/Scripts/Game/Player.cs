@@ -47,7 +47,7 @@ namespace Assets.Scripts.Game {
             playerObject.GetComponentInChildren<TextMesh>().text = nickname;
 
             if (isLocal) {
-                playerObject.GetComponent<NetworkBehaviour>().IsLocal = true;
+                playerObject.GetComponentInChildren<NetworkBehaviour>().IsLocal = true;
             } else {
                 playerObject.GetComponentInChildren<Camera>().gameObject.SetActive(false);
             }

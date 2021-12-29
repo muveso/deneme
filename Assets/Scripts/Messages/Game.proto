@@ -27,6 +27,11 @@ message PlayerStateMessage {
 	Vector3Message velocity = 3;
 }
 
+message ObstacleStateMessage {
+	Vector3Message position = 2;
+	Vector3Message velocity = 3;
+}
+
 message ObjectStateMessage {
 	string objectId = 1;
 	string ownerNickname = 2;

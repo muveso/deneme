@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Client;
@@ -32,13 +33,17 @@ namespace Assets.Scripts.Game {
 
         private void HandleGlobalState(GlobalStateMessage globalStateMessage) {
             foreach (var objectStateMessage in globalStateMessage.ObjectsState) {
-                HandleState(objectStateMessage);
+                try {
+                    HandleState(objectStateMessage);
+                } catch (Exception e) {
+                    Debug.Log(e);
+                }
             }
         }
 
         private void HandleState(ObjectStateMessage objectStateMessage) {
+            var foundGameObject = GameObject.Find(objectStateMessage.ObjectId);
             if (objectStateMessage.State.Is(PlayerStateMessage.Descriptor)) {
-                var foundGameObject = GameObject.Find(objectStateMessage.ObjectId);
                 if (foundGameObject == null) {
                     foundGameObject = Player.CreatePlayer(
                         Vector3.zero,
@@ -47,11 +52,19 @@ namespace Assets.Scripts.Game {
                         objectStateMessage.OwnerNickname == GameManager.Instance.Nickname,
                         true);
                 }
-
-                foundGameObject.GetComponent<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
+            } else if (objectStateMessage.State.Is(ObstacleStateMessage.Descriptor)) {
+                if (foundGameObject == null) {
+                    foundGameObject = ObstacleOne.CreateObstacleOne(
+                        Vector3.zero,
+                        objectStateMessage.ObjectId,
+                        false,
+                        true);
+                }
             } else {
-                Debug.Log("Got unsupported state message");
+                throw new Exception("Got unsupported state message");
             }
+
+            foundGameObject.GetComponentInChildren<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
         }
 
         private void OnDestroy() {

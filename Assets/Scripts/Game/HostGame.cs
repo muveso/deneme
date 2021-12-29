@@ -68,7 +68,8 @@ namespace Assets.Scripts.Game {
                     $"Client: {objectInputMessage.ClientId} tries to change object which is not owned be him");
             }
 
-            gameObjectIdentifier.Item1.GetComponent<NetworkBehaviour>().ServerUpdate(objectInputMessage.Input);
+            gameObjectIdentifier.Item1.GetComponentInChildren<NetworkBehaviour>()
+                .ServerUpdate(objectInputMessage.Input);
         }
 
 
