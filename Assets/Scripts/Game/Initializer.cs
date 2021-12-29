@@ -21,10 +21,14 @@ namespace Assets.Scripts.Game {
 
         private void CreateObstaclesObjects() {
             var serverClient = new ServerClient();
-            var startingPoint = GameObject.Find("StartingPoint").transform.position + new Vector3(0, 0, 50);
-            var obstacleOneObject = ObstacleOne.CreateObstacleOne(startingPoint, Guid.NewGuid().ToString(), true);
-            GameManager.Instance.ServerGameObjects[obstacleOneObject.name] =
-                new Tuple<GameObject, Client>(obstacleOneObject, serverClient);
+            var startingPoint = GameObject.Find("StartingPoint").transform.position;
+
+            for (var i = 1; i <= 3; ++i) {
+                var obstacleOneObject = ObstacleOne.CreateObstacleOne(startingPoint + Vector3.forward * i * 30,
+                    Guid.NewGuid().ToString(), true);
+                GameManager.Instance.ServerGameObjects[obstacleOneObject.name] =
+                    new Tuple<GameObject, Client>(obstacleOneObject, serverClient);
+            }
         }
 
         private void CreatePlayersObjects() {

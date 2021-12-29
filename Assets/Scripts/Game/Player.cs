@@ -5,11 +5,21 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public class Player : NetworkBehaviour {
+        private float _distanceToGround;
+        public float JumpForce;
         public Rigidbody PlayerRigidbody;
         public float Speed;
 
+        private void Awake() {
+            _distanceToGround = GetComponent<Collider>().bounds.extents.y;
+        }
+
         protected override IMessage ClientUpdate() {
             var moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+            if (Input.GetKey(KeyCode.Space)) {
+                moveDirection.y = 1f;
+            }
+
             if (moveDirection == Vector3.zero) {
                 return null;
             }
@@ -21,8 +31,14 @@ namespace Assets.Scripts.Game {
 
         public override void ServerUpdate(Any message) {
             var playerInput = message.Unpack<PlayerMovementMessage>().KeyboardInput;
-            var moveDirection = MessagesHelpers.CreateVector3FromMessage(playerInput);
-            PlayerRigidbody.velocity = moveDirection * Speed;
+            var moveDirection = MessagesHelpers.CreateVector3FromMessage(playerInput) * Speed;
+            // Let y (height) be effected by gravity only
+            PlayerRigidbody.velocity =
+                new Vector3(moveDirection.x, PlayerRigidbody.velocity.y, moveDirection.z);
+
+            if (moveDirection.y != 0 && IsGrounded()) {
+                PlayerRigidbody.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+            }
         }
 
         public override void DeserializeState(Any message) {
@@ -37,6 +53,10 @@ namespace Assets.Scripts.Game {
                 Velocity = MessagesHelpers.CreateVector3Message(PlayerRigidbody.velocity)
             };
             return playerStateMessage;
+        }
+
+        private bool IsGrounded() {
+            return Physics.Raycast(transform.position, -Vector3.up, _distanceToGround + 0.1f);
         }
 
         public static GameObject CreatePlayer(Vector3 position, string name, string nickname, bool isLocal,
