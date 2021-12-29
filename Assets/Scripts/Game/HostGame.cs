@@ -56,6 +56,11 @@ namespace Assets.Scripts.Game {
 
         private void HandleMessage(MessageToReceive messageToReceive) {
             var anyMessage = messageToReceive.AnyMessage;
+            // Clients send in the beginning ClientReadyMessage in order to subscribe to UdpServer. Just ignore this.
+            if (anyMessage.Is(ClientReadyMessage.Descriptor)) {
+                return;
+            }
+
             if (!anyMessage.Is(ObjectInputMessage.Descriptor)) {
                 throw new Exception("Got unsupported message from client");
             }
