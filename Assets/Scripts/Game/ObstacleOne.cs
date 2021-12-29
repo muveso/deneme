@@ -11,6 +11,7 @@ public class ObstacleOne : NetworkBehaviour {
 
 
     private void Awake() {
+        IsServer = true;
         _rigidbody = GetComponent<Rigidbody>();
         _movementSpeed = GetRandomMovementSpeed();
     }
