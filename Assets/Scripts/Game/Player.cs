@@ -61,6 +61,7 @@ namespace Assets.Scripts.Game {
 
         public static GameObject CreatePlayer(Vector3 position, string name, string nickname, bool isLocal,
             bool disablePhysics = false) {
+            Debug.Log("Player: creating new player");
             var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
             var playerObject = Instantiate(playerPrefab, position, Quaternion.identity);
             playerObject.name = name;

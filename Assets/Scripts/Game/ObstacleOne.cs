@@ -55,6 +55,7 @@ public class ObstacleOne : NetworkBehaviour {
 
     public static GameObject CreateObstacleOne(Vector3 position, string name, bool isServer,
         bool disablePhysics = false) {
+        Debug.Log("ObstacleOne: creating new obstacle from type one");
         var obstacleOnePrefab = Resources.Load("Game/Prefabs/ObstacleOne") as GameObject;
         var obstacleOneObject = Instantiate(obstacleOnePrefab, position, Quaternion.identity);
         obstacleOneObject.name = name;
