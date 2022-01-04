@@ -2,6 +2,7 @@ using Assets.Scripts.General;
 using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts.Game {
@@ -79,7 +80,7 @@ namespace Assets.Scripts.Game {
             var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
             var playerObject = Instantiate(playerPrefab, position, Quaternion.identity);
             playerObject.name = name;
-            playerObject.GetComponentInChildren<TextMesh>().text = nickname;
+            playerObject.GetComponentInChildren<TextMeshPro>().text = nickname;
             playerObject.GetComponentInChildren<Player>().Nickname = nickname;
 
             if (isLocal) {
