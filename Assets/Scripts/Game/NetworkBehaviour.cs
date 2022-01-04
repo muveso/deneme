@@ -35,7 +35,9 @@ namespace Assets.Scripts.Game {
                 ClientId = GameManager.Instance.ClientId,
                 Input = Any.Pack(message)
             };
-            GameManager.Instance.NetworkManagers.UnreliableClientManager.Send(inputMessage);
+            if (GameManager.Instance.NetworkManagers.UnreliableClientManager != null) {
+                GameManager.Instance.NetworkManagers.UnreliableClientManager.Send(inputMessage);
+            }
         }
 
         /// <summary>
