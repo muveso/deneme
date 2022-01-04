@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public abstract class NetworkBehaviour : MonoBehaviour {
-        public bool IsLocal { get; set; }
-        public bool IsServer { get; set; }
+        public bool IsLocal { get; set; } = false;
+        public bool IsServer { get; set; } = false;
 
         /// <summary>
         ///     FixedUpdate used in order to sync the input speed from clients.
