@@ -39,8 +39,7 @@ namespace Assets.Scripts.Game {
                     WinnerNickname = GameManager.Instance.WinnerNickname
                 };
                 GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Send(gameEndedMessage);
-                // Send GameEndedMessage to clients (Reliable)
-                SceneManager.LoadScene("MainMenu");
+                SceneManager.LoadScene("GameEnd");
             }
         }
 

@@ -31,7 +31,8 @@ namespace Assets.Scripts.Game {
 
             foreach (var message in messages) {
                 if (message.AnyMessage.Is(GameEndedMessage.Descriptor)) {
-                    SceneManager.LoadScene("MainMenu");
+                    GameManager.Instance.WinnerNickname = message.AnyMessage.Unpack<GameEndedMessage>().WinnerNickname;
+                    SceneManager.LoadScene("GameEnd");
                 } else {
                     Debug.Log("ClientGame: HandleReliableMessages got unknown message");
                 }

@@ -6,6 +6,7 @@ using UnityEngine;
 namespace Assets.Scripts.Game {
     public class Initializer : MonoBehaviour {
         private void Awake() {
+            Time.fixedDeltaTime = GameConsts.GameRate;
             if (GameManager.Instance.IsHost) {
                 gameObject.AddComponent<HostGame>();
                 CreateGameObjects();
