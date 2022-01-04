@@ -32,7 +32,7 @@ namespace Assets.Scripts.General {
 
         public void Log(string logString, string stackTrace, LogType type) {
             try {
-                var currentTime = DateTime.Now.ToString("yyyy-MM-dd h:mm:ss tt");
+                var currentTime = DateTime.Now.ToString(GameConsts.LogDatetimeFormat);
                 File.AppendAllText(_filename, $"{currentTime} [{type}] {logString}\n");
                 if (!stackTrace.Equals("")) {
                     File.AppendAllText(_filename, $"{stackTrace}\n");
