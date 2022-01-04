@@ -1,11 +1,13 @@
 using System;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
+using Tayx.Graphy;
 using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public class Initializer : MonoBehaviour {
         private void Awake() {
+            GraphyManager.Instance.Enable();
             Time.fixedDeltaTime = GameConsts.GameRate;
             if (GameManager.Instance.IsHost) {
                 gameObject.AddComponent<HostGame>();
