@@ -5,11 +5,8 @@ using Assets.Scripts.Network.Common;
 using UnityEngine;
 
 namespace Assets.Scripts.General {
-    public class GameManager {
-        private static readonly object Padlock = new();
-        private static GameManager _instance;
-
-        private GameManager() {
+    public class GameManager : Singleton<GameManager> {
+        public GameManager() {
             Reset();
         }
 
@@ -22,23 +19,6 @@ namespace Assets.Scripts.General {
         public string WinnerNickname { get; set; }
         public Dictionary<string, Tuple<GameObject, Client>> ServerGameObjects { get; set; }
 
-        public static GameManager Instance {
-            get {
-                // There is no reason to lock if the instance is already initialized
-                if (_instance == null) {
-                    // Lock to make sure that only one thread will create instance
-                    lock (Padlock) {
-                        if (_instance == null) {
-                            _instance = new GameManager();
-                        }
-                    }
-                }
-
-                return _instance;
-            }
-        }
-
-        // Manual reset for singleton
         public void Reset() {
             IsHost = true;
             ServerIpAddress = null;
