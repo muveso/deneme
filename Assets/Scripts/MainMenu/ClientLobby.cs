@@ -42,12 +42,14 @@ namespace Assets.Scripts.MainMenu {
 
             if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
                 SceneManager.LoadScene("MainMenu");
+                Destroy(this);
             } else if (message.AnyMessage.Is(
                 MainMenuStateMessage.Descriptor)) {
                 var mainMenuStateMessage = message.AnyMessage.Unpack<MainMenuStateMessage>();
                 UpdateClients(mainMenuStateMessage);
             } else if (message.AnyMessage.Is(StartGameMessage.Descriptor)) {
                 SceneManager.LoadScene("Game");
+                Destroy(this);
             }
 
             return true;

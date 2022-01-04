@@ -33,6 +33,7 @@ namespace Assets.Scripts.Game {
                 if (message.AnyMessage.Is(GameEndedMessage.Descriptor)) {
                     GameManager.Instance.WinnerNickname = message.AnyMessage.Unpack<GameEndedMessage>().WinnerNickname;
                     SceneManager.LoadScene("GameEnd");
+                    Destroy(this);
                 } else {
                     Debug.Log("ClientGame: HandleReliableMessages got unknown message");
                 }
@@ -47,6 +48,7 @@ namespace Assets.Scripts.Game {
 
             if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
                 SceneManager.LoadScene("MainMenu");
+                Destroy(this);
             } else {
                 HandleGameState(message.AnyMessage.Unpack<GlobalStateMessage>());
             }
@@ -86,10 +88,6 @@ namespace Assets.Scripts.Game {
             }
 
             foundGameObject.GetComponentInChildren<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
-        }
-
-        private void OnDestroy() {
-            GameManager.Instance.Reset();
         }
     }
 }

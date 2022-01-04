@@ -5,8 +5,12 @@ using UnityEngine;
 namespace Assets.Scripts.Game {
     public class GameEnded : MonoBehaviour {
         private void Awake() {
-            var winnerNickname = GameObject.Find("WinnerNickname").GetComponent<TextMeshPro>();
+            var winnerNickname = GameObject.Find("WinnerNickname").GetComponent<TextMeshProUGUI>();
             winnerNickname.text = GameManager.Instance.WinnerNickname;
+        }
+
+        private void OnDestroy() {
+            GameManager.Instance.Reset();
         }
     }
 }

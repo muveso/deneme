@@ -72,6 +72,7 @@ namespace Assets.Scripts.MainMenu {
                 Debug.Log("Starting Game");
                 GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Send(new StartGameMessage());
                 SceneManager.LoadScene("Game");
+                Destroy(this);
             } else {
                 Debug.Log("Not all clients ready");
             }

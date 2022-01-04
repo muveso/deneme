@@ -40,6 +40,7 @@ namespace Assets.Scripts.Game {
                 };
                 GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Send(gameEndedMessage);
                 SceneManager.LoadScene("GameEnd");
+                Destroy(this);
             }
         }
 
@@ -88,11 +89,6 @@ namespace Assets.Scripts.Game {
 
             gameObjectIdentifier.Item1.GetComponentInChildren<NetworkBehaviour>()
                 .ServerUpdate(objectInputMessage.Input);
-        }
-
-
-        private void OnDestroy() {
-            GameManager.Instance.Reset();
         }
     }
 }
