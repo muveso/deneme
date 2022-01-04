@@ -1,6 +1,5 @@
 using System.Net;
 using Assets.Scripts.Utils;
-using UnityEngine;
 
 namespace Assets.Scripts.Network.Server {
     public class UdpServerCommunicatorReceiverThread : BaseThread {
@@ -15,7 +14,6 @@ namespace Assets.Scripts.Network.Server {
                 var message = _udpServerManager.Client.Receive(false);
                 if (message != null) {
                     AddClientIfNotExists(message.IPEndpoint);
-                    Debug.Log("Got message, inserting to queue");
                     _udpServerManager.AddMessageToReceive(message);
                 }
             }
