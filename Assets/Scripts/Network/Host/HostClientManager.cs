@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils.Messages;
@@ -12,6 +13,10 @@ namespace Assets.Scripts.Network.Host {
         public HostClientManager(IServerCommunicatorForHost serverCommunicator, string nickname) {
             _serverCommunicator = serverCommunicator;
             _serverCommunicator.HostConnect(nickname);
+        }
+
+        public List<MessageToReceive> ReceiveAll() {
+            throw new NotImplementedException();
         }
 
         public void Send(IMessage message) {

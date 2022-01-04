@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Client;
@@ -18,7 +19,26 @@ namespace Assets.Scripts.Game {
         }
 
         protected virtual void FixedUpdate() {
-            // Messages from server
+            HandleUnreliableMessages();
+            HandleReliableMessages();
+        }
+
+        private void HandleReliableMessages() {
+            var messages = GameManager.Instance.NetworkManagers.ReliableClientManager.ReceiveAll();
+            if (!messages.Any()) {
+                return;
+            }
+
+            foreach (var message in messages) {
+                if (message.AnyMessage.Is(GameEndedMessage.Descriptor)) {
+                    SceneManager.LoadScene("MainMenu");
+                } else {
+                    Debug.Log("ClientGame: HandleReliableMessages got unknown message");
+                }
+            }
+        }
+
+        private void HandleUnreliableMessages() {
             var message = GameManager.Instance.NetworkManagers.UnreliableClientManager.Receive();
             if (message == null) {
                 return;
@@ -27,21 +47,21 @@ namespace Assets.Scripts.Game {
             if (message.AnyMessage.Is(ServerDisconnectMessage.Descriptor)) {
                 SceneManager.LoadScene("MainMenu");
             } else {
-                HandleGlobalState(message.AnyMessage.Unpack<GlobalStateMessage>());
+                HandleGameState(message.AnyMessage.Unpack<GlobalStateMessage>());
             }
         }
 
-        private void HandleGlobalState(GlobalStateMessage globalStateMessage) {
+        private void HandleGameState(GlobalStateMessage globalStateMessage) {
             foreach (var objectStateMessage in globalStateMessage.ObjectsState) {
                 try {
-                    HandleState(objectStateMessage);
+                    HandleObjectState(objectStateMessage);
                 } catch (Exception e) {
                     Debug.Log(e);
                 }
             }
         }
 
-        private void HandleState(ObjectStateMessage objectStateMessage) {
+        private void HandleObjectState(ObjectStateMessage objectStateMessage) {
             var foundGameObject = GameObject.Find(objectStateMessage.ObjectId);
             if (objectStateMessage.State.Is(PlayerStateMessage.Descriptor)) {
                 if (foundGameObject == null) {

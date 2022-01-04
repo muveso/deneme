@@ -41,3 +41,8 @@ message ObjectStateMessage {
 message GlobalStateMessage {
 	repeated ObjectStateMessage objectsState = 1;
 }
+
+// More
+message GameEndedMessage {
+	string winnerNickname = 1;
+}

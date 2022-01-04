@@ -1,3 +1,4 @@
+using Assets.Scripts.General;
 using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -7,6 +8,7 @@ namespace Assets.Scripts.Game {
     public class Player : NetworkBehaviour {
         private float _distanceToGround;
         public float JumpForce;
+        public string Nickname;
         public Rigidbody PlayerRigidbody;
         public float Speed;
 
@@ -59,6 +61,18 @@ namespace Assets.Scripts.Game {
             return Physics.Raycast(transform.position, -Vector3.up, _distanceToGround + 0.1f);
         }
 
+        /// <summary>
+        ///     Checks if the player reached to the finish point and wins.
+        ///     This function runs only on server.
+        /// </summary>
+        /// <param name="other"></param>
+        private void OnTriggerEnter(Collider other) {
+            if (other.name.Equals("FinishPoint")) {
+                GameManager.Instance.IsGameEnded = true;
+                GameManager.Instance.WinnerNickname = Nickname;
+            }
+        }
+
         public static GameObject CreatePlayer(Vector3 position, string name, string nickname, bool isLocal,
             bool disablePhysics = false) {
             Debug.Log("Player: creating new player");
@@ -66,6 +80,7 @@ namespace Assets.Scripts.Game {
             var playerObject = Instantiate(playerPrefab, position, Quaternion.identity);
             playerObject.name = name;
             playerObject.GetComponentInChildren<TextMesh>().text = nickname;
+            playerObject.GetComponentInChildren<Player>().Nickname = nickname;
 
             if (isLocal) {
                 playerObject.GetComponentInChildren<NetworkBehaviour>().IsLocal = true;

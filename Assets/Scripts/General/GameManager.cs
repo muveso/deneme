@@ -18,6 +18,8 @@ namespace Assets.Scripts.General {
         public bool IsHost { get; set; }
         public string Nickname { get; set; }
         public string ClientId { get; set; }
+        public bool IsGameEnded { get; set; }
+        public string WinnerNickname { get; set; }
         public Dictionary<string, Tuple<GameObject, Client>> ServerGameObjects { get; set; }
 
         public static GameManager Instance {
@@ -40,6 +42,10 @@ namespace Assets.Scripts.General {
         public void Reset() {
             IsHost = true;
             ServerIpAddress = null;
+            Nickname = null;
+            ClientId = null;
+            IsGameEnded = false;
+            WinnerNickname = null;
             NetworkManagers?.Dispose();
             NetworkManagers = new NetworkManagers();
             ServerGameObjects = new Dictionary<string, Tuple<GameObject, Client>>();

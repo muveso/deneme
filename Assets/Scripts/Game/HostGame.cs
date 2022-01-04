@@ -6,6 +6,7 @@ using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Game {
     public class HostGame : MonoBehaviour {
@@ -20,6 +21,8 @@ namespace Assets.Scripts.Game {
         private void FixedUpdate() {
             // All the game logic is here
             // Host does not need to get messages from server like the client because he is the server
+            CheckGameEnd();
+
             var messages = GameManager.Instance.NetworkManagers.UdpServerManager.Communicator.ReceiveAll();
             if (messages.Count > 0) {
                 foreach (var message in messages) {
@@ -28,6 +31,17 @@ namespace Assets.Scripts.Game {
             }
 
             SendGlobalStateToAllClients();
+        }
+
+        private void CheckGameEnd() {
+            if (GameManager.Instance.IsGameEnded) {
+                var gameEndedMessage = new GameEndedMessage {
+                    WinnerNickname = GameManager.Instance.WinnerNickname
+                };
+                GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Send(gameEndedMessage);
+                // Send GameEndedMessage to clients (Reliable)
+                SceneManager.LoadScene("MainMenu");
+            }
         }
 
         private void SendGlobalStateToAllClients() {
