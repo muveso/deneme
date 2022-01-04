@@ -14,12 +14,12 @@ using UnityEngine.UI;
 namespace Assets.Scripts.MainMenu {
     public class ClientLobby : MonoBehaviour {
         public InputField IPInputField;
+        public InputField NicknameInputField;
         protected List<ClientDetails> Players;
         public InputField PortInputField;
 
         private void Awake() {
             Players = new List<ClientDetails>();
-            GameManager.Instance.Nickname = "PanCHocK";
             GameManager.Instance.IsHost = false;
         }
 
@@ -63,6 +63,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         public void OnClickConnect() {
+            GameManager.Instance.Nickname = NicknameInputField.text;
             GameManager.Instance.ServerIpAddress = IPAddress.Parse(IPInputField.text);
             var endpoint = new IPEndPoint(GameManager.Instance.ServerIpAddress, int.Parse(PortInputField.text));
             var tcpMessageBasedClient = new TcpClientMessageBasedClient(new TcpClient(endpoint));

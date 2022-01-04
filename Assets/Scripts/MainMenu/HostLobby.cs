@@ -13,6 +13,7 @@ namespace Assets.Scripts.MainMenu {
     public class HostLobby : MonoBehaviour {
         private TcpServerMainMenuProcessingThread _tcpServerMainMenuProcessingThread;
         public InputField IPInputField;
+        public InputField NicknameInputField;
         public InputField PortInputField;
 
         private void Awake() {
@@ -77,6 +78,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         public void OnClickConnect() {
+            GameManager.Instance.Nickname = NicknameInputField.text;
             InitializeCommunicatorAndServer();
             ClientMessages.SendClientDetails(GameManager.Instance.NetworkManagers.ReliableClientManager);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
