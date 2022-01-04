@@ -7,9 +7,10 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class ObstacleOne : NetworkBehaviour {
+    private const float MinimumSpeed = 10f;
+    private const float MaximumSpeed = 30f;
     private float _movementSpeed;
     private Rigidbody _rigidbody;
-
 
     private void Awake() {
         _rigidbody = GetComponent<Rigidbody>();
@@ -50,7 +51,7 @@ public class ObstacleOne : NetworkBehaviour {
     }
 
     private float GetRandomMovementSpeed() {
-        return Random.Range(20f, 40f);
+        return Random.Range(MinimumSpeed, MaximumSpeed);
     }
 
     public static GameObject CreateObstacleOne(Vector3 position, string name, bool isServer,
