@@ -15,7 +15,7 @@ namespace Assets.Scripts.MainMenu {
     public class ClientLobby : MonoBehaviour {
         public InputField IPInputField;
         public InputField NicknameInputField;
-        protected List<ClientDetails> Players;
+        private List<ClientDetails> Players;
         public InputField PortInputField;
 
         private void Awake() {
