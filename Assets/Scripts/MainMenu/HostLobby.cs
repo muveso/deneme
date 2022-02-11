@@ -101,6 +101,10 @@ namespace Assets.Scripts.MainMenu {
 
 
         public void OnClickStartGame() {
+            TryToStartGame();
+        }
+
+        private void TryToStartGame() {
             if (AreAllPlayersReady()) {
                 Debug.Log("Starting Game");
                 GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Send(new StartGameMessage());
