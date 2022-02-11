@@ -1,6 +1,5 @@
 using System;
 using Assets.Scripts.General;
-using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
 using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
@@ -9,18 +8,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Game {
-    public class HostGame : MonoBehaviour {
+    public class ServerGame : MonoBehaviour {
         private void Awake() {
             GameManager.Instance.NetworkManagers.UdpServerManager =
                 new UdpServerManager(GameConsts.DefaultUdpServerPort);
-            GameManager.Instance.NetworkManagers.UnreliableClientManager =
-                new HostClientManager(GameManager.Instance.NetworkManagers.UdpServerManager,
-                    GameManager.Instance.Nickname);
         }
 
         private void FixedUpdate() {
             // All the game logic is here
-            // Host does not need to get messages from server like the client because he is the server
             CheckGameEnd();
 
             var messages = GameManager.Instance.NetworkManagers.UdpServerManager.Communicator.ReceiveAll();

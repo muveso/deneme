@@ -1,6 +1,7 @@
 using System;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
+using Assets.Scripts.Network.Host;
 using Tayx.Graphy;
 using UnityEngine;
 using Random = System.Random;
@@ -11,7 +12,10 @@ namespace Assets.Scripts.Game {
             GraphyManager.Instance.Enable();
             Time.fixedDeltaTime = GameConsts.GameRate;
             if (GameManager.Instance.IsHost) {
-                gameObject.AddComponent<HostGame>();
+                gameObject.AddComponent<ServerGame>();
+                GameManager.Instance.NetworkManagers.UnreliableClientManager =
+                    new HostClientManager(GameManager.Instance.NetworkManagers.UdpServerManager,
+                        GameManager.Instance.Nickname);
                 CreateGameObjects();
             } else {
                 gameObject.AddComponent<ClientGame>();
