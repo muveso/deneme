@@ -13,6 +13,8 @@ message ClientReadyMessage {}
 
 message StartGameMessage {}
 
+message ClientDisconnectedMessage {}
+
 message SetClientIdMessage {
     string clientId = 1;
 }

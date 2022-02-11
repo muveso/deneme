@@ -35,26 +35,25 @@ namespace Assets.Scripts.MainMenu {
                     transform);
             }
         }
-    
+
         private void HandleMessage(MessageToReceive messageToReceive) {
             var protobufMessage = messageToReceive.AnyMessage;
             var client = FindClientByIPEndpoint(messageToReceive.IPEndpoint);
-            try {
-                if (protobufMessage.Is(ClientReadyMessage.Descriptor)) {
-                    Debug.Log($"Client {client.Details.Nickname} sent Ready messageToReceive");
-                    client.Details.ToggleReady();
-                } else if (protobufMessage.Is(ClientDetailsMessage.Descriptor)) {
-                    Debug.Log($"Client {client.Details.Nickname} sent initilize details messageToReceive");
-                    var details = protobufMessage.Unpack<ClientDetailsMessage>();
-                    client.Details.Nickname = details.Nickname;
-                }
-            } catch (SocketClosedException) {
-                GameManager.Instance.NetworkManagers.TcpServerManager.Clients.Remove(client);
+
+            if (protobufMessage.Is(ClientReadyMessage.Descriptor)) {
+                Debug.Log($"Client {client.Details.Nickname} sent Ready messageToReceive");
+                client.Details.ToggleReady();
+            } else if (protobufMessage.Is(ClientDetailsMessage.Descriptor)) {
+                Debug.Log($"Client {client.Details.Nickname} sent initilize details messageToReceive");
+                var details = protobufMessage.Unpack<ClientDetailsMessage>();
+                client.Details.Nickname = details.Nickname;
+            } else if (protobufMessage.Is(ClientDisconnectedMessage.Descriptor)) {
+                Debug.Log($"Client disconnected");
             }
 
             StateUpdateToAllClients();
         }
-        
+
         private Client FindClientByIPEndpoint(IPEndPoint messageIpEndpoint) {
             foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
                 if (Equals(client.GetEndpoint(), messageIpEndpoint)) {
@@ -77,10 +76,10 @@ namespace Assets.Scripts.MainMenu {
 
             GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Send(mainMenuMessage);
         }
-        
+
         private bool AreAllPlayersReady() {
             foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager
-                .Clients) {
+                         .Clients) {
                 if (!client.Details.IsReady) {
                     return false;
                 }

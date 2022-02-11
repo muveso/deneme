@@ -4,6 +4,7 @@ using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network;
+using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 
 namespace Assets.Scripts.Network.Server {
@@ -36,6 +37,8 @@ namespace Assets.Scripts.Network.Server {
                             new MessageToReceive(client.GetEndpoint(), message));
                     } catch (SocketClosedException) {
                         _tcpServerManager.Clients.Remove(client);
+                        _tcpServerManager.Communicator.AddMessageToReceive(
+                            new MessageToReceive(null, Any.Pack(new ClientDisconnectedMessage())));
                     }
                 }
             }
