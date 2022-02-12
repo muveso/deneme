@@ -3,8 +3,6 @@ using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Host;
 using Assets.Scripts.Network.Server;
-using Assets.Scripts.Utils.Messages;
-using Assets.Scripts.Utils.Network;
 using Assets.Scripts.Utils.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,13 +11,19 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.MainMenu {
     public class HostLobby : MonoBehaviour {
+        private TcpServerMainMenuProcessingThread _tcpServerMainMenuProcessingThread;
         public InputField IPInputField;
         public InputField NicknameInputField;
         public InputField PortInputField;
 
         private void Awake() {
             IPInputField.text = GameConsts.DefaultServerIpAddress;
+            GameManager.Instance.Nickname = "PanCHocKHost";
             GameManager.Instance.IsHost = true;
+        }
+
+        private void OnDestroy() {
+            _tcpServerMainMenuProcessingThread?.Stop();
         }
 
         private void Update() {
@@ -27,54 +31,13 @@ namespace Assets.Scripts.MainMenu {
                 return;
             }
 
-            var message = GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Receive();
-            if (message != null) {
-                HandleMessage(message);
-                Utils.UI.General.DestroyAllChildren(transform);
-                ScrollView.FillScrollViewWithObjects(GameManager.Instance.NetworkManagers.TcpServerManager.Clients,
-                    transform);
-            }
-        }
-
-        private void HandleMessage(MessageToReceive messageToReceive) {
-            var protobufMessage = messageToReceive.AnyMessage;
-            var client = FindClientByIPEndpoint(messageToReceive.IPEndpoint);
-
-            if (protobufMessage.Is(ClientReadyMessage.Descriptor)) {
-                Debug.Log($"Client {client.Details.Nickname} sent Ready messageToReceive");
-                client.Details.ToggleReady();
-            } else if (protobufMessage.Is(ClientDetailsMessage.Descriptor)) {
-                Debug.Log($"Client {client.Details.Nickname} sent initilize details messageToReceive");
-                var details = protobufMessage.Unpack<ClientDetailsMessage>();
-                client.Details.Nickname = details.Nickname;
-            } else if (protobufMessage.Is(ClientDisconnectedMessage.Descriptor)) {
-                Debug.Log($"Client disconnected");
+            if (!_tcpServerMainMenuProcessingThread.StateChanged.WaitOne(0)) {
+                return;
             }
 
-            StateUpdateToAllClients();
-        }
-
-        private Client FindClientByIPEndpoint(IPEndPoint messageIpEndpoint) {
-            foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
-                if (Equals(client.GetEndpoint(), messageIpEndpoint)) {
-                    return client;
-                }
-            }
-
-            return null;
-        }
-
-        private void StateUpdateToAllClients() {
-            var mainMenuMessage = new MainMenuStateMessage();
-            foreach (var client in GameManager.Instance.NetworkManagers.TcpServerManager.Clients) {
-                var detailsMessage = new ClientDetailsMessage {
-                    Nickname = client.Details.Nickname,
-                    IsReady = client.Details.IsReady
-                };
-                mainMenuMessage.ClientsDetails.Add(detailsMessage);
-            }
-
-            GameManager.Instance.NetworkManagers.TcpServerManager.Communicator.Send(mainMenuMessage);
+            Utils.UI.General.DestroyAllChildren(transform);
+            ScrollView.FillScrollViewWithObjects(GameManager.Instance.NetworkManagers.TcpServerManager.Clients,
+                transform);
         }
 
         private bool AreAllPlayersReady() {
@@ -93,6 +56,10 @@ namespace Assets.Scripts.MainMenu {
             GameManager.Instance.NetworkManagers.TcpServerManager =
                 new TcpServerManager(new IPEndPoint(IPAddress.Parse(IPInputField.text),
                     int.Parse(PortInputField.text)));
+            // Initialize Processing Thread
+            _tcpServerMainMenuProcessingThread =
+                new TcpServerMainMenuProcessingThread(GameManager.Instance.NetworkManagers.TcpServerManager);
+            _tcpServerMainMenuProcessingThread.Start();
             // Initialize Host communicator
             GameManager.Instance.NetworkManagers.ReliableClientManager =
                 new HostClientManager(GameManager.Instance.NetworkManagers.TcpServerManager,
