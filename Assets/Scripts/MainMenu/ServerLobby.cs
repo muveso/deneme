@@ -8,10 +8,10 @@ using Assets.Scripts.Utils.Network;
 using UnityEngine;
 
 namespace Assets.Scripts.MainMenu {
-    public class TcpServerMainMenuProcessingThread : BaseThread {
+    public class ServerLobby : BaseThread {
         private readonly TcpServerManager _tcpServerManager;
 
-        public TcpServerMainMenuProcessingThread(TcpServerManager tcpServerManager) {
+        public ServerLobby(TcpServerManager tcpServerManager) {
             _tcpServerManager = tcpServerManager;
             StateChanged = new AutoResetEvent(false);
         }

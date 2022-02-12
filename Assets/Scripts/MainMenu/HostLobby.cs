@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.MainMenu {
     public class HostLobby : MonoBehaviour {
-        private TcpServerMainMenuProcessingThread _tcpServerMainMenuProcessingThread;
+        private ServerLobby _serverLobby;
         public InputField IPInputField;
         public InputField NicknameInputField;
         public InputField PortInputField;
@@ -23,7 +23,7 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private void OnDestroy() {
-            _tcpServerMainMenuProcessingThread?.Stop();
+            _serverLobby?.Stop();
         }
 
         private void Update() {
@@ -31,7 +31,7 @@ namespace Assets.Scripts.MainMenu {
                 return;
             }
 
-            if (!_tcpServerMainMenuProcessingThread.StateChanged.WaitOne(0)) {
+            if (!_serverLobby.StateChanged.WaitOne(0)) {
                 return;
             }
 
@@ -57,9 +57,9 @@ namespace Assets.Scripts.MainMenu {
                 new TcpServerManager(new IPEndPoint(IPAddress.Parse(IPInputField.text),
                     int.Parse(PortInputField.text)));
             // Initialize Processing Thread
-            _tcpServerMainMenuProcessingThread =
-                new TcpServerMainMenuProcessingThread(GameManager.Instance.NetworkManagers.TcpServerManager);
-            _tcpServerMainMenuProcessingThread.Start();
+            _serverLobby =
+                new ServerLobby(GameManager.Instance.NetworkManagers.TcpServerManager);
+            _serverLobby.Start();
             // Initialize Host communicator
             GameManager.Instance.NetworkManagers.ReliableClientManager =
                 new HostClientManager(GameManager.Instance.NetworkManagers.TcpServerManager,
