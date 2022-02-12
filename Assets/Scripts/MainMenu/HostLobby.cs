@@ -11,30 +11,19 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.MainMenu {
     public class HostLobby : MonoBehaviour {
-        private ServerLobby _serverLobby;
         public InputField IPInputField;
         public InputField NicknameInputField;
         public InputField PortInputField;
 
         private void Awake() {
-            IPInputField.text = GameConsts.DefaultServerIpAddress;
-            GameManager.Instance.Nickname = "PanCHocKHost";
             GameManager.Instance.IsHost = true;
-        }
-
-        private void OnDestroy() {
-            _serverLobby?.Stop();
         }
 
         private void Update() {
             if (GameManager.Instance.NetworkManagers.TcpServerManager == null) {
                 return;
             }
-
-            if (!_serverLobby.StateChanged.WaitOne(0)) {
-                return;
-            }
-
+            
             Utils.UI.General.DestroyAllChildren(transform);
             ScrollView.FillScrollViewWithObjects(GameManager.Instance.NetworkManagers.TcpServerManager.Clients,
                 transform);
@@ -52,14 +41,8 @@ namespace Assets.Scripts.MainMenu {
         }
 
         private void InitializeCommunicatorAndServer() {
-            // Initialize TCP server
-            GameManager.Instance.NetworkManagers.TcpServerManager =
-                new TcpServerManager(new IPEndPoint(IPAddress.Parse(IPInputField.text),
-                    int.Parse(PortInputField.text)));
-            // Initialize Processing Thread
-            _serverLobby =
-                new ServerLobby(GameManager.Instance.NetworkManagers.TcpServerManager);
-            _serverLobby.Start();
+            ServerLobby serverLobby = gameObject.AddComponent<ServerLobby>();
+            serverLobby.StartServer(IPInputField.text, PortInputField.text);
             // Initialize Host communicator
             GameManager.Instance.NetworkManagers.ReliableClientManager =
                 new HostClientManager(GameManager.Instance.NetworkManagers.TcpServerManager,
