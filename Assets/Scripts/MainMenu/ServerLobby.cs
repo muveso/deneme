@@ -15,7 +15,7 @@ namespace Assets.Scripts.MainMenu {
                 new TcpServerManager(new IPEndPoint(IPAddress.Parse(ipAddress),
                     int.Parse(port)));
         }
-        
+
         private void Update() {
             if (GameManager.Instance.NetworkManagers.TcpServerManager == null) {
                 return;

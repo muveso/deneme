@@ -23,7 +23,7 @@ namespace Assets.Scripts.MainMenu {
             if (GameManager.Instance.NetworkManagers.TcpServerManager == null) {
                 return;
             }
-            
+
             Utils.UI.General.DestroyAllChildren(transform);
             ScrollView.FillScrollViewWithObjects(GameManager.Instance.NetworkManagers.TcpServerManager.Clients,
                 transform);

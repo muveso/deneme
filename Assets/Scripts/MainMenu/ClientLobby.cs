@@ -44,7 +44,7 @@ namespace Assets.Scripts.MainMenu {
                 SceneManager.LoadScene("MainMenu");
                 Destroy(this);
             } else if (message.AnyMessage.Is(
-                MainMenuStateMessage.Descriptor)) {
+                           MainMenuStateMessage.Descriptor)) {
                 var mainMenuStateMessage = message.AnyMessage.Unpack<MainMenuStateMessage>();
                 UpdateClients(mainMenuStateMessage);
             } else if (message.AnyMessage.Is(StartGameMessage.Descriptor)) {
