@@ -16,9 +16,9 @@ namespace Assets.Scripts.Network.Client {
         public void Send(IMessage message) {
             _udpClient.Send(MessagesHelpers.ConvertMessageToBytes(message));
         }
-
-        public MessageToReceive Receive(bool block = true) {
-            if (!block && !_udpClient.Sock.Poll(0, SelectMode.SelectRead)) {
+        
+        public MessageToReceive Receive(int millisecondsTimeout = 0, bool block = true) {
+            if (!block && !_udpClient.Sock.Poll(millisecondsTimeout * 1000, SelectMode.SelectRead)) {
                 return null;
             }
 

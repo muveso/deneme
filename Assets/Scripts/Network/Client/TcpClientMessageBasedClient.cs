@@ -17,8 +17,8 @@ namespace Assets.Scripts.Network.Client {
             _tcpClient.Send(MessagesHelpers.ConvertMessageToBytes(message));
         }
 
-        public MessageToReceive Receive(bool block = true) {
-            if (!block && !_tcpClient.Sock.Poll(0, SelectMode.SelectRead)) {
+        public MessageToReceive Receive(int millisecondsTimeout = 0, bool block = true) {
+            if (!block && !_tcpClient.Sock.Poll(millisecondsTimeout * 1000, SelectMode.SelectRead)) {
                 return null;
             }
 
