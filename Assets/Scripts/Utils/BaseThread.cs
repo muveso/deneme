@@ -4,24 +4,24 @@ using UnityEngine;
 namespace Assets.Scripts.Utils {
     public abstract class BaseThread {
         private const int TimeoutToWaitBeforeForceTerminateThreadMs = 5000;
-        private readonly AutoResetEvent _stopEvent;
         private readonly Thread _thread;
-
+        protected AutoResetEvent StopEvent { get; }
+        
         protected BaseThread() {
             _thread = new Thread(RunThread);
-            _stopEvent = new AutoResetEvent(false);
+            StopEvent = new AutoResetEvent(false);
         }
 
         public bool IsAlive => _thread.IsAlive;
 
-        protected bool ThreadShouldRun => !_stopEvent.WaitOne(0);
+        protected bool ThreadShouldRun => !StopEvent.WaitOne(0);
 
         public void Start() {
             _thread.Start();
         }
 
         public void Stop(bool wait = true) {
-            _stopEvent.Set();
+            StopEvent.Set();
             if (!wait) {
                 return;
             }
