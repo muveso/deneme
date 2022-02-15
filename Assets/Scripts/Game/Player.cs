@@ -59,7 +59,7 @@ namespace Assets.Scripts.Game {
         }
 
         private bool IsGrounded() {
-            return Physics.Raycast(transform.position, -Vector3.up, _distanceToGround + 0.1f);
+            return Physics.Raycast(transform.position, -Vector3.up, _distanceToGround + 0.05f);
         }
 
         /// <summary>
