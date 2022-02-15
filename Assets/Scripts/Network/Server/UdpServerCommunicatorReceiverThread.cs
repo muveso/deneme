@@ -11,7 +11,7 @@ namespace Assets.Scripts.Network.Server {
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _udpServerManager.Client.Receive(false);
+                var message = _udpServerManager.Client.Receive(1 * 1000, false);
                 if (message != null) {
                     AddClientIfNotExists(message.IPEndpoint);
                     _udpServerManager.AddMessageToReceive(message);

@@ -17,7 +17,7 @@ namespace Assets.Scripts.Network.Client {
         protected override void RunThread() {
             while (ThreadShouldRun) {
                 try {
-                    var message = _networkClientManager.NetworkClient.Receive(false);
+                    var message = _networkClientManager.NetworkClient.Receive(1 * 1000, false);
                     if (message != null) {
                         _networkClientManager.Communicator.AddMessageToReceive(message);
                     }
