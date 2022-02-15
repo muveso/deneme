@@ -19,7 +19,7 @@ namespace Assets.Scripts.Network.Server {
             while (ThreadShouldRun) {
                 var checkReadSockets = GetSocketListFromClients();
                 checkReadSockets.Add(_tcpServerManager.Server.Sock);
-                Socket.Select(checkReadSockets, null, null, 0);
+                Socket.Select(checkReadSockets, null, null, 1 * 1000000);
                 HandleReadySockets(checkReadSockets);
             }
         }
