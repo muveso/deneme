@@ -13,7 +13,7 @@ namespace Assets.Scripts.Network.Server {
 
         protected override void RunThread() {
             while (ThreadShouldRun) {
-                var message = _udpServerManager.Communicator.GetMessageToSend();
+                var message = _udpServerManager.Communicator.GetMessageToSend(1 * 1000);
                 if (message != null) {
                     if (message.IPEndpoints != null) {
                         SendToClients(message.IPEndpoints, message.Message);
