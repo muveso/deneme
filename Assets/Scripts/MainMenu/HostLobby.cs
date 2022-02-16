@@ -16,6 +16,7 @@ namespace Assets.Scripts.MainMenu {
         public InputField PortInputField;
 
         private void Awake() {
+            IPInputField.text = GameConsts.DefaultServerIpAddress;
             GameManager.Instance.IsHost = true;
         }
 

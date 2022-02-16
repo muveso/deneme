@@ -9,7 +9,7 @@ using Random = System.Random;
 namespace Assets.Scripts.Game {
     public class Initializer : MonoBehaviour {
         private void Awake() {
-            GraphyManager.Instance.Enable();
+            // GraphyManager.Instance.Enable(); 
             Time.fixedDeltaTime = GameConsts.GameRate;
             if (GameManager.Instance.IsHost) {
                 gameObject.AddComponent<ServerGame>();
