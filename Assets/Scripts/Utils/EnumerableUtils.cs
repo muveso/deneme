@@ -3,34 +3,21 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.Utils {
     public static class EnumerableUtils {
-        public static List<T> DequeueAllQueue<T>(ConcurrentQueue<T> concurrentQueue) {
+        public static List<T> DequeueAllQueue<T>(BlockingCollection<T> concurrentQueue) {
             var messages = new List<T>();
-            while (!concurrentQueue.IsEmpty) {
-                if (concurrentQueue.TryDequeue(out var message)) {
+            while (concurrentQueue.Count > 0) {
+                if (concurrentQueue.TryTake(out var message)) {
                     messages.Add(message);
                 }
             }
 
             return messages;
         }
-
-        public static T TryDequeue<T>(ConcurrentQueue<T> concurrentQueue) {
-            concurrentQueue.TryDequeue(out var message);
+        
+        public static T TryDequeue<T>(BlockingCollection<T> concurrentQueue, int millisecondsTimeout = 0) {
+            concurrentQueue.TryTake(out var message, millisecondsTimeout);
             return message;
         }
 
-        public static List<T> DequeueAllQueue<T>(Queue<T> queue) {
-            var messages = new List<T>();
-            while (queue.Count > 0) {
-                messages.Add(TryDequeue(queue));
-            }
-
-            return messages;
-        }
-
-        public static T TryDequeue<T>(Queue<T> queue) {
-            queue.TryDequeue(out var message);
-            return message;
-        }
     }
 }
