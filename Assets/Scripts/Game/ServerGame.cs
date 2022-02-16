@@ -83,7 +83,7 @@ namespace Assets.Scripts.Game {
             }
 
             gameObjectIdentifier.Item1.GetComponentInChildren<NetworkBehaviour>()
-                .ServerUpdate(objectInputMessage.Input);
+                .ServerUpdateFromClient(objectInputMessage.Input);
         }
     }
 }

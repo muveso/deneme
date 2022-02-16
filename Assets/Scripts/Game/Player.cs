@@ -7,14 +7,56 @@ using UnityEngine;
 
 namespace Assets.Scripts.Game {
     public class Player : NetworkBehaviour {
-        private float _distanceToGround;
         public float JumpForce;
         public string Nickname;
         public Rigidbody PlayerRigidbody;
         public float Speed;
+        private float _distanceToGround;
 
         private void Awake() {
             _distanceToGround = GetComponent<Collider>().bounds.extents.y;
+        }
+
+        /// <summary>
+        ///     Checks if the player reached to the finish point and wins.
+        ///     This function runs only on server.
+        /// </summary>
+        /// <param name="other"></param>
+        private void OnTriggerEnter(Collider other) {
+            if (!IsServer) {
+                return;
+            }
+
+            switch (other.name) {
+                case "FinishPoint":
+                    GameManager.Instance.IsGameEnded = true;
+                    GameManager.Instance.WinnerNickname = Nickname;
+                    break;
+                case "GameOverPlane":
+                    GameOver();
+                    break;
+            }
+        }
+
+        private void GameOver() {
+            GameManager.Instance.NetworkManagers.TcpServerManager.SendByNickname(new GameOverMessage(),
+                Nickname);
+            var selfGameObject = GameManager.Instance.ServerGameObjects[name].Item1;
+            GameManager.Instance.ServerGameObjects.Remove(name);
+            if (IsLocal) {
+                InstantiateGameOverCamera($"{Nickname}:GameOverCamera");
+            }
+
+            Destroy(selfGameObject);
+        }
+
+        public static void InstantiateGameOverCamera(string cameraName) {
+            var cameraObject = new GameObject {
+                name = cameraName
+            };
+            cameraObject.AddComponent<Camera>();
+            cameraObject.transform.position = new Vector3(0, 70, -230);
+            cameraObject.transform.rotation = Quaternion.Euler(30, 0, 0);
         }
 
         protected override IMessage ClientUpdate() {
@@ -32,7 +74,7 @@ namespace Assets.Scripts.Game {
             };
         }
 
-        public override void ServerUpdate(Any message) {
+        public override void ServerUpdateFromClient(Any message) {
             var playerInput = message.Unpack<PlayerMovementMessage>().KeyboardInput;
             var moveDirection = MessagesHelpers.CreateVector3FromMessage(playerInput) * Speed;
             // Let y (height) be effected by gravity only
@@ -43,6 +85,8 @@ namespace Assets.Scripts.Game {
                 PlayerRigidbody.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
             }
         }
+
+        public override void ServerUpdate() { }
 
         public override void DeserializeState(Any message) {
             var playerStateMessage = message.Unpack<PlayerStateMessage>();
@@ -60,18 +104,6 @@ namespace Assets.Scripts.Game {
 
         private bool IsGrounded() {
             return Physics.Raycast(transform.position, -Vector3.up, _distanceToGround + 0.05f);
-        }
-
-        /// <summary>
-        ///     Checks if the player reached to the finish point and wins.
-        ///     This function runs only on server.
-        /// </summary>
-        /// <param name="other"></param>
-        private void OnTriggerEnter(Collider other) {
-            if (other.name.Equals("FinishPoint")) {
-                GameManager.Instance.IsGameEnded = true;
-                GameManager.Instance.WinnerNickname = Nickname;
-            }
         }
 
         public static GameObject CreatePlayer(Vector3 position, string name, string nickname, bool isLocal,
