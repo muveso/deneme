@@ -21,7 +21,7 @@ namespace Assets.Scripts.Game {
             }
 
             if (IsServer) {
-                ServerUpdate(null);
+                ServerUpdate();
             }
         }
 
@@ -41,10 +41,15 @@ namespace Assets.Scripts.Game {
         }
 
         /// <summary>
-        ///     The FixedUpdate logic on the server
+        ///     Update the server with the input from the client
         /// </summary>
         /// <param name="message">The input message from client</param>
-        public abstract void ServerUpdate(Any message);
+        public abstract void ServerUpdateFromClient(Any message);
+
+        /// <summary>
+        ///     The FixedUpdate logic on the server
+        /// </summary>
+        public abstract void ServerUpdate();
 
         /// <summary>
         ///     The FixedUpdate logic on the client
