@@ -6,16 +6,16 @@ using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Common {
     public class QueueCommunicator {
-        private readonly ConcurrentQueue<MessageToReceive> _receiveMessagesQueue;
-        private readonly ConcurrentQueue<MessageToSend> _sendMessagesQueue;
+        private readonly BlockingCollection<MessageToReceive> _receiveMessagesQueue;
+        private readonly BlockingCollection<MessageToSend> _sendMessagesQueue;
 
         public QueueCommunicator() {
-            _receiveMessagesQueue = new ConcurrentQueue<MessageToReceive>();
-            _sendMessagesQueue = new ConcurrentQueue<MessageToSend>();
+            _receiveMessagesQueue = new BlockingCollection<MessageToReceive>(new ConcurrentQueue<MessageToReceive>());
+            _sendMessagesQueue =  new BlockingCollection<MessageToSend>(new ConcurrentQueue<MessageToSend>());
         }
 
-        public MessageToReceive Receive() {
-            return EnumerableUtils.TryDequeue(_receiveMessagesQueue);
+        public MessageToReceive Receive(int millisecondsTimeout = 0) {
+            return EnumerableUtils.TryDequeue(_receiveMessagesQueue, millisecondsTimeout);
         }
 
         public List<MessageToReceive> ReceiveAll() {
@@ -23,15 +23,15 @@ namespace Assets.Scripts.Network.Common {
         }
 
         public void Send(IMessage message) {
-            _sendMessagesQueue.Enqueue(new MessageToSend(null, message));
+            _sendMessagesQueue.Add(new MessageToSend(null, message));
         }
 
-        public MessageToSend GetMessageToSend() {
-            return EnumerableUtils.TryDequeue(_sendMessagesQueue);
+        public MessageToSend GetMessageToSend(int millisecondsTimeout = 0) {
+            return EnumerableUtils.TryDequeue(_sendMessagesQueue, millisecondsTimeout);
         }
 
         public void AddMessageToReceive(MessageToReceive messageToReceive) {
-            _receiveMessagesQueue.Enqueue(messageToReceive);
+            _receiveMessagesQueue.Add(messageToReceive);
         }
     }
 }
