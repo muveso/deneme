@@ -50,9 +50,11 @@ public class ObstacleOne : NetworkBehaviour {
         throw new NotImplementedException();
     }
 
-    public override void ServerUpdate(Any message) {
+    public override void ServerUpdate() {
         _rigidbody.velocity = Vector3.right * _movementSpeed;
     }
+
+    public override void ServerUpdateFromClient(Any message) { }
 
     private float GetRandomMovementSpeed() {
         return Random.Range(MinimumSpeed, MaximumSpeed);
