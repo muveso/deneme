@@ -41,13 +41,12 @@ namespace Assets.Scripts.Game {
         private void GameOver() {
             GameManager.Instance.NetworkManagers.TcpServerManager.SendByNickname(new GameOverMessage(),
                 Nickname);
-            var selfGameObject = GameManager.Instance.ServerGameObjects[name].Item1;
             GameManager.Instance.ServerGameObjects.Remove(name);
             if (IsLocal) {
                 InstantiateGameOverCamera($"{Nickname}:GameOverCamera");
             }
 
-            Destroy(selfGameObject);
+            Destroy(gameObject);
         }
 
         public static void InstantiateGameOverCamera(string cameraName) {

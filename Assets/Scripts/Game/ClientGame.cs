@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Game {
     public class ClientGame : MonoBehaviour {
+        private GameObject _myPlayer;
+
         private void Awake() {
             var endpoint =
                 new IPEndPoint(GameManager.Instance.ServerIpAddress, GameConsts.DefaultUdpServerPort);
@@ -34,6 +36,9 @@ namespace Assets.Scripts.Game {
                     GameManager.Instance.WinnerNickname = message.AnyMessage.Unpack<GameEndedMessage>().WinnerNickname;
                     SceneManager.LoadScene("GameEnd");
                     Destroy(this);
+                } else if (message.AnyMessage.Is(GameOverMessage.Descriptor)) {
+                    Player.InstantiateGameOverCamera("GameOverCamera");
+                    Destroy(_myPlayer);
                 } else {
                     Debug.Log("ClientGame: HandleReliableMessages got unknown message");
                 }
@@ -75,6 +80,9 @@ namespace Assets.Scripts.Game {
                         objectStateMessage.OwnerNickname == GameManager.Instance.Nickname,
                         false,
                         true);
+                    if (objectStateMessage.OwnerNickname == GameManager.Instance.Nickname) {
+                        _myPlayer = foundGameObject;
+                    }
                 }
             } else if (objectStateMessage.State.Is(ObstacleStateMessage.Descriptor)) {
                 if (foundGameObject == null) {
