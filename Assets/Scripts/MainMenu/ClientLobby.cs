@@ -50,6 +50,8 @@ namespace Assets.Scripts.MainMenu {
             } else if (message.AnyMessage.Is(StartGameMessage.Descriptor)) {
                 SceneManager.LoadScene("Game");
                 Destroy(this);
+            } else if (message.AnyMessage.Is(SetClientIdMessage.Descriptor)) {
+                GameManager.Instance.ClientId = message.AnyMessage.Unpack<SetClientIdMessage>().ClientId;
             }
 
             return true;
@@ -73,18 +75,8 @@ namespace Assets.Scripts.MainMenu {
                 new NetworkClientManager(tcpMessageBasedClient);
             ClientMessages.SendClientDetails(GameManager.Instance.NetworkManagers.ReliableClientManager);
             EventSystem.current.currentSelectedGameObject.GetComponent<Button>().interactable = false;
-            WaitForClientIdFromServer();
         }
-
-        private void WaitForClientIdFromServer() {
-            MessageToReceive clientIdMessage;
-            do {
-                clientIdMessage = GameManager.Instance.NetworkManagers.ReliableClientManager.Receive();
-            } while (clientIdMessage == null);
-
-            GameManager.Instance.ClientId = clientIdMessage.AnyMessage.Unpack<SetClientIdMessage>().ClientId;
-        }
-
+        
         public void OnClickReady() {
             ClientMessages.SendClientReady(GameManager.Instance.NetworkManagers.ReliableClientManager);
         }
