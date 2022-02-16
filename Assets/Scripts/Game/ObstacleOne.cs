@@ -17,6 +17,21 @@ public class ObstacleOne : NetworkBehaviour {
         _movementSpeed = GetRandomMovementSpeed();
     }
 
+    private void OnTriggerEnter(Collider other) {
+        if (!IsServer) {
+            return;
+        }
+
+        if (other.CompareTag("Border")) {
+            var newMovementSpeed = GetRandomMovementSpeed();
+            if (_movementSpeed > 0) {
+                _movementSpeed = -newMovementSpeed;
+            } else {
+                _movementSpeed = newMovementSpeed;
+            }
+        }
+    }
+
     public override void DeserializeState(Any message) {
         var obstacleStateMessage = message.Unpack<ObstacleStateMessage>();
         transform.position = MessagesHelpers.CreateVector3FromMessage(obstacleStateMessage.Position);
@@ -37,17 +52,6 @@ public class ObstacleOne : NetworkBehaviour {
 
     public override void ServerUpdate(Any message) {
         _rigidbody.velocity = Vector3.right * _movementSpeed;
-    }
-
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Border")) {
-            var newMovementSpeed = GetRandomMovementSpeed();
-            if (_movementSpeed > 0) {
-                _movementSpeed = -newMovementSpeed;
-            } else {
-                _movementSpeed = newMovementSpeed;
-            }
-        }
     }
 
     private float GetRandomMovementSpeed() {
