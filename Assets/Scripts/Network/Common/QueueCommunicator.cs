@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Utils.Messages;
 using Google.Protobuf;
@@ -11,7 +12,7 @@ namespace Assets.Scripts.Network.Common {
 
         public QueueCommunicator() {
             _receiveMessagesQueue = new BlockingCollection<MessageToReceive>(new ConcurrentQueue<MessageToReceive>());
-            _sendMessagesQueue =  new BlockingCollection<MessageToSend>(new ConcurrentQueue<MessageToSend>());
+            _sendMessagesQueue = new BlockingCollection<MessageToSend>(new ConcurrentQueue<MessageToSend>());
         }
 
         public MessageToReceive Receive(int millisecondsTimeout = 0) {
@@ -22,8 +23,8 @@ namespace Assets.Scripts.Network.Common {
             return EnumerableUtils.DequeueAllQueue(_receiveMessagesQueue);
         }
 
-        public void Send(IMessage message) {
-            _sendMessagesQueue.Add(new MessageToSend(null, message));
+        public void Send(IMessage message, List<IPEndPoint> ipEndpoints = null) {
+            _sendMessagesQueue.Add(new MessageToSend(ipEndpoints, message));
         }
 
         public MessageToSend GetMessageToSend(int millisecondsTimeout = 0) {
