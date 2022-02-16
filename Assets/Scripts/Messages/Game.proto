@@ -46,3 +46,5 @@ message GlobalStateMessage {
 message GameEndedMessage {
 	string winnerNickname = 1;
 }
+
+message GameOverMessage {}
