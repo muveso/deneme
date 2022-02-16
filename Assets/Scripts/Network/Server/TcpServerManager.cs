@@ -5,6 +5,7 @@ using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Utils.Messages;
 using Assets.Scripts.Utils.Network.TCP;
+using Google.Protobuf;
 
 namespace Assets.Scripts.Network.Server {
     public class TcpServerManager : IServerCommunicatorForHost, IDisposable {
@@ -42,6 +43,14 @@ namespace Assets.Scripts.Network.Server {
 
         public void AddMessageToReceive(MessageToReceive messageToReceive) {
             Communicator.AddMessageToReceive(messageToReceive);
+        }
+
+        public void SendByNickname(IMessage message, string nickname) {
+            foreach (var client in Clients) {
+                if (client.Details.Nickname == nickname) {
+                    Communicator.Send(message, new List<IPEndPoint> {client.GetEndpoint()});
+                }
+            }
         }
     }
 }
