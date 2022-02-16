@@ -2,7 +2,6 @@ using System;
 using Assets.Scripts.General;
 using Assets.Scripts.Network.Common;
 using Assets.Scripts.Network.Host;
-using Tayx.Graphy;
 using UnityEngine;
 using Random = System.Random;
 
@@ -45,7 +44,7 @@ namespace Assets.Scripts.Game {
                     Player.CreatePlayer(GetRandomPositionInStartingPoint(),
                         Guid.NewGuid().ToString(),
                         client.Details.Nickname,
-                        HostClient.IsHostClient(client));
+                        HostClient.IsHostClient(client), true);
                 GameManager.Instance.ServerGameObjects[playerObject.name] =
                     new Tuple<GameObject, Client>(playerObject, client);
             }

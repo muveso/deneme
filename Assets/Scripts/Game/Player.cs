@@ -75,7 +75,7 @@ namespace Assets.Scripts.Game {
         }
 
         public static GameObject CreatePlayer(Vector3 position, string name, string nickname, bool isLocal,
-            bool disablePhysics = false) {
+            bool isServer, bool disablePhysics = false) {
             Debug.Log("Player: creating new player");
             var playerPrefab = Resources.Load("Game/Prefabs/Player") as GameObject;
             var playerObject = Instantiate(playerPrefab, position, Quaternion.identity);
@@ -91,6 +91,10 @@ namespace Assets.Scripts.Game {
 
             if (disablePhysics) {
                 playerObject.GetComponent<Rigidbody>().isKinematic = true;
+            }
+
+            if (isServer) {
+                playerObject.GetComponentInChildren<NetworkBehaviour>().IsServer = true;
             }
 
             return playerObject;

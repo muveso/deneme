@@ -73,6 +73,7 @@ namespace Assets.Scripts.Game {
                         objectStateMessage.ObjectId,
                         objectStateMessage.OwnerNickname,
                         objectStateMessage.OwnerNickname == GameManager.Instance.Nickname,
+                        false,
                         true);
                 }
             } else if (objectStateMessage.State.Is(ObstacleStateMessage.Descriptor)) {
