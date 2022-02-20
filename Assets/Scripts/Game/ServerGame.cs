@@ -76,6 +76,10 @@ namespace Assets.Scripts.Game {
 
             var objectInputMessage = anyMessage.Unpack<ObjectInputMessage>();
 
+            if (!GameManager.Instance.ServerGameObjects.ContainsKey(objectInputMessage.ObjectId)) {
+                return;
+            }
+            
             var gameObjectIdentifier = GameManager.Instance.ServerGameObjects[objectInputMessage.ObjectId];
             if (gameObjectIdentifier.Item2.Id != objectInputMessage.ClientId) {
                 throw new Exception(
