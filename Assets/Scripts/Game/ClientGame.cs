@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Game {
     public class ClientGame : MonoBehaviour {
+        private bool _gameOver;
         private GameObject _myPlayer;
 
         private void Awake() {
@@ -37,8 +38,12 @@ namespace Assets.Scripts.Game {
                     SceneManager.LoadScene("GameEnd");
                     Destroy(this);
                 } else if (message.AnyMessage.Is(GameOverMessage.Descriptor)) {
+                    if (_myPlayer != null) {
+                        Destroy(_myPlayer);
+                    }
+
+                    _gameOver = true;
                     Player.InstantiateGameOverCamera("GameOverCamera");
-                    Destroy(_myPlayer);
                 } else {
                     Debug.Log("ClientGame: HandleReliableMessages got unknown message");
                 }
@@ -71,29 +76,33 @@ namespace Assets.Scripts.Game {
 
         private void HandleObjectState(ObjectStateMessage objectStateMessage) {
             var foundGameObject = GameObject.Find(objectStateMessage.ObjectId);
-            if (objectStateMessage.State.Is(PlayerStateMessage.Descriptor)) {
-                if (foundGameObject == null) {
+            if (foundGameObject == null) {
+                if (objectStateMessage.State.Is(PlayerStateMessage.Descriptor)) {
+                    var isLocalPlayer = objectStateMessage.OwnerNickname == GameManager.Instance.Nickname;
+                    if (isLocalPlayer && _gameOver) {
+                        return;
+                    }
+
                     foundGameObject = Player.CreatePlayer(
                         Vector3.zero,
                         objectStateMessage.ObjectId,
                         objectStateMessage.OwnerNickname,
-                        objectStateMessage.OwnerNickname == GameManager.Instance.Nickname,
+                        isLocalPlayer,
                         false,
                         true);
-                    if (objectStateMessage.OwnerNickname == GameManager.Instance.Nickname) {
+
+                    if (isLocalPlayer) {
                         _myPlayer = foundGameObject;
                     }
-                }
-            } else if (objectStateMessage.State.Is(ObstacleStateMessage.Descriptor)) {
-                if (foundGameObject == null) {
+                } else if (objectStateMessage.State.Is(ObstacleStateMessage.Descriptor)) {
                     foundGameObject = ObstacleOne.CreateObstacleOne(
                         Vector3.zero,
                         objectStateMessage.ObjectId,
                         false,
                         true);
+                } else {
+                    throw new Exception("Got unsupported state message");
                 }
-            } else {
-                throw new Exception("Got unsupported state message");
             }
 
             foundGameObject.GetComponentInChildren<NetworkBehaviour>().DeserializeState(objectStateMessage.State);
