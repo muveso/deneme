@@ -1,1 +1,1 @@
-https://img.shields.io/github/repo-size/muveso/deneme?style=flat-square
+![GitHub repo size](https://img.shields.io/github/repo-size/muveso/deneme?style=flat-square)
