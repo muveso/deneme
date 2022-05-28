@@ -1,3 +1,1 @@
-# Evade
-## Documentation
-### https://docs.google.com/document/d/17CbSU1aveBaifKEAhDdSRVSbK_7NZbz4UEd7R46yf3U/edit#heading=h.jg9xzyk9jd82
+https://img.shields.io/github/repo-size/muveso/deneme?style=flat-square
